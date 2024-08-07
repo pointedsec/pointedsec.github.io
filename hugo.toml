@@ -1,5 +1,5 @@
 baseURL = "/"
-title = "Bajo el teclado"
+title = "Bajo el Teclado"
 languageCode = "es-ES"
 theme = "devise"
 relativeURLs = true
