@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Compiled on Bajo el teclado</title>
+    <link>//localhost:1313/tags/compiled/</link>
+    <description>Recent content in Compiled on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Tue, 30 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/compiled/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Compiled Writeup | Medium</title>
+      <link>//localhost:1313/writeups/compiled---hackthebox/</link>
+      <pubDate>Tue, 30 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/compiled---hackthebox/</guid>
+      <description>Hack The Box: Compiled Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Compiled&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration Primero escaneo todos los puertos por TCP con rustscan&#xA;$ rustscan -a 10.129.255.250 --ulimit 5000 -g 10.129.255.250 -&amp;gt; [3000,5000,7680] Luego hago un escaneo mas exhaustivo con nmap&#xA;$ nmap -p3000,5000,7680 -sCV 10.129.255.250 -Pn -oN allPorts Starting Nmap 7.</description>
+    </item>
+  </channel>
+</rss>

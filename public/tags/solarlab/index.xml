@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SolarLab on Bajo el teclado</title>
+    <link>//localhost:1313/tags/solarlab/</link>
+    <description>Recent content in SolarLab on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Sat, 27 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/solarlab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: SolarLab Writeup | Medium</title>
+      <link>//localhost:1313/writeups/solarlab---hackthebox/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/solarlab---hackthebox/</guid>
+      <description>Enumeration TCP Scan Primero descubrimos que puertos por TCP están abiertos utilizando rustscan&#xA;➜ scan rustscan -a 10.129.231.39 --ulimit 5000 -g 10.129.231.39 -&amp;gt; [80,135,139,445,6791,7680] Y ahora hacemos un escaneo mas exhaustivo sobre estos puertos con nmap&#xA;➜ scan nmap -p80,135,139,445,6791,7680 -sCV 10.129.231.39 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-27 14:28 CEST Nmap scan report for 10.129.231.39 Host is up (0.036s latency). PORT STATE SERVICE VERSION 80/tcp open http nginx 1.</description>
+    </item>
+  </channel>
+</rss>

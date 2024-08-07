@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Talkative on Bajo el teclado</title>
+    <link>//localhost:1313/tags/talkative/</link>
+    <description>Recent content in Talkative on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Tue, 06 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/talkative/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Talkative Writeup | Hard</title>
+      <link>//localhost:1313/writeups/talkative---hackthebox/</link>
+      <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/talkative---hackthebox/</guid>
+      <description>Hack The Box: Talkative Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Talkative&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.222.158 --ulimit 5000 -g 10.129.222.158 -&amp;gt; [80,8080,8081,8082] $ nmap -p80,8080,8081,8082 -sCV 10.129.222.158 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-06 20:02 CEST Nmap scan report for 10.129.222.158 Host is up (0.</description>
+    </item>
+  </channel>
+</rss>

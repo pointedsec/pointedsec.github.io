@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Abusing Java Application on Bajo el teclado</title>
+    <link>//localhost:1313/tags/abusing-java-application/</link>
+    <description>Recent content in Abusing Java Application on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Fri, 02 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/abusing-java-application/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: RedPanda Writeup | Easy</title>
+      <link>//localhost:1313/writeups/redpanda---hackthebox/</link>
+      <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/redpanda---hackthebox/</guid>
+      <description>Hack The Box: RedPanda Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;RedPanda&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.227.207 --ulimit 5000 -g 10.129.227.207 -&amp;gt; [22,8080] $ nmap -p22,8080 -sCV 10.129.227.207 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-02 21:19 CEST Nmap scan report for 10.129.227.207 Host is up (0.</description>
+    </item>
+  </channel>
+</rss>

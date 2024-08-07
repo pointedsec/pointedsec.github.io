@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Credentials Reuse on Bajo el teclado</title>
+    <link>//localhost:1313/tags/credentials-reuse/</link>
+    <description>Recent content in Credentials Reuse on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/credentials-reuse/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: FormulaX Writeup | Hard</title>
+      <link>//localhost:1313/writeups/formulax---hackthebox/</link>
+      <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/formulax---hackthebox/</guid>
+      <description>Hack The Box: FormulaX Writeup TCP Enumeration $ rustscan -a 10.129.230.190 --ulimit 5000 -g 10.129.230.190 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.230.190 -Pn -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-31 18:19 CEST Nmap scan report for 10.129.230.190 Host is up (0.038s latency). PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 5f:b2:cd:54:e4:47:d1:0e:9e:81:35:92:3c:d6:a3:cb (ECDSA) |_ 256 b9:f0:0d:dc:05:7b:fa:fb:91:e6:d0:b4:59:e6:db:88 (ED25519) 80/tcp open http nginx 1.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Intuitions Writeup | Hard</title>
+      <link>//localhost:1313/writeups/intuitions---hackthebox/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/intuitions---hackthebox/</guid>
+      <description>Hack The Box: Intuition Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Intuition&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;Enumeration Con nmap descubrimos estos puertos abiertos.&#xA;22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA) |_ 256 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519) 80/tcp open http nginx 1.18.0 (Ubuntu) |_http-server-header: nginx/1.</description>
+    </item>
+    <item>
+      <title>Hack The Box: SolarLab Writeup | Medium</title>
+      <link>//localhost:1313/writeups/solarlab---hackthebox/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/solarlab---hackthebox/</guid>
+      <description>Enumeration TCP Scan Primero descubrimos que puertos por TCP están abiertos utilizando rustscan&#xA;➜ scan rustscan -a 10.129.231.39 --ulimit 5000 -g 10.129.231.39 -&amp;gt; [80,135,139,445,6791,7680] Y ahora hacemos un escaneo mas exhaustivo sobre estos puertos con nmap&#xA;➜ scan nmap -p80,135,139,445,6791,7680 -sCV 10.129.231.39 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-27 14:28 CEST Nmap scan report for 10.129.231.39 Host is up (0.036s latency). PORT STATE SERVICE VERSION 80/tcp open http nginx 1.</description>
+    </item>
+  </channel>
+</rss>

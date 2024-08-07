@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Volatility on Bajo el teclado</title>
+    <link>//localhost:1313/tags/volatility/</link>
+    <description>Recent content in Volatility on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Mon, 05 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/volatility/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Freelancer Writeup | Hard</title>
+      <link>//localhost:1313/writeups/freelancer---hackthebox/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/freelancer---hackthebox/</guid>
+      <description>Hack The Box: Freelancer Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Freelancer&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.230.3 --ulimit 5000 -g 10.129.230.3 -&amp;gt; [53,80,88,135,139,389,445,464,593,3269,3268,5985,9389,49667,49680,49682,49681,49710] $ nmap -p53,80,88,135,139,389,445,464,593,3269,3268,5985,9389,49667,49680,49682,49681,49710 -sCV 10.129.230.3 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-05 09:14 CEST Stats: 0:01:09 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan NSE Timing: About 99.</description>
+    </item>
+  </channel>
+</rss>

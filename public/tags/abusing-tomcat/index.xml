@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Abusing Tomcat on Bajo el teclado</title>
+    <link>//localhost:1313/tags/abusing-tomcat/</link>
+    <description>Recent content in Abusing Tomcat on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Sat, 27 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/abusing-tomcat/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Jerry Writeup | Easy</title>
+      <link>//localhost:1313/writeups/jerry---hackthebox/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/jerry---hackthebox/</guid>
+      <description>Hack The Box: Jerry Writeup Bienvenidos a mi writeup detallado de la máquina fácil &amp;ldquo;Jerry&amp;rdquo; de Hack The Box. En este writeup vamos a resolver la máquina mas fácil de toda la plataforma probablemente. ¡Vamos a ello!&#xA;TCP Enumeration $ rustscan -a 10.129.136.9 --ulimit 5000 -g 10.129.136.9 -&amp;gt; [8080] UDP Enumeration No encontramos nada por UDP&#xA;$ sudo nmap --top-ports 1500 -sU --min-rate 5000 -n -Pn 10.129.136.9 -oN allPorts.UDP Starting Nmap 7.</description>
+    </item>
+  </channel>
+</rss>

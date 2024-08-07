@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Reverse Ingeniering on Bajo el teclado</title>
+    <link>//localhost:1313/tags/reverse-ingeniering/</link>
+    <description>Recent content in Reverse Ingeniering on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Mon, 29 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/reverse-ingeniering/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Intuitions Writeup | Hard</title>
+      <link>//localhost:1313/writeups/intuitions---hackthebox/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/intuitions---hackthebox/</guid>
+      <description>Hack The Box: Intuition Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Intuition&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;Enumeration Con nmap descubrimos estos puertos abiertos.&#xA;22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA) |_ 256 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519) 80/tcp open http nginx 1.18.0 (Ubuntu) |_http-server-header: nginx/1.</description>
+    </item>
+  </channel>
+</rss>

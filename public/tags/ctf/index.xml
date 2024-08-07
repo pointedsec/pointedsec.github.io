@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CTF on Bajo el teclado</title>
+    <link>//localhost:1313/tags/ctf/</link>
+    <description>Recent content in CTF on Bajo el teclado</description>
+    <generator>Hugo</generator>
+    <language>es-ES</language>
+    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <lastBuildDate>Wed, 07 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Shared Writeup | Medium</title>
+      <link>//localhost:1313/writeups/shared---hackthebox/</link>
+      <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/shared---hackthebox/</guid>
+      <description>Hack The Box: Shared Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Shared&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.250.135 --ulimit 5000 -g 10.129.250.135 -&amp;gt; [22,80,443] $ nmap -p22,80,443 -sCV 10.129.250.135 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-07 13:22 CEST Nmap scan report for 10.129.250.135 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Talkative Writeup | Hard</title>
+      <link>//localhost:1313/writeups/talkative---hackthebox/</link>
+      <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/talkative---hackthebox/</guid>
+      <description>Hack The Box: Talkative Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Talkative&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.222.158 --ulimit 5000 -g 10.129.222.158 -&amp;gt; [80,8080,8081,8082] $ nmap -p80,8080,8081,8082 -sCV 10.129.222.158 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-06 20:02 CEST Nmap scan report for 10.129.222.158 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Antique Writeup | Easy</title>
+      <link>//localhost:1313/writeups/antique---hackthebox/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/antique---hackthebox/</guid>
+      <description>Hack The Box: Antique Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;Antique&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.250.207 --ulimit 5000 -g 10.129.250.207 -&amp;gt; [23] $ nmap -p23 10.129.250.207 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-05 23:18 CEST Nmap scan report for 10.129.250.207 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Freelancer Writeup | Hard</title>
+      <link>//localhost:1313/writeups/freelancer---hackthebox/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/freelancer---hackthebox/</guid>
+      <description>Hack The Box: Freelancer Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Freelancer&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.230.3 --ulimit 5000 -g 10.129.230.3 -&amp;gt; [53,80,88,135,139,389,445,464,593,3269,3268,5985,9389,49667,49680,49682,49681,49710] $ nmap -p53,80,88,135,139,389,445,464,593,3269,3268,5985,9389,49667,49680,49682,49681,49710 -sCV 10.129.230.3 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-05 09:14 CEST Stats: 0:01:09 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan NSE Timing: About 99.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Luke Writeup | Medium</title>
+      <link>//localhost:1313/writeups/luke---hackthebox/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/luke---hackthebox/</guid>
+      <description>Hack The Box: Luke Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Luke&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.96.55 --ulimit 5000 -g 10.129.96.55 -&amp;gt; [21,22,80,3000,8000] $ nmap -p21,22,80,3000,8000 -sCV 10.129.96.55 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-05 22:29 CEST Stats: 0:02:18 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan Service scan Timing: About 80.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Precious Writeup | Easy</title>
+      <link>//localhost:1313/writeups/precious---hackthebox/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/precious---hackthebox/</guid>
+      <description>Hack The Box: Precious Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;Precious&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.228.98 --ulimit 5000 -g 10.129.228.98 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.228.98 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-05 16:48 CEST Nmap scan report for 10.129.228.98 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Squashed Writeup | Easy</title>
+      <link>//localhost:1313/writeups/squashed---hackthebox/</link>
+      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/squashed---hackthebox/</guid>
+      <description>Hack The Box: Squashed Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;Squashed&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.228.109 --ulimit 5000 -g 10.129.228.109 -&amp;gt; [22,80,111,2049,44291,49353,50057,53893] $ nmap -p22,80,111,2049,44291,49353,50057,53893 -sCV 10.129.228.109 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-05 15:45 CEST Nmap scan report for 10.129.228.109 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Jab Writeup | Medium</title>
+      <link>//localhost:1313/writeups/jab---hackthebox/</link>
+      <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/jab---hackthebox/</guid>
+      <description>Hack The Box: Jab Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Jab&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.230.215 --ulimit 5000 -g 10.129.230.215 -&amp;gt; [53,88,135,139,389,445,464,593,636,3268,3269,5222,5223,5262,5263,5270,5269,7777,9389,5276,5275,5985,47001,49771,49703,49696,49694,49695,49673,49667,49666,49664,49665] $ nmap -p53,88,135,139,389,445,464,593,636,3268,3269,5222,5223,5262,5263,5270,5269,7777,9389,5276,5275,5985,47001,49771,49703,49696,49694,49695,49673,49667,49666,49664,49665 -sCV 10.129.230.215 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-03 19:11 CEST Stats: 0:00:31 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan Service scan Timing: About 54.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Zipping Writeup | Medium</title>
+      <link>//localhost:1313/writeups/zipping---hackthebox/</link>
+      <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/zipping---hackthebox/</guid>
+      <description>Hack The Box: Zipping Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Zipping&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.229.87 --ulimit 5000 -g 10.129.229.87 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.229.87 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-03 22:05 CEST Nmap scan report for 10.129.229.87 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Axlle Writeup | Hard</title>
+      <link>//localhost:1313/writeups/axlle---hackthebox/</link>
+      <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/axlle---hackthebox/</guid>
+      <description>Hack The Box: Axlle Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Axlle&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.253.213 --ulimit 5000 -g 10.129.253.213 -&amp;gt; [25,53,80,88,135,139,389,445,464,593,3268,3269,5985,9389,49664,62017,62025,62021,62022,62040] $ nmap -p25,53,80,88,135,139,389,445,464,593,3268,3269,5985,9389,49664,62017,62025,62021,62022,62040 -sCV -Pn 10.129.253.213 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-02 16:21 CEST Nmap scan report for 10.129.253.213 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: RedPanda Writeup | Easy</title>
+      <link>//localhost:1313/writeups/redpanda---hackthebox/</link>
+      <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/redpanda---hackthebox/</guid>
+      <description>Hack The Box: RedPanda Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;RedPanda&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.227.207 --ulimit 5000 -g 10.129.227.207 -&amp;gt; [22,8080] $ nmap -p22,8080 -sCV 10.129.227.207 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-02 21:19 CEST Nmap scan report for 10.129.227.207 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Access Writeup | Easy</title>
+      <link>//localhost:1313/writeups/access---hackthebox/</link>
+      <pubDate>Thu, 01 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/access---hackthebox/</guid>
+      <description>Hack The Box: Access Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;Access&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.222.164 --ulimit 5000 -g 10.129.222.164 -&amp;gt; [21,23,80] $ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:04 CEST Nmap scan report for 10.129.22.164 Host is up.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Mentor Writeup | Medium</title>
+      <link>//localhost:1313/writeups/mentor---hackthebox/</link>
+      <pubDate>Thu, 01 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/mentor---hackthebox/</guid>
+      <description>Hack The Box: Mentor Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Mentor&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.228.102 --ulimit 5000 -g 10.129.228.102 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.228.102 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 22:30 CEST Nmap scan report for 10.129.228.102 Host is up (0.</description>
+    </item>
+    <item>
+      <title>Hack The Box: FormulaX Writeup | Hard</title>
+      <link>//localhost:1313/writeups/formulax---hackthebox/</link>
+      <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/formulax---hackthebox/</guid>
+      <description>Hack The Box: FormulaX Writeup TCP Enumeration $ rustscan -a 10.129.230.190 --ulimit 5000 -g 10.129.230.190 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.230.190 -Pn -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-31 18:19 CEST Nmap scan report for 10.129.230.190 Host is up (0.038s latency). PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 5f:b2:cd:54:e4:47:d1:0e:9e:81:35:92:3c:d6:a3:cb (ECDSA) |_ 256 b9:f0:0d:dc:05:7b:fa:fb:91:e6:d0:b4:59:e6:db:88 (ED25519) 80/tcp open http nginx 1.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Compiled Writeup | Medium</title>
+      <link>//localhost:1313/writeups/compiled---hackthebox/</link>
+      <pubDate>Tue, 30 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/compiled---hackthebox/</guid>
+      <description>Hack The Box: Compiled Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Compiled&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration Primero escaneo todos los puertos por TCP con rustscan&#xA;$ rustscan -a 10.129.255.250 --ulimit 5000 -g 10.129.255.250 -&amp;gt; [3000,5000,7680] Luego hago un escaneo mas exhaustivo con nmap&#xA;$ nmap -p3000,5000,7680 -sCV 10.129.255.250 -Pn -oN allPorts Starting Nmap 7.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Fuse Writeup | Medium</title>
+      <link>//localhost:1313/writeups/fuse---hackthebox/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/fuse---hackthebox/</guid>
+      <description>Hack The Box: Fuse Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Fuse&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;🕵️‍♂️ Initial Enumeration Nmap $ rustscan -a 10.129.2.5 --ulimit 5000 -g 10.129.2.5 -&amp;gt; [139,135,88,80,53,464,445,389,636,593,3268,3269,5985,9389,49667,49666,49677,49678,49679,49707] $ nmap -p139,135,88,80,53,464,445,389,636,593,3268,3269,5985,9389,49667,49666,49677,49678,49679,49707 -sCV 10.129.2.5 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-29 22:56 CEST Stats: 0:01:35 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan NSE Timing: About 96.</description>
+    </item>
+    <item>
+      <title>Hack The Box: Intuitions Writeup | Hard</title>
+      <link>//localhost:1313/writeups/intuitions---hackthebox/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/intuitions---hackthebox/</guid>
+      <description>Hack The Box: Intuition Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Intuition&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;Enumeration Con nmap descubrimos estos puertos abiertos.&#xA;22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA) |_ 256 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519) 80/tcp open http nginx 1.18.0 (Ubuntu) |_http-server-header: nginx/1.</description>
+    </item>
+    <item>
+      <title>Hack The Box: SolarLab Writeup | Medium</title>
+      <link>//localhost:1313/writeups/solarlab---hackthebox/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/solarlab---hackthebox/</guid>
+      <description>Enumeration TCP Scan Primero descubrimos que puertos por TCP están abiertos utilizando rustscan&#xA;➜ scan rustscan -a 10.129.231.39 --ulimit 5000 -g 10.129.231.39 -&amp;gt; [80,135,139,445,6791,7680] Y ahora hacemos un escaneo mas exhaustivo sobre estos puertos con nmap&#xA;➜ scan nmap -p80,135,139,445,6791,7680 -sCV 10.129.231.39 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-27 14:28 CEST Nmap scan report for 10.129.231.39 Host is up (0.036s latency). PORT STATE SERVICE VERSION 80/tcp open http nginx 1.</description>
+    </item>
+    <item>
+      <title>Hack The Box: WifineticTwo Writeup | Medium</title>
+      <link>//localhost:1313/writeups/wifinetictwo---hackthebox/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/wifinetictwo---hackthebox/</guid>
+      <description>Hack The Box: WifineticTwo Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;WifineticTwo&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;🕵️‍♂️ Initial Enumeration Port Scanning First, we perform a TCP port scan to discover open ports and services.&#xA;22/tcp open ssh OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 3072 48:ad:d5:b8:3a:9f:bc:be:f7:e8:20:1e:f6:bf:de:ae (RSA) | 256 b7:89:6c:0b:20:ed:49:b2:c1:86:7c:29:92:74:1c:1f (ECDSA) |_ 256 18:cd:9d:08:a6:21:a8:b8:b6:f7:9f:8d:40:51:54:fb (ED25519) 8080/tcp open http-proxy Werkzeug/1.</description>
+    </item>
+  </channel>
+</rss>
