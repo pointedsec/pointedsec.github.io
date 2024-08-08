@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Abusing Simple-Git on Bajo el teclado</title>
+    <title>Abusing Simple-Git on Bajo el Teclado</title>
     <link>//localhost:1313/tags/abusing-simple-git/</link>
-    <description>Recent content in Abusing Simple-Git on Bajo el teclado</description>
+    <description>Recent content in Abusing Simple-Git on Bajo el Teclado</description>
     <generator>Hugo</generator>
     <language>es-ES</language>
     <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
@@ -11,9 +11,9 @@
     <atom:link href="//localhost:1313/tags/abusing-simple-git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hack The Box: FormulaX Writeup | Hard</title>
-      <link>//localhost:1313/writeups/formulax---hackthebox/</link>
+      <link>//localhost:1313/not_released/formulax---hackthebox/</link>
       <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/writeups/formulax---hackthebox/</guid>
+      <guid>//localhost:1313/not_released/formulax---hackthebox/</guid>
       <description>Hack The Box: FormulaX Writeup TCP Enumeration $ rustscan -a 10.129.230.190 --ulimit 5000 -g 10.129.230.190 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.230.190 -Pn -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-31 18:19 CEST Nmap scan report for 10.129.230.190 Host is up (0.038s latency). PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 5f:b2:cd:54:e4:47:d1:0e:9e:81:35:92:3c:d6:a3:cb (ECDSA) |_ 256 b9:f0:0d:dc:05:7b:fa:fb:91:e6:d0:b4:59:e6:db:88 (ED25519) 80/tcp open http nginx 1.</description>
     </item>
   </channel>

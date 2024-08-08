@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Python Scripting on Bajo el teclado</title>
+    <title>Python Scripting on Bajo el Teclado</title>
     <link>//localhost:1313/tags/python-scripting/</link>
-    <description>Recent content in Python Scripting on Bajo el teclado</description>
+    <description>Recent content in Python Scripting on Bajo el Teclado</description>
     <generator>Hugo</generator>
     <language>es-ES</language>
     <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
-    <lastBuildDate>Mon, 05 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 08 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/tags/python-scripting/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Bounty Writeup | Easy</title>
+      <link>//localhost:1313/writeups/bounty---hackthebox/</link>
+      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/bounty---hackthebox/</guid>
+      <description>Hack The Box: Bounty Writeup Welcome to my detailed writeup of the easy difficulty machine &amp;ldquo;Bounty&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.249.211 --ulimit 5000 -g 10.129.249.211 -&amp;gt; [80] $ nmap -p80 -sCV 10.129.249.211 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-08 08:09 CEST Nmap scan report for 10.129.249.211 Host is up (0.</description>
+    </item>
     <item>
       <title>Hack The Box: Antique Writeup | Easy</title>
       <link>//localhost:1313/writeups/antique---hackthebox/</link>

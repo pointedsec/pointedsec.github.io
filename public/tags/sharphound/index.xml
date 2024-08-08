@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>SharpHound on Bajo el teclado</title>
+    <title>SharpHound on Bajo el Teclado</title>
     <link>//localhost:1313/tags/sharphound/</link>
-    <description>Recent content in SharpHound on Bajo el teclado</description>
+    <description>Recent content in SharpHound on Bajo el Teclado</description>
     <generator>Hugo</generator>
     <language>es-ES</language>
     <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
@@ -11,9 +11,9 @@
     <atom:link href="//localhost:1313/tags/sharphound/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hack The Box: Axlle Writeup | Hard</title>
-      <link>//localhost:1313/writeups/axlle---hackthebox/</link>
+      <link>//localhost:1313/not_released/axlle---hackthebox/</link>
       <pubDate>Fri, 02 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/writeups/axlle---hackthebox/</guid>
+      <guid>//localhost:1313/not_released/axlle---hackthebox/</guid>
       <description>Hack The Box: Axlle Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Axlle&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.253.213 --ulimit 5000 -g 10.129.253.213 -&amp;gt; [25,53,80,88,135,139,389,445,464,593,3268,3269,5985,9389,49664,62017,62025,62021,62022,62040] $ nmap -p25,53,80,88,135,139,389,445,464,593,3268,3269,5985,9389,49664,62017,62025,62021,62022,62040 -sCV -Pn 10.129.253.213 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-02 16:21 CEST Nmap scan report for 10.129.253.213 Host is up (0.</description>
     </item>
   </channel>

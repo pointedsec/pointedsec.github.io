@@ -3,18 +3,78 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>//localhost:1313/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/abusing-seimpersonateprivilege/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/abusing-web.config/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/bounty/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/ctf/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/cybersecurity/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/discovering-exploitable-file-extensions/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/exploit/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/writeups/bounty---hackthebox/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/hackthebox/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/http-enumeration/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/index/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/juicypotato/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/penetration-testing/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/writeups/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/privilege-escalation/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/python-scripting/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/rce/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/reverse-shell/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/scripting/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/windows/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/writeup/</loc>
+    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/cve-2022-0543/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/cve-2022-21699/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/cybersecurity/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/discovering-subdomains/</loc>
@@ -23,37 +83,13 @@
     <loc>//localhost:1313/tags/enumerating-prestashop/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/exploit/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/writeups/shared---hackthebox/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/hackthebox/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/hash-cracking/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/index/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/linux/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/penetration-testing/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/writeups/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/privilege-escalation/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/rce/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/reverse-shell/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/shared/</loc>
@@ -62,16 +98,10 @@
     <loc>//localhost:1313/tags/sql-injection/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/user-pivoting/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/wireshark/</loc>
-    <lastmod>2024-08-07T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/writeup/</loc>
     <lastmod>2024-08-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/xss/</loc>
@@ -209,7 +239,7 @@
     <loc>//localhost:1313/writeups/antique---hackthebox/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/writeups/freelancer---hackthebox/</loc>
+    <loc>//localhost:1313/not_released/freelancer---hackthebox/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/writeups/luke---hackthebox/</loc>
@@ -236,19 +266,16 @@
     <loc>//localhost:1313/tags/nfs-enumeration/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/not_released/</loc>
+    <lastmod>2024-08-05T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/pass-the-hash/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/precious/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/python-scripting/</loc>
-    <lastmod>2024-08-05T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/resource-based-constrained-delegation/</loc>
-    <lastmod>2024-08-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/scripting/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/smb-enumeration/</loc>
@@ -261,9 +288,6 @@
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/web-fuzzing/</loc>
-    <lastmod>2024-08-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/windows/</loc>
     <lastmod>2024-08-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/yaml-deserialization/</loc>
@@ -344,7 +368,7 @@
     <loc>//localhost:1313/tags/creating-malicious-xll/</loc>
     <lastmod>2024-08-02T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/writeups/axlle---hackthebox/</loc>
+    <loc>//localhost:1313/not_released/axlle---hackthebox/</loc>
     <lastmod>2024-08-02T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/writeups/redpanda---hackthebox/</loc>
@@ -449,7 +473,7 @@
     <loc>//localhost:1313/tags/formulax/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/writeups/formulax---hackthebox/</loc>
+    <loc>//localhost:1313/not_released/formulax---hackthebox/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/port-forwarding/</loc>
@@ -464,7 +488,7 @@
     <loc>//localhost:1313/tags/gitea/</loc>
     <lastmod>2024-07-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/writeups/compiled---hackthebox/</loc>
+    <loc>//localhost:1313/not_released/compiled---hackthebox/</loc>
     <lastmod>2024-07-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/abusing-seloaddriverprivilege/</loc>
@@ -527,7 +551,7 @@
     <loc>//localhost:1313/writeups/jerry---hackthebox/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/writeups/solarlab---hackthebox/</loc>
+    <loc>//localhost:1313/not_released/solarlab---hackthebox/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/writeups/wifinetictwo---hackthebox/</loc>
