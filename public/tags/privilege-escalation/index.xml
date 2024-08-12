@@ -10,6 +10,13 @@
     <lastBuildDate>Mon, 12 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/tags/privilege-escalation/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Hack The Box: Analysis Writeup | Hard</title>
+      <link>//localhost:1313/writeups/analysis---hackthebox/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/analysis---hackthebox/</guid>
+      <description>Hack The Box: Analysis Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Analysis&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.230.179 --ulimit 5000 -g 10.129.230.179 -&amp;gt; [53,80,88,135,139,389,445,464,593,3306,5985,9389,33060,47001,49666,49664,49667,49665,49671,49678,49679,49682,49691,49704,49717,49719] $ nmap -p53,80,88,135,139,389,445,464,593,3306,5985,9389,33060,47001,49666,49664,49667,49665,49671,49678,49679,49682,49691,49704,49717,49719 -sCV 10.129.230.179 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-12 19:29 CEST Nmap scan report for 10.129.230.179 Host is up (0.</description>
+    </item>
+    <item>
       <title>Hack The Box: Faculty Writeup | Medium</title>
       <link>//localhost:1313/writeups/faculty---hackthebox/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>

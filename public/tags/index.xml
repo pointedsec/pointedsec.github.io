@@ -10,6 +10,13 @@
     <lastBuildDate>Mon, 12 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Abusing Dynamicpreprocessor</title>
+      <link>//localhost:1313/tags/abusing-dynamicpreprocessor/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/abusing-dynamicpreprocessor/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Abusing SYS_PTRACE</title>
       <link>//localhost:1313/tags/abusing-sys_ptrace/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
@@ -17,10 +24,31 @@
       <description></description>
     </item>
     <item>
+      <title>Analysis</title>
+      <link>//localhost:1313/tags/analysis/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/analysis/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Autologon Credentials</title>
+      <link>//localhost:1313/tags/autologon-credentials/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/autologon-credentials/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Command Injection</title>
       <link>//localhost:1313/tags/command-injection/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/command-injection/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Creating Malicious DLL</title>
+      <link>//localhost:1313/tags/creating-malicious-dll/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/creating-malicious-dll/</guid>
       <description></description>
     </item>
     <item>
@@ -49,6 +77,27 @@
       <link>//localhost:1313/tags/decrypting-password/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/decrypting-password/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>DNS Bruteforce</title>
+      <link>//localhost:1313/tags/dns-bruteforce/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/dns-bruteforce/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Enumerating HTTP</title>
+      <link>//localhost:1313/tags/enumerating-http/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/enumerating-http/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Enumerating Snort Service</title>
+      <link>//localhost:1313/tags/enumerating-snort-service/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/enumerating-snort-service/</guid>
       <description></description>
     </item>
     <item>
@@ -91,6 +140,13 @@
       <link>//localhost:1313/tags/information-leakage/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/information-leakage/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>LDAP Injection</title>
+      <link>//localhost:1313/tags/ldap-injection/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/ldap-injection/</guid>
       <description></description>
     </item>
     <item>
@@ -185,6 +241,20 @@
       <description></description>
     </item>
     <item>
+      <title>Web Shell</title>
+      <link>//localhost:1313/tags/web-shell/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/web-shell/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Windows</title>
+      <link>//localhost:1313/tags/windows/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/windows/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Writeup</title>
       <link>//localhost:1313/tags/writeup/</link>
       <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
@@ -231,13 +301,6 @@
       <link>//localhost:1313/tags/juicypotato/</link>
       <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/juicypotato/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Windows</title>
-      <link>//localhost:1313/tags/windows/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/windows/</guid>
       <description></description>
     </item>
     <item>

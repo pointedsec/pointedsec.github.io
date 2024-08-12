@@ -5,10 +5,22 @@
     <loc>//localhost:1313/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/tags/abusing-dynamicpreprocessor/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/abusing-sys_ptrace/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/tags/analysis/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/autologon-credentials/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/command-injection/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/creating-malicious-dll/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/credentials-reuse/</loc>
@@ -23,10 +35,22 @@
     <loc>//localhost:1313/tags/decrypting-password/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/tags/dns-bruteforce/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/enumerating-http/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/enumerating-snort-service/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/exploit/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/faculty/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/writeups/analysis---hackthebox/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/writeups/faculty---hackthebox/</loc>
@@ -45,6 +69,9 @@
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/information-leakage/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/ldap-injection/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/linux/</loc>
@@ -95,6 +122,12 @@
     <loc>//localhost:1313/tags/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/tags/web-shell/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/windows/</loc>
+    <lastmod>2024-08-12T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/writeup/</loc>
     <lastmod>2024-08-12T00:00:00+00:00</lastmod>
   </url><url>
@@ -117,9 +150,6 @@
     <lastmod>2024-08-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/juicypotato/</loc>
-    <lastmod>2024-08-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/windows/</loc>
     <lastmod>2024-08-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/cve-2022-0543/</loc>
