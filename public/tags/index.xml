@@ -7,8 +7,197 @@
     <generator>Hugo</generator>
     <language>es-ES</language>
     <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
-    <lastBuildDate>Thu, 08 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 12 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Abusing SYS_PTRACE</title>
+      <link>//localhost:1313/tags/abusing-sys_ptrace/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/abusing-sys_ptrace/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Command Injection</title>
+      <link>//localhost:1313/tags/command-injection/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/command-injection/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Credentials Reuse</title>
+      <link>//localhost:1313/tags/credentials-reuse/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/credentials-reuse/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CTF</title>
+      <link>//localhost:1313/tags/ctf/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/ctf/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Cybersecurity</title>
+      <link>//localhost:1313/tags/cybersecurity/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/cybersecurity/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Decrypting Password</title>
+      <link>//localhost:1313/tags/decrypting-password/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/decrypting-password/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Exploit</title>
+      <link>//localhost:1313/tags/exploit/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/exploit/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Faculty</title>
+      <link>//localhost:1313/tags/faculty/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/faculty/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>HackTheBox</title>
+      <link>//localhost:1313/tags/hackthebox/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/hackthebox/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>HTTP Enumeration</title>
+      <link>//localhost:1313/tags/http-enumeration/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/http-enumeration/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Index</title>
+      <link>//localhost:1313/tags/index/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/index/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Information Leakage</title>
+      <link>//localhost:1313/tags/information-leakage/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/information-leakage/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Linux</title>
+      <link>//localhost:1313/tags/linux/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/linux/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Local File Inclusion</title>
+      <link>//localhost:1313/tags/local-file-inclusion/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/local-file-inclusion/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Password Spraying</title>
+      <link>//localhost:1313/tags/password-spraying/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/password-spraying/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Penetration Testing</title>
+      <link>//localhost:1313/tags/penetration-testing/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/penetration-testing/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Port Forwarding</title>
+      <link>//localhost:1313/tags/port-forwarding/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/port-forwarding/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Privilege Escalation</title>
+      <link>//localhost:1313/tags/privilege-escalation/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/privilege-escalation/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Python Scripting</title>
+      <link>//localhost:1313/tags/python-scripting/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/python-scripting/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RCE</title>
+      <link>//localhost:1313/tags/rce/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/rce/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Reverse Shell</title>
+      <link>//localhost:1313/tags/reverse-shell/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/reverse-shell/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Scripting</title>
+      <link>//localhost:1313/tags/scripting/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/scripting/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Sea</title>
+      <link>//localhost:1313/tags/sea/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/sea/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Server Side Request Forgery</title>
+      <link>//localhost:1313/tags/server-side-request-forgery/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/server-side-request-forgery/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SQL Injection</title>
+      <link>//localhost:1313/tags/sql-injection/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/sql-injection/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Writeup</title>
+      <link>//localhost:1313/tags/writeup/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/writeup/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>XSS</title>
+      <link>//localhost:1313/tags/xss/</link>
+      <pubDate>Mon, 12 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/xss/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Abusing SeImpersonatePrivilege</title>
       <link>//localhost:1313/tags/abusing-seimpersonateprivilege/</link>
@@ -31,52 +220,10 @@
       <description></description>
     </item>
     <item>
-      <title>CTF</title>
-      <link>//localhost:1313/tags/ctf/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/ctf/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Cybersecurity</title>
-      <link>//localhost:1313/tags/cybersecurity/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/cybersecurity/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Discovering Exploitable File Extensions</title>
       <link>//localhost:1313/tags/discovering-exploitable-file-extensions/</link>
       <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/discovering-exploitable-file-extensions/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Exploit</title>
-      <link>//localhost:1313/tags/exploit/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/exploit/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>HackTheBox</title>
-      <link>//localhost:1313/tags/hackthebox/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/hackthebox/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>HTTP Enumeration</title>
-      <link>//localhost:1313/tags/http-enumeration/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/http-enumeration/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Index</title>
-      <link>//localhost:1313/tags/index/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/index/</guid>
       <description></description>
     </item>
     <item>
@@ -87,59 +234,10 @@
       <description></description>
     </item>
     <item>
-      <title>Penetration Testing</title>
-      <link>//localhost:1313/tags/penetration-testing/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/penetration-testing/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Privilege Escalation</title>
-      <link>//localhost:1313/tags/privilege-escalation/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/privilege-escalation/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Python Scripting</title>
-      <link>//localhost:1313/tags/python-scripting/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/python-scripting/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>RCE</title>
-      <link>//localhost:1313/tags/rce/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/rce/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Reverse Shell</title>
-      <link>//localhost:1313/tags/reverse-shell/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/reverse-shell/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Scripting</title>
-      <link>//localhost:1313/tags/scripting/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/scripting/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Windows</title>
       <link>//localhost:1313/tags/windows/</link>
       <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/windows/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Writeup</title>
-      <link>//localhost:1313/tags/writeup/</link>
-      <pubDate>Thu, 08 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/writeup/</guid>
       <description></description>
     </item>
     <item>
@@ -178,24 +276,10 @@
       <description></description>
     </item>
     <item>
-      <title>Linux</title>
-      <link>//localhost:1313/tags/linux/</link>
-      <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/linux/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Shared</title>
       <link>//localhost:1313/tags/shared/</link>
       <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/shared/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>SQL Injection</title>
-      <link>//localhost:1313/tags/sql-injection/</link>
-      <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/sql-injection/</guid>
       <description></description>
     </item>
     <item>
@@ -210,13 +294,6 @@
       <link>//localhost:1313/tags/wireshark/</link>
       <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/wireshark/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>XSS</title>
-      <link>//localhost:1313/tags/xss/</link>
-      <pubDate>Wed, 07 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/xss/</guid>
       <description></description>
     </item>
     <item>
@@ -297,13 +374,6 @@
       <description></description>
     </item>
     <item>
-      <title>Information Leakage</title>
-      <link>//localhost:1313/tags/information-leakage/</link>
-      <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/information-leakage/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Internal Hosts Enumeration</title>
       <link>//localhost:1313/tags/internal-hosts-enumeration/</link>
       <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
@@ -315,13 +385,6 @@
       <link>//localhost:1313/tags/mongodb-enumeration/</link>
       <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/mongodb-enumeration/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Password Spraying</title>
-      <link>//localhost:1313/tags/password-spraying/</link>
-      <pubDate>Tue, 06 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/password-spraying/</guid>
       <description></description>
     </item>
     <item>
@@ -451,13 +514,6 @@
       <description></description>
     </item>
     <item>
-      <title>Command Injection</title>
-      <link>//localhost:1313/tags/command-injection/</link>
-      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/command-injection/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>CVE-2002-1048</title>
       <link>//localhost:1313/tags/cve-2002-1048/</link>
       <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
@@ -525,13 +581,6 @@
       <link>//localhost:1313/tags/impersonating-sa-mssql/</link>
       <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/impersonating-sa-mssql/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Local File Inclusion</title>
-      <link>//localhost:1313/tags/local-file-inclusion/</link>
-      <pubDate>Mon, 05 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/local-file-inclusion/</guid>
       <description></description>
     </item>
     <item>
@@ -969,24 +1018,10 @@
       <description></description>
     </item>
     <item>
-      <title>Credentials Reuse</title>
-      <link>//localhost:1313/tags/credentials-reuse/</link>
-      <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/credentials-reuse/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>FormulaX</title>
       <link>//localhost:1313/tags/formulax/</link>
       <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/formulax/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Port Forwarding</title>
-      <link>//localhost:1313/tags/port-forwarding/</link>
-      <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/port-forwarding/</guid>
       <description></description>
     </item>
     <item>
@@ -1043,13 +1078,6 @@
       <link>//localhost:1313/tags/cookie-hijacking/</link>
       <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/cookie-hijacking/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Decrypting Password</title>
-      <link>//localhost:1313/tags/decrypting-password/</link>
-      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/tags/decrypting-password/</guid>
       <description></description>
     </item>
     <item>
