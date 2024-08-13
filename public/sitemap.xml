@@ -593,7 +593,28 @@
     <loc>//localhost:1313/about/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/tags/abusing-http_proxy/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/abusing-ld_preload/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/abusing-setenv/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/abusing-tomcat/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/clicker/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/crlf-injection/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/enumerating-nfs/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/writeups/clicker---hackthebox/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/writeups/jerry---hackthebox/</loc>
@@ -608,10 +629,16 @@
     <loc>//localhost:1313/tags/jerry/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>//localhost:1313/tags/mass-assignment-vulnerability/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>//localhost:1313/tags/openplc/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/python/</loc>
+    <lastmod>2024-07-27T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/reversing-engineering/</loc>
     <lastmod>2024-07-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/smb/</loc>

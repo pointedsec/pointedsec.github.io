@@ -115,6 +115,13 @@
       <description>Hack The Box: Intuition Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Intuition&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;Enumeration Con nmap descubrimos estos puertos abiertos.&#xA;22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA) |_ 256 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519) 80/tcp open http nginx 1.18.0 (Ubuntu) |_http-server-header: nginx/1.</description>
     </item>
     <item>
+      <title>Hack The Box: Clicker Writeup | Medium</title>
+      <link>//localhost:1313/writeups/clicker---hackthebox/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/clicker---hackthebox/</guid>
+      <description>Hack The Box: Clicker Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Clicker&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.244.53 --ulimit 5000 -g 10.129.244.53 -&amp;gt; [22,80,111,2049,34153,44465,45613,59011] $ nmap -p22,80,111,2049,34153,44465,45613,59011 -sCV 10.129.244.53 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-13 19:16 CEST Nmap scan report for 10.129.244.53 Host is up (0.</description>
+    </item>
+    <item>
       <title>Hack The Box: Jerry Writeup | Easy</title>
       <link>//localhost:1313/writeups/jerry---hackthebox/</link>
       <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>

@@ -1207,6 +1207,27 @@
       <description></description>
     </item>
     <item>
+      <title>Abusing Http_proxy</title>
+      <link>//localhost:1313/tags/abusing-http_proxy/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/abusing-http_proxy/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Abusing LD_PRELOAD</title>
+      <link>//localhost:1313/tags/abusing-ld_preload/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/abusing-ld_preload/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Abusing SETENV</title>
+      <link>//localhost:1313/tags/abusing-setenv/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/abusing-setenv/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Abusing Tomcat</title>
       <link>//localhost:1313/tags/abusing-tomcat/</link>
       <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
@@ -1214,10 +1235,38 @@
       <description></description>
     </item>
     <item>
+      <title>Clicker</title>
+      <link>//localhost:1313/tags/clicker/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/clicker/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CRLF Injection</title>
+      <link>//localhost:1313/tags/crlf-injection/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/crlf-injection/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Enumerating NFS</title>
+      <link>//localhost:1313/tags/enumerating-nfs/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/enumerating-nfs/</guid>
+      <description></description>
+    </item>
+    <item>
       <title>Jerry</title>
       <link>//localhost:1313/tags/jerry/</link>
       <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/jerry/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mass Assignment Vulnerability</title>
+      <link>//localhost:1313/tags/mass-assignment-vulnerability/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/mass-assignment-vulnerability/</guid>
       <description></description>
     </item>
     <item>
@@ -1232,6 +1281,13 @@
       <link>//localhost:1313/tags/python/</link>
       <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
       <guid>//localhost:1313/tags/python/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Reversing Engineering</title>
+      <link>//localhost:1313/tags/reversing-engineering/</link>
+      <pubDate>Sat, 27 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/tags/reversing-engineering/</guid>
       <description></description>
     </item>
     <item>
