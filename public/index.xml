@@ -7,8 +7,15 @@
     <generator>Hugo</generator>
     <language>es-ES</language>
     <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
-    <lastBuildDate>Tue, 13 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 14 Aug 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: SecNotes Writeup | Medium</title>
+      <link>//localhost:1313/writeups/secnotes---hackthebox/</link>
+      <pubDate>Wed, 14 Aug 2024 00:00:00 +0000</pubDate>
+      <guid>//localhost:1313/writeups/secnotes---hackthebox/</guid>
+      <description>Hack The Box: SecNotes Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;SecNotes&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.18.0 --ulimit 5000 -g 10.129.18.0 -&amp;gt; [80,445,8808] $ nmap -p80,445,8808 -sCV 10.129.18.0 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-14 15:10 CEST Nmap scan report for 10.129.18.0 Host is up (0.</description>
+    </item>
     <item>
       <title>Hack The Box: Clicker Writeup | Medium</title>
       <link>//localhost:1313/writeups/clicker---hackthebox/</link>

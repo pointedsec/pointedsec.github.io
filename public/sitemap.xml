@@ -3,7 +3,73 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>//localhost:1313/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/abusing-wsl/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/csrf/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/ctf/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/cybersecurity/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/exploit/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/writeups/secnotes---hackthebox/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/hackthebox/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/http-method-confusion/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/index/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/information-leakage/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/linux/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/penetration-testing/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/writeups/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/privilege-escalation/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/rce/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/reflected-xss/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/reverse-shell/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/secnotes/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/stored-xss/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/writeup/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>//localhost:1313/tags/xss/</loc>
+    <lastmod>2024-08-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/abusing-custom-binary/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
@@ -29,13 +95,7 @@
     <loc>//localhost:1313/tags/crlf-injection/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/ctf/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/cve-2022-23935/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/cybersecurity/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/enumerating-http/</loc>
@@ -44,52 +104,22 @@
     <loc>//localhost:1313/tags/enumerating-nfs/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/exploit/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/writeups/clicker---hackthebox/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/writeups/investigation---hackthebox/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/hackthebox/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/index/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/information-leakage/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/investigation/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/linux/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/mass-assignment-vulnerability/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/penetration-testing/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/perl-scripting/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/writeups/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/privilege-escalation/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/rce/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/reverse-elf-binary/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/reverse-shell/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/reversing-engineering/</loc>
@@ -98,16 +128,7 @@
     <loc>//localhost:1313/tags/sql-injection/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/tags/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>//localhost:1313/tags/web-shell/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/writeup/</loc>
-    <lastmod>2024-08-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/tags/xss/</loc>
     <lastmod>2024-08-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>//localhost:1313/tags/xxe/</loc>
