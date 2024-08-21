@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Hack The Box: Rebound Writeup | Insane"
-date = "2024-08-12"
+date = "2024-08-22"
 description = ""
 tags = [
     "HackTheBox",
