@@ -1,11 +1,11 @@
 +++
 author = "Andrés Del Cerro"
-title = "Hack The Box: Travel Writeup | Easy"
+title = "Hack The Box: Toolbox Writeup | Easy"
 date = "2024-08-24"
 description = ""
 tags = [
     "HackTheBox",
-    "Travel",
+    "Toolbox",
     "Writeup",
     "Cybersecurity",
     "Penetration Testing",
@@ -27,9 +27,9 @@ tags = [
 
 +++
 
-# Hack The Box: Travel Writeup
+# Hack The Box: Toolbox Writeup
 
-Welcome to my detailed writeup of the easy difficulty machine **"Travel"** on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+Welcome to my detailed writeup of the easy difficulty machine **"Toolbox"** on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
 
 # TCP Enumeration
 
