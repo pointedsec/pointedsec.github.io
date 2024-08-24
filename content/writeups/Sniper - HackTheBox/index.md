@@ -264,7 +264,7 @@ En el directorio de descargas de este usuario encontramos lo siguiente.
 
 > Un archivo CHM (Compiled HTML Help) es un formato de archivo de ayuda desarrollado por Microsoft, comúnmente utilizado para la documentación de software. Estos archivos están diseñados para almacenar documentación en un formato compacto y de fácil acceso. Los archivos CHM fueron especialmente populares en la era de Windows 98 y continuaron siendo ampliamente usados en versiones posteriores de Windows.
 
-En la raíz del sistema detectamos un fichero un tanto extraño llamado `Docs`
+En la raíz del sistema detectamos un directorio un tanto extraño llamado `Docs`
 ![Write-up Image](images/Screenshot_20.png)
 
 Vemos una nota que dicta lo siguiente
@@ -285,8 +285,7 @@ https://medium.com/r3d-buck3t/weaponize-chm-files-with-powershell-nishang-c98b93
 
 También debemos instalar HTML Help Workshop que sirve para compilar el archivo CHM, el problema es que este archivo está eliminado a día de hoy de la documentación oficial de Windows 10.
 
-Podemos utilizar WaybackMachine para descargar el archivo..
-http://web.archive.org/web/20160201063255/http://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe
+Podemos utilizar WaybackMachine para [descargar el instalador](http://web.archive.org/web/20160201063255/http://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe)
 
 Una vez instalado podemos crear nuestro CHM malicioso...
 ![Write-up Image](images/Screenshot_23.png)
