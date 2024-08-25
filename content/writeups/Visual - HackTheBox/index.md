@@ -17,7 +17,7 @@ tags = [
     "Windows",
     "HTTP Enumeration",
     "Gitea",
-    "Docker"
+    "Docker",
     "Weaponizing .NET Project",
     "Abusing PreBuild",
     "User Pivoting",
