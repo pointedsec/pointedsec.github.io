@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Hack The Box: MetaTwo Writeup | Easy"
-date = "2024-07-27"
+date = "2024-08-27"
 description = ""
 tags = [
     "HackTheBox",
