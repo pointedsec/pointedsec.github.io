@@ -4,7 +4,7 @@ languageCode = "es-ES"
 theme = "devise"
 relativeURLs = true
 enableEmoji = true
-googleAnalytics = ""
+googleAnalytics = "G-ZHDKLM7DD2"
 enableRobotsTXT = true
 copyright = "&copy; 2024, Andrés Del Cerro"
 
