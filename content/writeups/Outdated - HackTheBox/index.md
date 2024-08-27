@@ -34,8 +34,8 @@ Welcome to my detailed writeup of the medium difficulty machine **"Outdated"** o
 
 # TCP Enumeration
 
-```shell
-rustscan -a 10.129.229.239 --ulimit 5000 -g
+```console
+$ rustscan -a 10.129.229.239 --ulimit 5000 -g
 10.129.229.239 -> [25,53,88,135,139,389,445,464,593,636,3268,3269,5985,8530,8531,9389,49667,49691,49692,49914,49940,49961]
 ```
 
