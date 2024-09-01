@@ -27,7 +27,7 @@ tags = [
     "Abusing GenericWrite",
     "Abusing User Script Path",
     "Information Leakage",
-    "Abusing WriteOwner"",
+    "Abusing WriteOwner"
 ]
 
 +++
