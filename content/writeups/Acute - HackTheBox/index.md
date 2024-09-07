@@ -138,7 +138,7 @@ En la barra de navegación encontramos este hipervínculo que nos lleva a un doc
 ![Write-up Image](images/Screenshot_2.png)
 
 ## Information Disclosure
-No descargamos.
+Nos lo descargamos.
 ```console
 $ wget https://atsserver.acute.local/New_Starter_CheckList_v7.docx --no-check-certificate
 --2024-09-06 20:51:05--  https://atsserver.acute.local/New_Starter_CheckList_v7.docx
