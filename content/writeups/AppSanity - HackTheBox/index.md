@@ -14,7 +14,7 @@ tags = [
     "Privilege Escalation",
     "RCE",
     "Exploit",
-    "Windows"
+    "Windows",
     "HTTPS Enumeration",
     "SSL Certificate Examination",
     "JWT Analysis",
