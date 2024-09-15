@@ -1,12 +1,11 @@
 +++
 title = "About me"
-description = "About me page"
 date = "2024-07-27"
 aliases = ["about-us","about-hugo","contact"]
 author = "Andrés Del Cerro"
+toc = true
 +++
 
-# About Me
 
 Hey there! 👋 I'm a passionate 21-year-old tech enthusiast hailing from the beautiful country of Spain 📍. With a keen interest in backend development and cybersecurity, I've dedicated myself to mastering the intricacies of the digital world. Here's a snapshot of my journey and passions:
 

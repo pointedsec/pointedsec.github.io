@@ -5,7 +5,7 @@ date = "2024-08-01"
 description = ""
 tags = [
     "HackTheBox",
-    "WifineticTwo",
+    "Access",
     "Writeup",
     "Cybersecurity",
     "Penetration Testing",

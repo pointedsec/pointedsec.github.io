@@ -1,0 +1,63 @@
+baseURL = "https://pointedsec.github.io"
+title = "Bajo el Teclado"
+languageCode = "es-ES"
+theme = "hugo-simple"
+relativeURLs = true
+enableEmoji = true
+googleAnalytics = "G-ZHDKLM7DD2"
+enableRobotsTXT = true
+copyright = "© 2024, Andrés Del Cerro"
+
+
+# Main menu items
+[menu]
+  [[menu.main]]
+    name = "Home"
+    title = "Home"
+    url = "/"
+    weight = -110
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    title = "About"
+    url = "/about/"
+    weight = -110
+  [[menu.main]]
+    identifier = "writeups"
+    name = "Write-Up's"
+    title = "Write-Up's"
+    url = "/writeups/"
+    weight = -100
+
+# Configuration Features
+[params]
+  title = "Testing"
+  description = "Blog personal de Andrés Del Cerro, Técnico especializado en ciberseguridad y desarrollador web."      # Your meta description of the site
+  header_title = "pointedsec"                 # Your header title
+  header_subtitle = "if pentester.found == bug { make(pentester,states.happy) }" # Your header subtitle
+  home_image = "pointed.jpeg"          # Path to header image starting from the static directory (optional)
+  recent_posts = 5                           # Max amount of recent posts to show
+  mainSections = ["writeups"]   # Main sections to include in recent posts
+  [params.author]
+    name = "Shaolong Chen"
+    email = "shaolong.chen@outlook.it"
+  [params.style]                             # CSS style overrides
+    backgroundColor = "#f8f9fa"
+    homeImageBorderColor = "#ffffff"
+    fontFamilyBase = "Helvetica Neue"        # First-choice font
+    fontColor = "#212529"
+  [[params.social]]
+    fa_icon = "fab fa-github fa-1x"          # Font Awesome icon class
+    href = "http://github.com/pointedsec"      # Link to associate with icon (http://, https://, mailto:)
+  [[params.social]]
+    fa_icon = "fab fa-linkedin-in fa-1x"
+    href = "https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/"
+  [[params.social]]
+    fa_icon = "fas fa-at fa-1x"
+    href = "mailto:adelcerrorodriguez@gmail.com"
+  [[params.social]]
+    fa_icon = "fas fa-globe fa-1x"
+    href = "https://pointedsec.vercel.app"
+  [[params.social]]
+    fa_icon = "fas fa-box fa-1x"
+    href = "https://app.hackthebox.com/profile/1575364"

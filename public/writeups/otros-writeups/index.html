@@ -1,109 +1,151 @@
 <!doctype html>
-<html lang="es-ES"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <title>Bajo el Teclado</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="" />
+<html lang="es">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/pointed.png" />
+
+<title>Articulos / Write-ups antiguos&nbsp;|&nbsp;Bajo el Teclado</title>
+<meta
+  name="title"
+  content="Articulos / Write-ups antiguos"
+/>
+<meta
+  name="description"
+  content="Otros write-ups / Articulos.
+Blog | TryHackMe
+Quick3 | HackMyVm
+HackMePlease1 | VulnHub
+Authority | HackTheBox
+Keeper | HackTheBox
+Abusing DPAPI
+Kerberoasting
+Creating a HTTP Sniffer with Python
+ARP Poisoning &amp; DNS Spoofing"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+
+  <meta name="author" content="Andrés Del Cerro" />
+
+
+
+
+<meta property="og:url" content="http://localhost:1313/writeups/otros-writeups/">
+  <meta property="og:site_name" content="Bajo el Teclado">
+  <meta property="og:title" content="Articulos / Write-ups antiguos">
+  <meta property="og:description" content="Otros write-ups / Articulos. Blog | TryHackMe
+Quick3 | HackMyVm
+HackMePlease1 | VulnHub
+Authority | HackTheBox
+Keeper | HackTheBox
+Abusing DPAPI
+Kerberoasting
+Creating a HTTP Sniffer with Python
+ARP Poisoning &amp; DNS Spoofing">
+  <meta property="og:locale" content="es">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="writeups">
+    <meta property="article:published_time" content="2023-02-12T00:00:00+00:00">
+    <meta property="article:modified_time" content="2023-02-12T00:00:00+00:00">
+
+
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Articulos / Write-ups antiguos">
+  <meta name="twitter:description" content="Otros write-ups / Articulos. Blog | TryHackMe
+Quick3 | HackMyVm
+HackMePlease1 | VulnHub
+Authority | HackTheBox
+Keeper | HackTheBox
+Abusing DPAPI
+Kerberoasting
+Creating a HTTP Sniffer with Python
+ARP Poisoning &amp; DNS Spoofing">
+
+
+
+
+
+  <meta itemprop="name" content="Articulos / Write-ups antiguos">
+  <meta itemprop="description" content="Otros write-ups / Articulos. Blog | TryHackMe
+Quick3 | HackMyVm
+HackMePlease1 | VulnHub
+Authority | HackTheBox
+Keeper | HackTheBox
+Abusing DPAPI
+Kerberoasting
+Creating a HTTP Sniffer with Python
+ARP Poisoning &amp; DNS Spoofing">
+  <meta itemprop="datePublished" content="2023-02-12T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2023-02-12T00:00:00+00:00">
+  <meta itemprop="wordCount" content="33">
+<meta name="referrer" content="no-referrer-when-downgrade" />
 
     
-    
-    
-    <link rel="stylesheet" href="../../css/theme.min.css">
+    <link href="/simple.min.css" rel="stylesheet" />
 
     
-    
+    <link href="/style.min.css" rel="stylesheet" />
+
     
 
     
-  
-
-
 </head>
-<body>
-        <div id="content" class="mx-auto"><header class="container mt-sm-5 mt-4 mb-4 mt-xs-1">
-    <div class="row">
-        
-        <div class="col-sm-4 col-12 text-sm-right text-center pt-sm-4">
-            <a href="../../" class="text-decoration-none">
-                <img id="home-image" class="rounded-circle"
-                    
-                        
-                            src="../../pointed.jpeg"
-                        
-                    
-                />
-            </a>
-        </div>
-        <div class="col-sm-8 col-12 text-sm-left text-center">
-        
-            <h2 class="m-0 mb-2 mt-4">
-                <a href="../../" class="text-decoration-none">
-                    
-                        pointedsec
-                    
-                </a>
-            </h2>
-            <p class="text-muted mb-1">
-                
-                    if pentester.found == bug { make(pentester,states.happy) }
-                
-            </p>
-            <ul id="nav-links" class="list-inline mb-2">
-                
-                
-                    <li class="list-inline-item">
-                        <a class="badge badge-white " href="../../" title="Home">/Home</a>
-                    </li>
-                
-                    <li class="list-inline-item">
-                        <a class="badge badge-white " href="../../about/" title="About">About</a>
-                    </li>
-                
-                    <li class="list-inline-item">
-                        <a class="badge badge-white " href="../../writeups/" title="Write-Up&#39;s">Write-Up&#39;s</a>
-                    </li>
-                
-            </ul>
-            <ul id="nav-social" class="list-inline">
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="http://github.com/pointedsec" target="_blank">
-                            <i class="fab fa-github fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="https://www.linkedin.com/in/andr%C3%A9s-del-cerro-rodr%C3%ADguez-13a826293/" target="_blank">
-                            <i class="fab fa-linkedin-in fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="mailto:adelcerrorodriguez@gmail.com" target="_blank">
-                            <i class="fas fa-at fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="https://pointedsec.vercel.app" target="_blank">
-                            <i class="fas fa-globe fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-                    <li class="list-inline-item mr-3">
-                        <a href="https://app.hackthebox.com/profile/1575364" target="_blank">
-                            <i class="fas fa-box fa-1x text-muted"></i>
-                        </a>
-                    </li>
-                
-            </ul>
-        </div>
-    </div>
-    <hr />
-</header>
-<div class="container">
-    <div class="pl-sm-4 ml-sm-5">
-        <h2 id="otros-write-ups--articulos">Otros write-ups / Articulos.</h2>
+
+  <body>
+    <header>
+      <nav>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZHDKLM7DD2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZHDKLM7DD2');
+</script>
+
+
+  <a
+    href="/"
+    
+    >Home</a
+  >
+
+  <a
+    href="/about/"
+    
+    >About me</a
+  >
+
+  <a
+    href="/writeups/"
+    
+    >Writeup&#39;s</a
+  >
+
+
+</nav>
+<div style="display: flex; justify-content: center; align-items: center">
+  <div style="display: flex; width: 20rem; gap: 2rem;">
+    <img src="yo.png" alt="">
+    <h1>Articulos / Write-ups antiguos</h1>
+  </div>
+</div>
+
+
+    </header>
+    <main>
+      
+  
+  
+  <content>
+    <h2 id="otros-write-ups--articulos">Otros write-ups / Articulos.</h2>
 <p><a href="https://www.linkedin.com/pulse/blog-tryhackme-andr%25C3%25A9s-del-cerro-rodr%25C3%25ADguez-lmctf/?trackingId=1A6lIoPARJ2nbMAjYljE%2BQ%3D%3D">Blog | TryHackMe</a></p>
 <p><a href="https://www.linkedin.com/pulse/quick3-hackmyvm-andr%25C3%25A9s-del-cerro-rodr%25C3%25ADguez-vljgc/?trackingId=1A6lIoPARJ2nbMAjYljE%2BQ%3D%3D">Quick3 | HackMyVm</a></p>
 <p><a href="https://www.linkedin.com/pulse/hackmeplease1-vulnhub-andr%25C3%25A9s-del-cerro-rodr%25C3%25ADguez-bg7cf/?trackingId=1A6lIoPARJ2nbMAjYljE%2BQ%3D%3D">HackMePlease1 | VulnHub</a></p>
@@ -114,20 +156,20 @@
 <p><a href="https://www.youtube.com/watch?v=m7iNE9qLe_4">Creating a HTTP Sniffer with Python</a></p>
 <p><a href="https://www.youtube.com/watch?v=m7iNE9qLe_4&amp;t=627s">ARP Poisoning &amp; DNS Spoofing</a></p>
 
-    </div>
+  </content>
+  <p>
+    
+  </p>
+
+    </main>
+    <footer>
+      
+  <span>© 2024 pointedsec</span>
+
+
+
+    </footer>
 
     
-
-            </div>
-        </div><footer class="text-center pb-1">
-    <small class="text-muted">
-        
-            &copy; 2024, Andrés Del Cerro
-        
-        <br>
-        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
-        and <a href="https://github.com/austingebauer/devise" target="_blank">Devise</a>
-    </small>
-</footer>
 </body>
 </html>
