@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Hack The Box: SolarLab Writeup | Medium"
-date = "2024-07-27"
+date = "2024-09-22"
 description = ""
 tags = [
     "HackTheBox",
