@@ -14,7 +14,7 @@ tags = [
     "Privilege Escalation",
     "RCE",
     "Exploit",
-    "Linux"
+    "Linux",
     "HTTP Enumeration",
     "Fuzzing",
     "Information Disclosure",
