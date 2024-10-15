@@ -276,10 +276,6 @@ En [PayloadAllTheThings](https://github.com/swisskyrepo/PayloadsAllTheThings/blo
 
 Y podemos ver que `0e1137126905` por ejemplo genera el hash que queremos.
 
-|     |              |                                  |
-| --- | ------------ | -------------------------------- |
-| MD5 | 0e1137126905 | 0e291659922323405260514745084877 |
-
 Entonces primero vamos a quitar el atributo `pattern` de la contraseña para poder poner lo que yo quiera.
 ![Write-up Image](images/Screenshot_9.png)
 
