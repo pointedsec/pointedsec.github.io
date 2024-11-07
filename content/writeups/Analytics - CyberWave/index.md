@@ -24,7 +24,7 @@ tags = [
     "Remote Command Execution",
     "Information Disclosure",
     "Password Reuse",
-    User Pivoting",
+    "User Pivoting",
     "Abusing arp SUID",
     "Data Exfiltration"
 ]
