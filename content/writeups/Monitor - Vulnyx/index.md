@@ -311,6 +311,7 @@ event.monitoring.nyx (192.168.18.131) at 00:0c:29:30:13:a0 [ether] on eth0
 ```
 
 Y en vez de hacer el cálculo manual, podemos utilizar [esta herramienta online](https://nettools.club/mac2ipv6) (que también nos dice como hacer el cálculo manualmente si queremos) para conseguir la IPv6.
+
 ![Write-up Image](images/Screenshot_9.png)
 
 Ahora, podemos utilizar `nmap` con el parámetro `-6` para hacer un escaneo por IPv6 y vemos un puerto interesante expuesto por IPv6 que no estaba por IPv4, el SSH.
@@ -351,6 +352,10 @@ Sin embargo, en el monitor de eventos que hemos encontrado antes, podemos ver qu
 Esto no lo podemos hacer mediante el comando `ssh` ya que hace tiempo se añadió un filtro de caracteres especiales, este filtro solo existe en el cliente por lo cual si al servidor le llega una solicitud con un nombre de usuario que contenga caracteres especiales la va a procesar igualmente.
 
 Para hacer esto, podemos hacer uso de [este módulo de metasploit](https://www.offsec.com/metasploit-unleashed/scanner-ssh-auxiliary-modules/) y así saltarnos este filtro de caracteres.
+
+
+> [!NOTE]
+> La dirección MAC de la máquina víctima cambió ya que tuve un par de errores al hacer el Log Posioning y tuve que reinstalar la máquina
 
 ```console
 msf6 > use auxiliary/scanner/ssh/ssh_login
