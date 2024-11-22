@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Vulnyx: Monitor Writeup | Hard"
-date = "2024-11-12"
+date = "2024-11-22"
 description = ""
 tags = [
     "Vulnyx",
