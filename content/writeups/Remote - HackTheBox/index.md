@@ -266,7 +266,7 @@ Use the "--show --format=Raw-SHA1" options to display all of the cracked passwor
 Session completed.
 ```
 
-## ## CVE-2019-25137 (Remote Command Execution)
+## CVE-2019-25137 (Remote Command Execution)
 Igualmente, no podía iniciar sesión, eso es porque el usuario es `admin@htb.local` y no `admin`
 ```text
 admin@htb.local:baconandcheese
@@ -332,6 +332,7 @@ PS C:\USers\Public\Desktop> type user.txt
 Y también vemos un acceso directo a `TeamViewer 7`, no es común ver este programa instalado en CTF's...
 
 # Privilege Escalation
+## Gather TeamViewer Passwords w/metasploit
 Podemos ver que efectivamente, `TeamViewer` está instalado en el sistema.
 ```console
 PS C:\Program Files (x86)> dir
