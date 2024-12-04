@@ -618,6 +618,7 @@ Después:
     - Se toma el carácter correspondiente y se añade a la contraseña.
 
 Entonces, necesitamos saber en que milisegundo exacto y como funciona la función `msec()`
+
 ![Write-up Image](images/Screenshot_21.png)
 
 En este caso se retorna el milisegundo en el que se creó la contraseña, desde el 0 hasta el 999. Esto significa que solo existen 1000 combinaciones para la seed, por ende, solo existen 1000 contraseñas posibles para el PDF.
