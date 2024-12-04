@@ -32,7 +32,7 @@ tags = [
     "Python Scripting",
     "Scripting",
     "Cracking PDF hash",
-    "Abusing SUID "pinns" privilege",
+    "Abusing SUID pinns privilege",
     "CVE-2022-0811 (CRI-O & pinns)",
     "Modifying Core Pattern"
 ]
