@@ -748,8 +748,7 @@ root@unrested:/home/matthew# cat /root/root.txt
 # Intended Privilege Escalation (Abusing `--datadir` parameter)
 La forma intencionada para escalar privilegios en esta máquina, es utilizar el parámetro `--datadir` que permite especificar donde se encuentran los scripts de `nmap`, que tiene sentido, ya que en principio no se nos deja ejecutar un script en especifico, pero se nos deja utilizar el parámetro `-sCV` que recordemos que ejecuta una serie de scripts de reconocimiento entonces si pudiéramos reemplazar alguno de estos scripts por uno personalizado malicioso, podríamos ejecutar un comando a nivel de sistema.
 
-Sabemos que los scripts de `nmap` utiliza un lenguaje que utiliza un interprete de lua, por lo cual podemos buscar cual es el archivo que se ejecuta al hacer un escaneo con el parámetro `-sC`
-![Write-up Image](images/Screenshot_23.png)
+Sabemos que los scripts de `nmap` utiliza un lenguaje que utiliza un interprete de lua, por lo cual podemos buscar cual es el archivo que se ejecuta al hacer un escaneo con el parámetro `-sC`, una búsqueda en Google revela que este archivo se llama `nse_main.lua`
 
 Podemos buscar donde se encuentra este archivo.
 ```console
