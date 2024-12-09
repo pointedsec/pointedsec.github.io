@@ -1,5 +1,5 @@
 # Basic config
-baseURL = "/"
+baseURL = "https://pointedsec.github.io/"
 theme = "hugo-simple"
 languageCode = "es"
 title = "Bajo el Teclado"
