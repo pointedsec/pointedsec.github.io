@@ -1114,7 +1114,7 @@ Podemos ver que en un momento, se envía el mensaje serializado en base64 utiliz
     }
 ```
 
-Como podemos en el código, hay un punto donde se envía la data al servidor donde ee construye la cadena de solicitud combinando el código de la solicitud y su parámetro (`Request.Type` y `Request.Parameter`) después de un punto y coma.
+Como podemos en el código, hay un punto donde se envía la data al servidor donde se construye la cadena de solicitud combinando el código de la solicitud y su parámetro (`Request.Type` y `Request.Parameter`) después de un punto y coma.
 
 Por ejemplo una solicitud válida sería
 ```text
@@ -1177,7 +1177,7 @@ PS C:\users\administrator\desktop> type root.txt
 type root.txt
 eb5ca5f6aa15e8...
 ```
-eb5ca5f6aa15e86900bea2cf072a424f
+
 ¡Y ya estaría!
 
 Happy Hacking! 🚀
