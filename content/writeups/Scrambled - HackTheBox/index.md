@@ -643,7 +643,7 @@ Y ahora ejecutando el script, conseguimos el SID, eso sí, hay que borrar la úl
 S-1-5-21-2743207045-1827831105-2542523200-1619
 ```
 
-### Credential to NTLM Hash
+## Credential to NTLM Hash
 Ahora necesitamos saber el hash NT:LM de la contraseña que tenemos, para ello podemos utilizar python.
 ```console
 >>> import hashlib,binascii
@@ -652,7 +652,7 @@ Ahora necesitamos saber el hash NT:LM de la contraseña que tenemos, para ello p
 b'b999a16500b87d17ec7f2e2a68778f05'
 ```
 
-### Creating the Silver Ticket & Accessing the MSSQL Instance
+## Creating the Silver Ticket & Accessing the MSSQL Instance
 Entonces, ya tenemos lo necesario.
 - SID: S-1-5-21-2743207045-1827831105-2542523200
 - Dominio: scrm.local
