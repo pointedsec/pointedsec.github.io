@@ -108,7 +108,7 @@ cat content.txt | base64 -d
 flag2{aW1mYWRtaW5pc3RyYXRvcg==}
 ```
 
-# Finding the first flag
+# Finding the 1st flag
 Revisando el código fuente, encontramos la primera flag en el recurso `/contact.php`
 ![Write-up Image](images/Screenshot_6.png)
 
@@ -549,8 +549,8 @@ Podemos ver la flag 5.
 flag5{YWdlbnRzZXJ2aWNlcw==}
 ```
 
-## 6th Flag
-### Finding the explotation path
+# 6th Flag
+## Finding the explotation path
 Decodificando la flag en base64 nos da una pequeña pista.
 ```console
 echo "YWdlbnRzZXJ2aWNlcw==" | base64 -d
@@ -666,8 +666,8 @@ Así que nos vamos a descargar este binario en nuestra máquina víctima utiliza
 [19:28:57] downloaded 11.90KiB in 0.09 seconds 
 ```
 
-### Reversing the binary w/ghidra
-### Bypassing Authentication
+## Reversing the binary w/ghidra
+## Bypassing Authentication
 Podemos ver que en la variable `local_22` se almacena lo que introduce el usuario, en este caso es un tipo de identificador de un agente, para poder autenticarnos lo que introduzca el usuario debe de ser lo mismo almacenado en la variable `local_28`
 ![Write-up Image](images/Screenshot_36.png)
 
@@ -698,7 +698,7 @@ Main Menu:
 0. Exit
 ```
 
-### Validating the Buffer Overflow
+## Validating the Buffer Overflow
 Analizando la funcionalidad de el binario.
 La opción número uno reporta información por consola, podemos consultar el código en `ghidra` y vemos que no hay nada explotable aquí.
 ![Write-up Image](images/Screenshot_37.png)
@@ -713,7 +713,7 @@ La tercera funcionalidad pide un dato al usuario el cual está limitado a `164` 
 Podemos comprobarlo poniendo muchas `A` para sobrecargar la pila y ver si nos retorna un `Segmentation fault` y efectivamente, podemos confirmar que es vulnerable.
 ![Write-up Image](images/Screenshot_40.png)
 
-### Reverse Port Forwarding
+## Reverse Port Forwarding
 Vamos a subir el binario de `chisel` a la máquina víctima para compartirnos el puerto 7788/TCP.
 ```console
 (local) pwncat$ upload chisel
@@ -749,7 +749,7 @@ Agent ID :
 
 Ahora si, podemos continuar con el BoF.
 
-### Buffer Overflow (ret2reg)
+## Buffer Overflow (ret2reg)
 Primero vamos a comprobar si tiene algún método de seguridad activado y podemos ver que no.
 ```console
 gdb-peda$ checksec
