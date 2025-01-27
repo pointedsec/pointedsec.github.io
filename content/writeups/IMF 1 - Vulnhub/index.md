@@ -28,7 +28,7 @@ tags = [
     "Arbitrary File Upload",
     "Bypassing WAF",
     "Reversing ELF Binary",
-    "ghidra"
+    "ghidra",
     "Reverse Port Forwarding",
     "Buffer Overflow",
     "ret2reg"
