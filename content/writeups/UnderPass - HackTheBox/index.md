@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Hack The Box: UnderPass Writeup | Easy"
-date = "2024-30-12"
+date = "2025-06-04"
 description = ""
 tags = [
     "HackTheBox",
