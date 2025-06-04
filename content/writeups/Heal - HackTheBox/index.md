@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Hack The Box: Heal Writeup | Medium"
-date = "2024-12-30"
+date = "2025-06-03"
 description = ""
 tags = [
     "HackTheBox",
