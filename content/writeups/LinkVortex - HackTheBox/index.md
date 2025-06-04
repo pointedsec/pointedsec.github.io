@@ -1,7 +1,7 @@
 +++
 author = "Andrés Del Cerro"
 title = "Hack The Box: LinkVortex Writeup | Easy"
-date = "2024-12-13"
+date = "2025-06-03"
 description = ""
 tags = [
     "HackTheBox",
