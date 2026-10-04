@@ -88,11 +88,11 @@ El conjunto de ordinales {3, 4, 16, 19, 23} corresponde a `closesocket`, `connec
 
 ## 3. Nota sobre el metodo: los errores del analista
 
-Antes de entrar en el binario, conviene registrar los cuatro fallos cometidos durante este analisis, porque ilustran los limites del trabajoPuramente estatico con herramientas homegrown:
+Antes de entrar en el binario, conviene registrar los cuatro fallos cometidos durante este analisis, porque ilustran los limites del trabajo puramente estatico con herramientas homegrown:
 
-1. **Desensamblador propio con las instrucciones partidas.** El primer intento de desensamblar el stub de 221 bytes produjo una salida en la que las instrucciones se cortaban por la mitad, por un error en el calculo de ModRM e inmediatos. Se detecto al leer el codigoAssembly a mano y comparar.
+1. **Desensamblador propio con las instrucciones partidas.** El primer intento de desensamblar el stub de 221 bytes produjo una salida en la que las instrucciones se cortaban por la mitad, por un error en el calculo de ModRM e inmediatos. Se detecto al leer el codigo Assembly a mano y comparar.
 2. **Bucle infinito en un parser de x86-64.** El script de analisis de capacidades se quedaba colgado porque, cuando el byte actual no era ni un prefijo ni un opcode reconocido, el indice no avanzaba. Se manifesto como un cuelgue sin salida, no como un error.
-3. **Tabla de flags de seccion equivocada.** Los valores `IMAGE_SCN_MEM_*` estaban desplazados una posicion, de modo que `.text` aparecia como lectura y escritura en lugar de ejecucion y lectura. La conclusion correcto, ninguna seccion tiene W+X, se alcanzo solo al comparar los valores brutos con los estandar de MSVC.
+3. **Tabla de flags de seccion equivocada.** Los valores `IMAGE_SCN_MEM_*` estaban desplazados una posicion, de modo que `.text` aparecia como lectura y escritura en lugar de ejecucion y lectura. La conclusion correcta, ninguna seccion tiene W+X, se alcanzo solo al comparar los valores brutos con los estandar de MSVC.
 4. **Estructura mal formada al leer el directorio de depuracion.** Se uso un campo de 1 byte donde la especificacion exige 4, lo que desplaza la interpretacion de todo el registro.
 
 Los cuatro son fallos de instrumentacion, es decir, de no tener una suite de referencia con la que validar las herramientas propias. Es la leccion practica: cuando se escribe un desensamblador a mano para un analisis puntual, hay que contrastarlo con un desensamblador real antes de fiarse de el.
@@ -147,7 +147,7 @@ blob "g[R@CUFQhAP@_4"       ->  S o f t w a r e \ u d t k \0 = "Software\udtk"
 
 Veinticuatro caracteres correctos de forma consecutiva no son casualidad. Eso valida la clave mas alla de la suposicion.
 
-Para los blobs que Ghidra no tinha indexados, se escribio una herramienta que hace fuerza bruta: aplica XOR `0x34` a la seccion `.rdata` completa y extrae rachas de bytes imprimibles, tanto en ASCII como en UTF-16. Asi se recuperaron alrededor de 35 cadenas adicionales.
+Para los blobs que Ghidra no tenia indexados, se escribio una herramienta que hace fuerza bruta: aplica XOR `0x34` a la seccion `.rdata` completa y extrae rachas de bytes imprimibles, tanto en ASCII como en UTF-16. Asi se recuperaron alrededor de 35 cadenas adicionales.
 
 ### 4.3 Las cadenas recuperadas
 
@@ -158,7 +158,7 @@ Para los blobs que Ghidra no tinha indexados, se escribio una herramienta que ha
 | `formatted` | nombre de campo JSON de la API de hora, no un marcador de protocolo |
 | `vip.timezonedb.com` | host, 19 bytes: 18 mas NUL |
 | `80` | puerto, 3 bytes: 2 mas NUL |
-| `GET /v2.1/get-time-zone?key=0D0UMS4IS0XA&format=json&by=zone&zone=Europe/London HTTP/1.1\r\nHost: vip.timezonedb.com\r\nConnection: close\r\n\r\n` | peticion, 138 bytes literales |
+| `GET /v2.1/get-time-zone?key=<API_KEY_REDACTED>&format=json&by=zone&zone=Europe/London HTTP/1.1\r\nHost: vip.timezonedb.com\r\nConnection: close\r\n\r\n` | peticion, 138 bytes literales |
 | `%04lld` | formato del `sprintf` que genera el PIN |
 | `%4s` | formato del `scanf` que lee el PIN |
 | `Software\udtk` | clave de registro, 14 caracteres |
@@ -240,7 +240,7 @@ Las cadenas descifradas dan la respuesta:
 host   = "vip.timezonedb.com"
 puerto = "80"
 peticion =
-  GET /v2.1/get-time-zone?key=0D0UMS4IS0XA&format=json&by=zone
+  GET /v2.1/get-time-zone?key=<API_KEY_REDACTED>&format=json&by=zone
   &zone=Europe/London HTTP/1.1\r\n
   Host: vip.timezonedb.com\r\n
   Connection: close\r\n\r\n
@@ -837,7 +837,7 @@ SHA-256 82eb05556ffe1597e40353a0faef69e78f072d14e671adbf360c2161c06a8276
 
 Red observada (unica):
   vip.timezonedb.com:80        API publica de zona horaria, GET HTTP
-  clave de la API: 0D0UMS4IS0XA
+  clave de la API: <redactada>
   ruta: /v2.1/get-time-zone
 
 Registro:
