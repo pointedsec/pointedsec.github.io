@@ -669,23 +669,6 @@ req = (f"GET /files?id={task_id} HTTP/1.1\r\n"
 # 404 'Task metadata not found'   -> el panel no conoce ese identificador
 ```
 
-### 10.2 Cómo reproducirlo
-
-```bash
-# 1. Levantar Tor con un nodo de salida fijo
-tor -f /tmp/opencode/torrc_fixed &
-
-# 2. Confirmar que la salida no es la IP real
-curl -s --socks5-hostname 127.0.0.1:9050 https://api.ipify.org
-
-# 3. Capturar una sesión completa con evidencia en hexadecimal
-cd /tmp/opencode/c2
-DUR=45 python3 captura_forense.py
-
-# 4. Comprobar el estado de los payloads que difunde el panel
-python3 coleccion.py
-```
-
 ---
 
 ## 11. La tabla de oráculos del panel
